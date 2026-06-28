@@ -1,0 +1,3168 @@
+<!DOCTYPE html>
+<html lang="ru" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+
+<title>Nesay.il — נדל״ן ישראל</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --c:#1C6EF2;--c-h:#1252CC;--cl:#EBF2FF;
+  --rent:#1C6EF2;--rentbg:#EBF2FF;
+  --sale:#F25C1C;--salebg:#FFF0EB;
+  --ink:#0A0A0F;--ink2:#4A4A5A;--ink3:#9090A0;
+  --line:#E6E6EC;--bg:#F4F5F7;--white:#fff;
+  --green:#1A7D4E;--greenbg:#E8F5EE;
+  --orange:#D97706;--orangebg:#FEF3C7;
+  --red:#C0392B;
+  --nav-h:64px;--font:'Heebo',sans-serif;
+  --r:14px;--rs:10px;--sw:430px;--tab-h:70px;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);
+  --shadow-md:0 4px 16px rgba(0,0,0,.08),0 2px 6px rgba(0,0,0,.04);
+  --shadow-lg:0 12px 40px rgba(0,0,0,.12),0 4px 12px rgba(0,0,0,.06);
+  --glass:rgba(255,255,255,.95);
+}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);height:100vh;overflow:hidden;-webkit-font-smoothing:antialiased;min-width:0}
+
+/* ════ NAV ════ */
+nav{position:fixed;top:0;left:0;right:0;z-index:300;height:var(--nav-h);
+  background:var(--glass);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  border-bottom:1px solid rgba(0,0,0,.06);
+  display:flex;align-items:center;padding:0 20px;gap:12px;direction:ltr;
+  box-shadow:var(--shadow-sm)}
+.logo{font-size:22px;font-weight:900;color:var(--ink);text-decoration:none;letter-spacing:-1.2px;flex-shrink:0}
+.logo em{font-style:normal;color:var(--c)}
+.cats{display:flex;gap:1px;overflow-x:auto;scrollbar-width:none;flex:1;padding:0 4px}
+.cats::-webkit-scrollbar{display:none}
+.ctab{display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;border:none;background:none;cursor:pointer;font-family:var(--font);white-space:nowrap;transition:all .2s;flex-shrink:0;font-size:13px;font-weight:600;color:var(--ink3)}
+.ctab:hover{background:rgba(0,0,0,.05);color:var(--ink)}
+.ctab.on.rt{background:var(--rentbg);color:var(--rent)}
+.ctab.on.st{background:var(--salebg);color:var(--sale)}
+.ctab-ico{font-size:14px}
+.sep{width:1px;height:28px;background:var(--line);flex-shrink:0;align-self:center;margin:0 4px}
+.nav-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.lsw{display:flex;gap:0;background:var(--bg);border-radius:20px;padding:3px;border:1px solid var(--line)}
+.lb{padding:4px 10px;border-radius:16px;border:none;background:none;font-family:var(--font);font-size:12px;font-weight:700;color:var(--ink3);cursor:pointer;transition:all .15s}
+.lb.on{background:var(--white);color:var(--ink);box-shadow:var(--shadow-sm)}
+.bn{padding:8px 18px;border-radius:20px;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;border:none;white-space:nowrap}
+.bg{background:none;border:1.5px solid var(--line);color:var(--ink2)}.bg:hover{border-color:var(--ink);color:var(--ink)}
+.bm{background:var(--c);color:#fff;box-shadow:0 2px 10px rgba(28,110,242,.35)}.bm:hover{background:var(--c-h);transform:translateY(-1px)}
+.ub{display:flex;align-items:center;gap:8px;cursor:pointer;padding:5px 12px 5px 5px;border-radius:20px;border:1.5px solid var(--line);transition:all .15s;background:var(--white)}
+.ub:hover{border-color:var(--c);box-shadow:var(--shadow-sm)}
+.ua{width:30px;height:30px;border-radius:50%;background:var(--c);display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:800;flex-shrink:0}
+.cp{background:var(--greenbg);color:var(--green);font-size:11px;font-weight:800;padding:3px 10px;border-radius:20px;border:1px solid rgba(26,125,78,.2)}
+
+/* ════ LAYOUT ════ */
+.layout{display:flex;flex-direction:row;padding-top:var(--nav-h);height:100vh;direction:ltr}
+.ma{flex:1;position:relative;overflow:hidden;order:1}
+.sb{width:var(--sw);min-width:var(--sw);height:calc(100vh - var(--nav-h));display:flex;flex-direction:column;background:var(--white);border-left:1px solid var(--line);z-index:10;order:2}
+
+/* ════ SIDEBAR HEADER ════ */
+.sb-head{padding:14px 16px 10px;border-bottom:1px solid var(--line);flex-shrink:0}
+
+/* Search bar */
+.search-bar{display:flex;align-items:center;gap:8px;background:var(--bg);border:1.5px solid var(--line);border-radius:12px;padding:0 14px;height:44px;transition:all .2s;margin-bottom:12px}
+.search-bar:focus-within{border-color:var(--c);background:var(--white);box-shadow:0 0 0 3px rgba(28,110,242,.1)}
+.search-bar input{flex:1;border:none;background:none;font-family:var(--font);font-size:14px;color:var(--ink);outline:none}
+.search-bar input::placeholder{color:var(--ink3)}
+.search-bar .si{color:var(--ink3);font-size:16px;flex-shrink:0}
+
+/* Type toggles */
+.type-toggle{display:flex;gap:6px;margin-bottom:10px}
+.tt-btn{flex:1;height:34px;border-radius:8px;border:1.5px solid var(--line);background:none;font-family:var(--font);font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:5px;color:var(--ink3)}
+.tt-btn.on-rent{background:var(--rentbg);border-color:var(--rent);color:var(--rent)}
+.tt-btn.on-sale{background:var(--salebg);border-color:var(--sale);color:var(--sale)}
+.tt-btn:not(.on-rent):not(.on-sale):hover{border-color:var(--ink3);color:var(--ink)}
+
+/* Filter pills */
+.filters-scroll{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.filters-scroll::-webkit-scrollbar{display:none}
+.fpill{padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid var(--line);background:var(--white);color:var(--ink2);font-family:var(--font);transition:all .15s;white-space:nowrap;flex-shrink:0}
+.fpill.on{border-color:var(--c);background:var(--cl);color:var(--c)}
+.fpill:hover:not(.on){border-color:var(--ink3);color:var(--ink)}
+
+/* ════ SORT ROW ════ */
+.sort-row{padding:8px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.cnt{font-size:12px;color:var(--ink3);font-weight:500}.cnt b{color:var(--ink);font-weight:700}
+.sdd{position:relative}
+.sbt{display:flex;align-items:center;gap:6px;height:30px;padding:0 10px;border-radius:8px;border:1px solid var(--line);background:var(--white);font-family:var(--font);font-size:12px;font-weight:600;color:var(--ink);cursor:pointer;transition:all .15s;white-space:nowrap}
+.sbt:hover{border-color:var(--ink3);box-shadow:var(--shadow-sm)}
+.smn{position:absolute;top:calc(100% + 4px);right:0;min-width:180px;background:var(--white);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow-lg);padding:6px;display:none;z-index:99}
+.smn.open{display:block}
+.smi{padding:8px 12px;border-radius:8px;font-size:13px;font-weight:600;color:var(--ink2);cursor:pointer;transition:all .12s}
+.smi:hover{background:var(--bg);color:var(--ink)}.smi.on{background:var(--cl);color:var(--c)}
+
+/* ════ CARDS — современный горизонтальный Yad2/Airbnb стиль ════ */
+.cl2{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+.cl2::-webkit-scrollbar{width:4px}.cl2::-webkit-scrollbar-thumb{background:var(--line);border-radius:2px}
+
+.card{background:var(--white);border-radius:var(--r);border:1px solid var(--line);display:flex;cursor:pointer;transition:all .2s;overflow:hidden;position:relative;flex-shrink:0;box-shadow:var(--shadow-sm)}
+.card:hover{border-color:rgba(28,110,242,.3);box-shadow:0 4px 20px rgba(28,110,242,.1);transform:translateY(-1px)}
+.card.active{border-color:var(--c);box-shadow:0 0 0 2px rgba(28,110,242,.15)}
+.card-stripe{width:4px;flex-shrink:0}
+.card-stripe.r{background:var(--rent)}.card-stripe.s{background:var(--sale)}
+
+.card-img{width:120px;min-width:120px;position:relative;overflow:hidden;flex-shrink:0}
+.card-img-bg{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .4s}
+.card:hover .card-img-bg{transform:scale(1.06)}
+.card-img-emoji{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:36px}
+.card-photo-cnt{position:absolute;bottom:5px;left:5px;background:rgba(0,0,0,.55);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:5px}
+.card-badge{position:absolute;top:6px;right:6px;font-size:9px;font-weight:800;padding:2px 7px;border-radius:5px;text-transform:uppercase;letter-spacing:.4px}
+.badge-top{background:#0A0A0F;color:#fff}.badge-new{background:var(--green);color:#fff}
+
+.card-body{flex:1;padding:12px 14px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.card-top-row{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.card-price{font-size:18px;font-weight:900;color:var(--ink);letter-spacing:-.5px;line-height:1}
+.card-type-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:5px;white-space:nowrap}
+.card-type-badge.r{background:var(--rentbg);color:var(--rent)}.card-type-badge.s{background:var(--salebg);color:var(--sale)}
+.card-specs{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink2);font-weight:500}
+.card-spec{display:flex;align-items:center;gap:3px}
+.card-spec-sep{width:3px;height:3px;border-radius:50%;background:var(--ink3)}
+.card-addr{font-size:11px;color:var(--ink3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:flex;align-items:center;gap:4px}
+.card-tags{display:flex;gap:4px;flex-wrap:wrap}
+.ctag{font-size:10px;font-weight:600;padding:2px 7px;border-radius:5px;background:var(--bg);color:var(--ink2)}
+.ctag.hi{background:var(--greenbg);color:var(--green)}
+.card-bot{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:4px}
+.agent-info{font-size:10px;color:var(--ink3);display:flex;align-items:center;gap:4px}
+.vt{color:var(--green)}
+.card-acts{display:flex;gap:4px}
+.act-btn{width:26px;height:26px;border-radius:7px;border:1px solid var(--line);background:none;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;transition:all .15s;color:var(--ink3)}
+.act-btn:hover{border-color:var(--sale);background:#FFF3EE;color:var(--sale)}
+.promo-strip{background:linear-gradient(90deg,#F59E0B,#EF4444);color:#fff;font-size:10px;font-weight:800;padding:4px 12px;display:flex;align-items:center;gap:6px;flex-shrink:0}
+.card.promo{border-color:#F59E0B}
+
+/* ════ PHOTO SLIDER ════ */
+.card-img{width:130px;min-width:130px;position:relative;overflow:hidden;flex-shrink:0}
+.card-slides{position:absolute;inset:0;display:flex;transition:transform .3s ease}
+.card-slide{min-width:100%;height:100%;background-size:cover;background-position:center;flex-shrink:0}
+.card-img-bg{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .4s}
+.card:hover .card-img-bg{transform:scale(1.06)}
+.card-img-emoji{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:36px}
+.card-photo-cnt{position:absolute;bottom:5px;left:5px;background:rgba(0,0,0,.55);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:5px;z-index:2}
+.slide-btn{position:absolute;top:50%;transform:translateY(-50%);width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,.55);border:none;color:#fff;font-size:10px;cursor:pointer;z-index:3;display:none;align-items:center;justify-content:center;transition:background .15s}
+.slide-btn:hover{background:rgba(0,0,0,.8)}
+.slide-prev{left:4px}.slide-next{right:4px}
+.card:hover .slide-btn{display:flex}
+.slide-dots{position:absolute;bottom:4px;left:50%;transform:translateX(-50%);display:flex;gap:3px;z-index:2}
+.slide-dot{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,.5)}
+.slide-dot.on{background:#fff}
+
+/* ════ MAP ════ */
+#map3d{position:absolute;inset:0;width:100%;height:100%}
+.cj{position:absolute;top:14px;left:50%;transform:translateX(-50%);display:flex;gap:4px;z-index:10;flex-wrap:wrap;justify-content:center}
+.cj button{padding:6px 12px;border-radius:20px;border:none;background:rgba(10,10,20,.75);backdrop-filter:blur(12px);color:#fff;font-family:var(--font);font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.cj button:hover{background:var(--c);transform:translateY(-1px)}
+.mcnt{position:absolute;top:62px;right:14px;z-index:10;background:rgba(10,10,20,.75);backdrop-filter:blur(12px);border-radius:12px;padding:9px 14px;text-align:center}
+.mcnt strong{display:block;font-size:20px;font-weight:900;color:var(--rent);line-height:1}
+.mcnt span{font-size:10px;color:rgba(255,255,255,.55);font-weight:500}
+.mcp{position:absolute;top:50%;right:12px;transform:translateY(-50%);display:flex;flex-direction:column;gap:2px;z-index:10;background:rgba(10,10,20,.75);backdrop-filter:blur(12px);border-radius:12px;padding:5px}
+.mcb{width:40px;height:40px;border-radius:9px;border:none;background:none;color:#fff;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .12s;font-family:var(--font);font-weight:900}
+.mcb:hover{background:rgba(255,255,255,.15)}.mcb.on{background:var(--c)}
+.mcs{height:1px;background:rgba(255,255,255,.1);margin:2px 0}
+.mleg{position:absolute;bottom:14px;left:14px;z-index:10;background:rgba(10,10,20,.8);backdrop-filter:blur(12px);border-radius:10px;padding:10px 14px;display:flex;flex-direction:column;gap:6px}
+.mlr{display:flex;align-items:center;gap:6px;font-size:11px;color:rgba(255,255,255,.85);font-weight:600}
+.mld{width:10px;height:10px;border-radius:3px}
+.mld.r{background:var(--rent)}.mld.s{background:var(--sale)}
+
+/* Mapbox DOM price markers */
+.mbp{display:flex;flex-direction:column;align-items:center;cursor:pointer;filter:drop-shadow(0 3px 8px rgba(0,0,0,.4))}
+.mbb{padding:5px 10px;border-radius:20px;font-family:'Heebo',sans-serif;font-size:11px;font-weight:900;color:#fff;white-space:nowrap;border:2px solid rgba(255,255,255,.4);transition:transform .15s,filter .15s;line-height:1}
+.mbb.rm{background:var(--rent)}.mbb.sm{background:var(--sale)}.mbb.pm{background:linear-gradient(90deg,#F59E0B,#EF4444);border-color:#FFD700}
+.mba{width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;margin-top:-1px}
+.mba.rm{border-top:7px solid var(--rent)}.mba.sm{border-top:7px solid var(--sale)}.mba.pm{border-top:7px solid #F59E0B}
+.mbp:hover .mbb,.mbp.hl .mbb{transform:scale(1.15);filter:brightness(1.1)}
+.mbp.hl .mbb{box-shadow:0 0 0 4px rgba(255,255,255,.85)}
+
+/* Map popup */
+.mpop{position:absolute;z-index:20;background:rgba(8,8,18,.96);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:14px 16px;min-width:200px;max-width:230px;pointer-events:none;box-shadow:0 12px 40px rgba(0,0,0,.45)}
+.pt2{display:inline-block;font-size:10px;font-weight:800;padding:2px 8px;border-radius:5px;margin-bottom:6px}
+.pt2.r{background:rgba(28,110,242,.35);color:#93C5FD}.pt2.s{background:rgba(242,92,28,.35);color:#FCA5A5}
+.pp2{font-size:18px;font-weight:900;color:#fff;letter-spacing:-.5px;line-height:1}
+.pa2{font-size:10px;color:rgba(255,255,255,.5);margin:4px 0 8px}
+.pc2{display:flex;gap:4px;flex-wrap:wrap}
+.pch{font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;background:rgba(255,255,255,.1);color:rgba(255,255,255,.85)}
+.pch.hi{background:rgba(26,125,78,.35);color:#6EE7B7}
+.pag{font-size:10px;color:rgba(255,255,255,.35);margin-top:6px}
+.parr{position:absolute;bottom:-7px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:7px solid rgba(8,8,18,.96)}
+
+/* ════ DETAIL ════ */
+.dp{position:fixed;inset:0;z-index:200;display:none;pointer-events:none}
+.dp.open{display:block}
+.dc{position:absolute;bottom:0;right:0;width:var(--sw);height:calc(100% - var(--nav-h));top:var(--nav-h);background:var(--white);border-left:1px solid var(--line);display:flex;flex-direction:column;overflow-y:auto;animation:sIn .22s ease;pointer-events:all;direction:rtl}
+@keyframes sIn{from{transform:translateX(18px);opacity:0}to{transform:none;opacity:1}}
+.dth{padding:10px 18px 7px;font-size:12px;font-weight:800;display:flex;align-items:center;gap:7px;flex-shrink:0}
+.dth.r{background:var(--rentbg);color:var(--rent);border-bottom:2px solid var(--rent)}
+.dth.s{background:var(--salebg);color:var(--sale);border-bottom:2px solid var(--sale)}
+.dtm{width:100%;height:200px;position:relative;flex-shrink:0;overflow:hidden}
+.dtmbg{position:absolute;inset:0;background-size:cover;background-position:center}
+.dtme{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:64px;text-shadow:0 4px 24px rgba(0,0,0,.5)}
+.dcl{position:absolute;top:10px;left:10px;z-index:5;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.92);border:1.5px solid rgba(0,0,0,.1);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
+.dcl:hover{background:#fff}
+.dby{padding:18px 16px 80px}
+.dpr{font-size:24px;font-weight:900;color:var(--ink);letter-spacing:-.5px}
+.dad{font-size:12px;color:var(--ink2);margin:4px 0 14px}
+.dsp{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px}
+.spi{background:var(--bg);border-radius:12px;padding:12px;text-align:center}
+.spi .sv{font-size:18px;font-weight:900;color:var(--ink)}
+.spi .sk{font-size:10px;color:var(--ink3);margin-top:2px}
+.dtg{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px}
+.dtga{padding:5px 12px;border-radius:20px;font-size:11px;font-weight:600;background:var(--bg);color:var(--ink2)}
+.dtga.hi{background:var(--greenbg);color:var(--green)}
+.hb{margin:10px 0 14px}
+.hl{font-size:11px;color:var(--ink3);margin-bottom:5px;display:flex;justify-content:space-between}
+.ht{height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.hf{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--c),var(--green))}
+.dde{font-size:13px;color:var(--ink2);line-height:1.7;margin-bottom:16px}
+.dag{display:flex;align-items:center;gap:10px;padding:12px;background:var(--bg);border-radius:12px;margin-bottom:12px;cursor:pointer;transition:background .15s}
+.dag:hover{background:var(--line)}
+.agav{width:40px;height:40px;border-radius:50%;background:var(--c);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:15px;flex-shrink:0}
+.st{color:#F59E0B;font-size:13px}
+.dac{display:flex;gap:8px;margin-top:12px}
+.bwa{flex:1;padding:13px;border-radius:12px;border:none;background:#25D366;color:#fff;font-family:var(--font);font-size:13px;font-weight:800;cursor:pointer;transition:background .15s}
+.bwa:hover{background:#1ebe5d}
+.bca{flex:1;padding:13px;border-radius:12px;border:1.5px solid var(--line);background:none;font-family:var(--font);font-size:13px;font-weight:700;color:var(--ink);cursor:pointer;transition:all .15s}
+.bca:hover{border-color:var(--ink);background:var(--bg)}
+.bco{width:100%;margin-top:8px;padding:11px;border-radius:12px;border:1.5px solid var(--c);background:var(--cl);font-family:var(--font);font-size:12px;font-weight:700;color:var(--c);cursor:pointer;transition:all .15s}
+.bco:hover{background:var(--c);color:#fff}
+
+/* ════ OVERLAYS ════ */
+.ovl{position:fixed;inset:0;background:rgba(10,10,15,.55);z-index:500;display:none;align-items:center;justify-content:center;backdrop-filter:blur(6px);padding:16px}
+.ovl.open{display:flex}
+.mx{width:30px;height:30px;border-radius:8px;border:none;background:var(--bg);cursor:pointer;font-size:16px;color:var(--ink3);display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0}
+.mx:hover{background:var(--line);color:var(--ink)}
+
+/* ════ PUBLISH MODAL — Apple style ════ */
+.pmod{background:#fff;border-radius:24px;width:600px;max-width:calc(100vw - 32px);max-height:92vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 32px 80px rgba(0,0,0,.18),0 0 0 1px rgba(0,0,0,.05)}
+.phd{padding:24px 28px 0;display:flex;align-items:flex-start;justify-content:space-between;flex-shrink:0}
+.ptt{font-size:22px;font-weight:700;color:#1d1d1f;letter-spacing:-.4px}
+.pbd{flex:1;overflow-y:auto;padding:0 28px 28px}
+
+/* Stepper */
+.pstp{padding:18px 0 20px}
+.psteps{display:flex;align-items:center;gap:0}
+.pstep{display:flex;flex-direction:column;align-items:center;gap:5px;flex:1;position:relative}
+.pstep:not(:last-child)::after{content:'';position:absolute;top:15px;left:calc(50% + 16px);right:calc(-50% + 16px);height:2px;background:var(--line);transition:background .4s}
+.pstep.dn:not(:last-child)::after{background:var(--green)}
+.pstep.on:not(:last-child)::after{background:var(--c)}
+.pstep-num{width:28px;height:28px;border-radius:50%;background:#f5f5f7;border:none;color:#86868b;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;transition:all .3s;z-index:1}
+.pstep.on .pstep-num{background:#1d1d1f;border:none;color:#fff;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.pstep.dn .pstep-num{background:#34c759;border:none;color:#fff}
+.pstep-lbl{font-size:10px;font-weight:600;color:#86868b;letter-spacing:.2px}
+.pstep.on .pstep-lbl{color:#1d1d1f;font-weight:700}
+.pstep.dn .pstep-lbl{color:#34c759}
+
+/* Floating label fields */
+.fgrp{position:relative;margin-bottom:16px}
+.fgrp-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:0}
+.fgrp-row .fgrp{margin-bottom:0}
+.flabel{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--ink3);font-family:var(--font);pointer-events:none;transition:all .2s;background:var(--white);padding:0 4px;z-index:1}
+.finput{width:100%;height:52px;padding:16px 14px 6px;border:1.5px solid #e5e5ea;border-radius:12px;font-family:var(--font);font-size:14px;color:#1d1d1f;outline:none;transition:border .2s,box-shadow .2s;background:#fff}
+.finput:focus{border-color:#1d1d1f;box-shadow:0 0 0 3px rgba(29,29,31,.08)}
+.finput:focus~.flabel,.finput:not(:placeholder-shown)~.flabel,.finput.has-val~.flabel{top:12px;transform:none;font-size:10px;font-weight:700;color:#86868b}
+.finput:not(:focus)~.flabel{color:#86868b}
+.fselect{width:100%;height:52px;padding:20px 14px 6px;border:1.5px solid #e5e5ea;border-radius:12px;font-family:var(--font);font-size:14px;color:#1d1d1f;outline:none;background:#fff;cursor:pointer;transition:border .2s,box-shadow .2s;appearance:none;-webkit-appearance:none}
+.fselect:focus{border-color:#1d1d1f;box-shadow:0 0 0 3px rgba(29,29,31,.08)}
+.fselect~.flabel{top:12px;transform:none;font-size:10px;font-weight:700;color:#86868b}
+.fselect:focus~.flabel{color:#1d1d1f}
+.fselect-arrow{position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--ink3);font-size:12px}
+.ftextarea{width:100%;padding:20px 14px 14px;min-height:90px;border:1.5px solid var(--line);border-radius:12px;font-family:var(--font);font-size:14px;color:var(--ink);outline:none;resize:vertical;transition:border .2s}
+.ftextarea:focus{border-color:var(--c);box-shadow:0 0 0 3px rgba(28,110,242,.1)}
+.rq{color:var(--c);font-size:11px}
+
+/* Address autocomplete */
+.aw{position:relative}
+.asg{position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--white);border:1.5px solid var(--c);border-radius:14px;box-shadow:var(--shadow-lg);z-index:9999;overflow:hidden;animation:pIn .12s ease}
+@keyframes pIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.asg.hid{display:none}
+.asi{padding:11px 16px;cursor:pointer;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;transition:background .1s}
+.asi:last-child{border-bottom:none}
+.asi:hover,.asi:focus{background:var(--cl)}
+.asi-ico{font-size:18px;flex-shrink:0;opacity:.8}
+.asi-main{font-size:13px;font-weight:700;color:var(--ink)}
+.asi-sub{font-size:11px;color:var(--ink3);margin-top:1px}
+.ald{padding:12px 16px;font-size:12px;color:var(--ink3);text-align:center;display:flex;align-items:center;justify-content:center;gap:8px}
+
+/* Deal type toggle in publish form */
+.deal-toggle{display:flex;gap:6px;background:#f5f5f7;padding:4px;border-radius:12px;margin-bottom:20px}
+.dt-btn{flex:1;height:44px;border:none;background:none;font-family:var(--font);font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px;color:#86868b;border-radius:9px}
+.dt-btn.on-r{background:#fff;color:#1d1d1f;box-shadow:0 1px 4px rgba(0,0,0,.1),0 0 0 .5px rgba(0,0,0,.05)}
+.dt-btn.on-s{background:#fff;color:#1d1d1f;box-shadow:0 1px 4px rgba(0,0,0,.1),0 0 0 .5px rgba(0,0,0,.05)}
+
+/* Price warn */
+.pw{background:var(--orangebg);border:1px solid #FCD34D;border-radius:10px;padding:10px 14px;font-size:12px;color:var(--orange);display:none;margin-bottom:14px}
+
+/* Dropzone */
+.dz{border:2px dashed var(--line);border-radius:14px;padding:28px 20px;text-align:center;cursor:pointer;background:var(--bg);transition:all .3s}
+.dz:hover,.dz.ov{border-color:var(--c);background:var(--cl)}
+.dzi{font-size:32px;margin-bottom:8px}
+.dzt{font-size:14px;font-weight:800;color:var(--ink);margin-bottom:3px}
+.dzs{font-size:12px;color:var(--ink3)}
+.dzl{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:8px;margin-top:14px}
+.dzth{position:relative;aspect-ratio:1;border-radius:10px;background-size:cover;background-position:center;border:1.5px solid var(--line);overflow:hidden;background-color:var(--bg)}
+.dzrm{position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,.7);color:#fff;border:none;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:var(--font);z-index:2}
+.dzrm:hover{background:var(--red)}
+
+/* Tier grid */
+.tg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.tc{border:2px solid var(--line);border-radius:14px;padding:16px;cursor:pointer;transition:all .2s;position:relative;text-align:center}
+.tc:hover{border-color:var(--ink3);transform:translateY(-1px);box-shadow:var(--shadow-sm)}
+.tc.on{border-color:var(--c);background:var(--cl);box-shadow:0 0 0 1px var(--c)}
+.tpop{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--green);color:#fff;font-size:9px;font-weight:800;padding:3px 10px;border-radius:10px;white-space:nowrap}
+.tn{font-size:13px;font-weight:800;color:var(--ink);margin-bottom:3px}
+.tp{font-size:24px;font-weight:900;color:var(--ink);letter-spacing:-1px}
+.td2{font-size:11px;color:var(--ink3);margin-top:2px}
+.tsv{font-size:11px;font-weight:700;color:var(--green)}
+
+/* Payment */
+.pyb{border:1.5px solid var(--line);border-radius:14px;padding:20px;margin-bottom:16px}
+.ci{height:26px;border-radius:6px;border:1.5px solid var(--line);padding:2px 9px;font-size:10px;font-weight:800;color:var(--ink2);display:flex;align-items:center}
+.ttlb{background:linear-gradient(135deg,#0A0A0F,#1a1a2e);color:#fff;border-radius:14px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+
+/* Success screen */
+.sc2{text-align:center;padding:20px 0}
+.sri{background:var(--bg);border-radius:14px;padding:16px;margin:20px 0}
+.sr2{display:flex;justify-content:space-between;padding:6px 0;font-size:13px;border-bottom:1px solid var(--line)}
+.sr2:last-child{border-bottom:none}
+.sk2{color:var(--ink3)}.sv2{font-weight:700;color:var(--ink)}
+
+/* Submit btn */
+.bsub{width:100%;padding:15px;border-radius:12px;border:none;background:#1d1d1f;color:#fff;font-family:var(--font);font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;letter-spacing:-.2px}
+.bsub:hover{background:#000;transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,0,0,.2)}
+.bbk{font-family:var(--font);font-size:12px;font-weight:700;color:var(--ink2);border:1.5px solid var(--line);border-radius:10px;background:none;padding:10px 18px;cursor:pointer;transition:all .15s}
+.bbk:hover{border-color:var(--ink);color:var(--ink)}
+
+/* Auth */
+.modal{background:var(--white);border-radius:20px;width:520px;max-width:100%;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-lg)}
+.mhd{padding:22px 24px 14px;display:flex;align-items:flex-start;justify-content:space-between;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--white);z-index:2}
+.mtl{font-size:20px;font-weight:900;color:var(--ink)}
+.mbd{padding:20px 24px 24px}
+.at{display:flex;margin-bottom:20px;background:var(--bg);border-radius:12px;padding:4px}
+.atb{flex:1;padding:9px;text-align:center;font-size:13px;font-weight:700;cursor:pointer;color:var(--ink3);background:none;border:none;font-family:var(--font);transition:all .15s;border-radius:9px}
+.atb.on{background:var(--white);color:var(--ink);box-shadow:var(--shadow-sm)}
+.ob{width:100%;height:44px;border-radius:12px;border:1.5px solid var(--line);background:var(--white);font-family:var(--font);font-size:13px;font-weight:700;color:var(--ink);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:all .15s;margin-bottom:9px}
+.ob:hover{border-color:var(--ink3);background:var(--bg)}
+.dv{display:flex;align-items:center;gap:10px;margin:16px 0;color:var(--ink3);font-size:12px;font-weight:600}
+.dv::before,.dv::after{content:'';flex:1;height:1px;background:var(--line)}
+.tfd{display:flex;gap:8px;justify-content:center;margin:16px 0}
+.tfd input{width:46px;height:56px;border-radius:10px;border:2px solid var(--line);font-family:var(--font);font-size:22px;font-weight:800;text-align:center;outline:none;transition:border .15s}
+.tfd input:focus{border-color:var(--c)}
+.rp{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:5px}
+.rc{border:2px solid var(--line);border-radius:14px;padding:16px;cursor:pointer;transition:all .2s;text-align:center}
+.rc:hover{border-color:var(--ink3)}.rc.on{border-color:var(--c);background:var(--cl)}
+.rc .ri{font-size:28px;margin-bottom:6px}
+.rc .rtt{font-size:12px;font-weight:800;color:var(--ink)}
+.rc .rs{font-size:10px;color:var(--ink3);margin-top:2px}
+
+/* Chat */
+.chm{background:var(--white);border-radius:20px;width:440px;max-width:100%;height:500px;display:flex;flex-direction:column;box-shadow:var(--shadow-lg);overflow:hidden}
+.chh{padding:14px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;flex-shrink:0}
+.chms{flex:1;overflow-y:auto;padding:12px 14px;display:flex;flex-direction:column;gap:9px}
+.msg{max-width:78%;display:flex;flex-direction:column;gap:2px}
+.msg.out{align-self:flex-end;align-items:flex-end}.msg.in{align-self:flex-start}
+.mb{padding:10px 14px;border-radius:16px;font-size:13px;line-height:1.5}
+.msg.out .mb{background:var(--bg);color:var(--ink);border-bottom-right-radius:3px;border:1px solid var(--line)}
+.msg.in .mb{background:var(--c);color:#fff;border-bottom-left-radius:3px;border:2px solid rgba(28,110,242,.6)}
+.mm{font-size:10px;color:var(--ink3)}
+.td3{display:flex;gap:3px;padding:9px 13px;background:var(--bg);border-radius:14px;border-bottom-left-radius:3px;border:1px solid var(--line);width:fit-content}
+.td3 span{width:5px;height:5px;border-radius:50%;background:var(--ink3);animation:tb 1.2s infinite}
+.td3 span:nth-child(2){animation-delay:.2s}.td3 span:nth-child(3){animation-delay:.4s}
+@keyframes tb{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-4px)}}
+.chiw{padding:10px 12px;border-top:1px solid var(--line);display:flex;gap:7px;flex-shrink:0}
+.chi{flex:1;height:40px;padding:0 14px;border:1.5px solid var(--line);border-radius:20px;font-family:var(--font);font-size:13px;color:var(--ink);outline:none;transition:border .15s}
+.chi:focus{border-color:var(--c)}
+.chs{width:40px;height:40px;border-radius:50%;background:var(--c);border:none;color:#fff;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
+/* Cabinet */
+.cabm{background:var(--white);border-radius:20px;width:640px;max-width:100%;max-height:88vh;overflow-y:auto;box-shadow:var(--shadow-lg)}
+.cabs{display:flex;border-bottom:1px solid var(--line);padding:0 22px}
+.cabt{padding:12px 16px;font-size:13px;font-weight:700;cursor:pointer;border-bottom:2px solid transparent;color:var(--ink3);background:none;border-top:none;border-left:none;border-right:none;font-family:var(--font);margin-bottom:-1px;transition:all .15s}
+.cabt.on{color:var(--c);border-bottom-color:var(--c)}
+.cabp{display:none;padding:20px 22px}.cabp.on{display:block}
+.sg{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}
+.sc3{background:var(--bg);border-radius:14px;padding:16px;text-align:center}
+.sv3{font-size:26px;font-weight:900;color:var(--ink);letter-spacing:-1px}
+.sl{font-size:11px;color:var(--ink3);margin-top:3px}
+.mt{width:100%;border-collapse:collapse;font-size:13px}
+.mt th{text-align:left;font-weight:600;color:var(--ink3);padding:6px 10px;border-bottom:1px solid var(--line);font-size:10px;text-transform:uppercase;letter-spacing:.5px}
+.mt td{padding:10px;border-bottom:1px solid var(--line);color:var(--ink2)}
+.mt tr:last-child td{border-bottom:none}
+.sd{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:4px}
+.sa{background:var(--green)}.sx{background:var(--ink3)}
+.mb2{padding:4px 10px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;border:1.5px solid var(--line);background:none;font-family:var(--font);color:var(--ink2);transition:all .15s}
+.mb2.dn{border-color:transparent;color:var(--red)}.mb2.dn:hover{background:#fdecea}
+.crb{background:var(--rentbg);border-radius:14px;padding:16px 18px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;border:1px solid rgba(28,110,242,.15)}
+.crv{font-size:28px;font-weight:900;color:var(--rent);letter-spacing:-1px;line-height:1}
+.vfb{background:var(--greenbg);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.cb2{display:flex;align-items:flex-end;gap:5px;height:72px}
+.brc{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
+.br{width:100%;border-radius:3px 3px 0 0;background:var(--cl);transition:height .35s}
+.br.hi{background:var(--c)}
+.bv{font-size:9px;font-weight:700;color:var(--ink3)}
+.bdy{font-size:9px;color:var(--ink3)}
+
+/* Promo */
+.prm{background:var(--white);border-radius:20px;width:400px;max-width:100%;box-shadow:var(--shadow-lg);overflow:hidden}
+.prh{background:linear-gradient(135deg,#F59E0B,#EF4444);padding:28px 24px 24px;text-align:center}
+.prh .phi{font-size:44px;margin-bottom:10px}
+.prh .pht{font-size:20px;font-weight:900;color:#fff;margin-bottom:3px}
+.prh .phs{font-size:13px;color:rgba(255,255,255,.88)}
+.prb{padding:20px 24px 24px}
+.pfi{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink2);margin-bottom:10px}
+.pfc{width:30px;height:30px;border-radius:9px;background:rgba(245,158,11,.1);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.ppb{background:var(--bg);border-radius:14px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;border:1.5px solid #FDE68A}
+.bpp{width:100%;padding:15px;border-radius:12px;border:none;background:linear-gradient(90deg,#F59E0B,#EF4444);color:#fff;font-family:var(--font);font-size:14px;font-weight:800;cursor:pointer;transition:opacity .15s}
+.bpp:hover{opacity:.9}
+
+/* Compare */
+.cmpb{position:fixed;bottom:0;left:0;right:0;z-index:400;background:var(--white);border-top:2px solid var(--c);box-shadow:0 -4px 22px rgba(0,0,0,.1);padding:12px 20px;display:none;align-items:center;gap:10px;flex-wrap:wrap}
+.cmpb.open{display:flex}
+.csl{width:150px;height:50px;border-radius:10px;border:2px dashed var(--line);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--ink3);font-weight:600;transition:all .15s;flex-shrink:0;position:relative;overflow:hidden}
+.csl.fl{border-style:solid;border-color:var(--c);background:var(--cl)}
+.csn{font-size:10px;font-weight:700;color:var(--c);text-align:center;padding:0 5px;line-height:1.3}
+.csrm{position:absolute;top:3px;right:3px;width:14px;height:14px;border-radius:50%;background:var(--sale);color:#fff;font-size:8px;font-weight:800;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none}
+.bcmp{padding:10px 22px;border-radius:10px;border:none;background:var(--c);color:#fff;font-family:var(--font);font-size:13px;font-weight:800;cursor:pointer;white-space:nowrap}
+.bcmp:disabled{background:var(--ink3);cursor:not-allowed}
+.cmpt{background:var(--white);border-radius:20px;width:680px;max-width:100%;max-height:85vh;overflow-y:auto;box-shadow:var(--shadow-lg)}
+.ct{width:100%;border-collapse:collapse}
+.ct th{background:var(--bg);padding:14px 16px;font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--line);text-align:center}
+.ct th:first-child{text-align:left;width:130px}
+.ct td{padding:12px 16px;border-bottom:1px solid var(--line);font-size:13px;color:var(--ink2);text-align:center;vertical-align:top}
+.ct td:first-child{font-weight:700;color:var(--ink3);text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.4px;background:var(--bg)}
+.bv2{color:var(--green);font-weight:800}.wv{color:var(--red)}
+
+/* Topup */
+.tc{border:2px solid var(--line);border-radius:14px;padding:16px;cursor:pointer;transition:all .2s;position:relative;text-align:center}
+.tc:hover{border-color:var(--ink3);transform:translateY(-1px);box-shadow:var(--shadow-sm)}
+.tc.on{border-color:var(--c);background:var(--cl);box-shadow:0 0 0 1px var(--c)}
+
+/* ════ TOPUP MODAL — Apple style ════ */
+.topup-sheet{
+  background:#fff;border-radius:24px;width:480px;max-width:calc(100vw - 32px);
+  box-shadow:0 32px 80px rgba(0,0,0,.18),0 0 0 1px rgba(0,0,0,.06);
+  overflow:hidden;
+}
+.topup-header{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  padding:28px 28px 0;
+}
+.topup-title{font-size:22px;font-weight:700;color:#1d1d1f;letter-spacing:-.4px}
+.topup-subtitle{font-size:13px;color:#86868b;margin-top:3px}
+.topup-subtitle span{color:var(--c);font-weight:600}
+.topup-close{
+  width:28px;height:28px;border-radius:50%;background:#f5f5f7;border:none;
+  color:#86868b;font-size:13px;cursor:pointer;display:flex;align-items:center;
+  justify-content:center;transition:background .15s;flex-shrink:0;margin-left:12px;
+}
+.topup-close:hover{background:#e8e8ed;color:#1d1d1f}
+
+.topup-plans{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:8px;
+  padding:20px 28px;
+}
+.tplan{
+  border:1.5px solid #e5e5ea;border-radius:16px;padding:14px 12px;
+  cursor:pointer;transition:all .2s;position:relative;text-align:center;
+  background:#fff;
+}
+.tplan:hover{border-color:#acacb4;transform:translateY(-1px)}
+.tplan-active{border-color:#1d1d1f!important;background:#1d1d1f!important}
+.tplan-active .tplan-name,.tplan-active .tplan-price,.tplan-active .tplan-desc{color:#fff!important}
+.tplan-active .tplan-save{color:rgba(255,255,255,.7)!important}
+.tplan-badge{
+  position:absolute;top:-10px;left:50%;transform:translateX(-50%);
+  background:var(--c);color:#fff;font-size:9px;font-weight:700;
+  padding:3px 10px;border-radius:20px;white-space:nowrap;letter-spacing:.3px;
+}
+.tplan-name{font-size:11px;font-weight:600;color:#86868b;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+.tplan-price{font-size:20px;font-weight:700;color:#1d1d1f;letter-spacing:-.5px;line-height:1}
+.tplan-desc{font-size:11px;color:#86868b;margin-top:4px}
+.tplan-save{font-size:10px;color:#86868b;margin-top:3px;font-weight:600}
+
+.topup-card-section{padding:0 28px 20px}
+.topup-card-label{
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:13px;font-weight:600;color:#1d1d1f;margin-bottom:12px;
+}
+.topup-card-icons{display:flex;gap:6px}
+.card-icon{
+  font-size:9px;font-weight:800;padding:3px 8px;border-radius:5px;
+  border:1px solid #e5e5ea;color:#86868b;letter-spacing:.3px;
+}
+.topup-inputs{display:flex;flex-direction:column;gap:10px}
+.topup-input-wrap{position:relative}
+.topup-input{
+  width:100%;height:48px;padding:0 44px 0 16px;border:1.5px solid #e5e5ea;
+  border-radius:12px;font-family:var(--font);font-size:15px;color:#1d1d1f;
+  outline:none;transition:border .2s,box-shadow .2s;background:#fff;
+  -webkit-appearance:none;
+}
+.topup-input:focus{border-color:#1d1d1f;box-shadow:0 0 0 3px rgba(29,29,31,.08)}
+.topup-input::placeholder{color:#acacb4}
+.topup-input-icon{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:16px}
+
+.topup-summary{
+  margin:0 28px 20px;padding:16px;background:#f5f5f7;border-radius:14px;
+  display:flex;flex-direction:column;gap:8px;
+}
+.topup-summary-row{
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:13px;color:#1d1d1f;
+}
+
+.topup-pay-btn{
+  display:block;width:calc(100% - 56px);margin:0 28px 28px;
+  height:52px;border:none;border-radius:14px;
+  background:#1d1d1f;color:#fff;
+  font-family:var(--font);font-size:15px;font-weight:600;
+  cursor:pointer;transition:all .2s;letter-spacing:-.2px;
+}
+.topup-pay-btn:hover{background:#000;transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,0,0,.2)}
+.topup-pay-btn:disabled{background:#acacb4;transform:none;box-shadow:none;cursor:not-allowed}
+
+/* Toast */
+.tst{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:12px 22px;border-radius:100px;font-size:13px;font-weight:600;z-index:1000;box-shadow:0 4px 20px rgba(0,0,0,.25);opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap}
+.tst.show{opacity:1}
+.wab{position:fixed;bottom:24px;right:24px;z-index:100;width:52px;height:52px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;font-size:23px;box-shadow:0 4px 16px rgba(37,211,102,.38);cursor:pointer;text-decoration:none;transition:transform .15s}
+.wab:hover{transform:scale(1.08)}
+.cf{position:fixed;bottom:84px;right:24px;z-index:100;width:52px;height:52px;border-radius:50%;background:var(--c);display:flex;align-items:center;justify-content:center;font-size:19px;box-shadow:0 4px 16px rgba(28,110,242,.38);cursor:pointer;border:none;color:#fff;transition:transform .15s}
+.cf:hover{transform:scale(1.08)}
+.cn{position:absolute;top:-3px;right:-3px;width:18px;height:18px;border-radius:50%;background:var(--sale);color:#fff;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center;border:2px solid var(--white)}
+
+
+
+
+
+
+
+
+
+
+/* ═══════════════════════════════════════════
+   MOBILE PREMIUM — карта сверху, список снизу
+   Активируется через JS class .mob на <html>
+═══════════════════════════════════════════ */
+
+/* Скрываем мобильный UI на десктопе */
+#M-bar, #M-list-wrap, #M-tabs, #M-fab { display:none }
+
+html.mob #M-bar,
+html.mob #M-list-wrap,
+html.mob #M-tabs,
+html.mob #M-fab { display:flex }
+
+html.mob #M-list-wrap { display:flex }
+
+/* ── Когда мобилка активна ── */
+html.mob nav        { display:none !important }
+html.mob .sb        { display:none !important }
+html.mob .wab,
+html.mob .cf        { display:none !important }
+html.mob body       { overflow:hidden; height:100dvh }
+
+html.mob .layout {
+  display:flex !important;
+  flex-direction:column !important;
+  padding-top:0 !important;
+  height:100dvh;
+  height:100vh;
+  overflow:hidden;
+}
+
+/* Карта — верхняя половина */
+html.mob .ma {
+  position:relative !important;
+  height:45vh !important;
+  width:100% !important;
+  flex-shrink:0 !important;
+  order:1;
+  min-height:0;
+}
+
+/* ─── TOP BAR поверх карты ─── */
+#M-bar {
+  position:absolute;
+  top:0; left:0; right:0;
+  z-index:50;
+  flex-direction:column;
+  gap:8px;
+  padding:12px 12px 0;
+  pointer-events:none;
+}
+#M-bar > * { pointer-events:all }
+
+.M-row { display:flex; gap:8px; align-items:center }
+
+/* Поиск */
+.M-search {
+  flex:1; display:flex; align-items:center; gap:8px;
+  height:46px; padding:0 14px;
+  background:rgba(255,255,255,.97);
+  border-radius:16px;
+  box-shadow:0 4px 20px rgba(0,0,0,.18);
+}
+.M-search input {
+  flex:1; border:none; background:none; outline:none;
+  font-family:var(--font); font-size:14px; color:var(--ink);
+}
+.M-search input::placeholder { color:var(--ink3) }
+
+/* Аватар / кнопка входа */
+.M-avatar {
+  width:46px; height:46px; border-radius:50%;
+  background:#fff;
+  box-shadow:0 4px 20px rgba(0,0,0,.18);
+  display:flex; align-items:center; justify-content:center;
+  font-size:11px; font-weight:800; color:var(--ink);
+  cursor:pointer; flex-shrink:0;
+  border:2px solid #fff;
+  -webkit-tap-highlight-color:transparent;
+}
+.M-avatar.auth { background:var(--c); color:#fff }
+
+/* Переключатель языка */
+.M-lang {
+  display:flex; gap:1px;
+  background:rgba(255,255,255,.97);
+  border-radius:14px; padding:4px;
+  box-shadow:0 4px 20px rgba(0,0,0,.18);
+  flex-shrink:0;
+}
+.M-lang .lb { padding:5px 8px; border-radius:10px; font-size:11px }
+.M-lang .lb.on { background:var(--c); color:#fff }
+
+/* Тип-пилюли */
+.M-pills {
+  display:flex; gap:7px;
+  overflow-x:auto; scrollbar-width:none;
+}
+.M-pills::-webkit-scrollbar { display:none }
+.M-pill {
+  flex-shrink:0; height:32px; padding:0 14px;
+  border-radius:20px; border:none;
+  font-family:var(--font); font-size:12px; font-weight:700;
+  cursor:pointer; white-space:nowrap;
+  background:rgba(255,255,255,.95);
+  color:var(--ink2);
+  box-shadow:0 2px 10px rgba(0,0,0,.12);
+  -webkit-tap-highlight-color:transparent;
+  transition:all .15s;
+}
+.M-pill.rent { background:var(--rentbg); color:var(--rent) }
+.M-pill.sale { background:var(--salebg); color:var(--sale) }
+.M-pill.all  { background:var(--c); color:#fff }
+
+/* MAP controls compact */
+html.mob .cj   { display:none }
+html.mob .mcnt { display:none }
+html.mob .mleg { display:none }
+html.mob .mcp  {
+  position:absolute;
+  right:10px; bottom:12px;
+  background:rgba(255,255,255,.96);
+  border-radius:14px;
+  box-shadow:0 4px 16px rgba(0,0,0,.13);
+  padding:3px;
+}
+html.mob .mcb  { width:36px;height:36px;font-size:14px;border-radius:10px;color:var(--ink) }
+html.mob .mcs  { background:var(--line) }
+
+/* ─── LIST WRAP — нижняя половина ─── */
+#M-list-wrap {
+  flex:1;
+  flex-direction:column;
+  background:#fff;
+  order:2;
+  overflow:hidden;
+  box-shadow:0 -4px 20px rgba(0,0,0,.08);
+  min-height:0;
+  max-height:calc(52vh - 64px);
+}
+
+/* Шапка списка */
+.M-list-head {
+  display:flex; align-items:center;
+  justify-content:space-between;
+  padding:12px 16px 10px;
+  border-bottom:1px solid var(--line);
+  flex-shrink:0;
+}
+.M-list-cnt  { font-size:13px; font-weight:700; color:var(--ink) }
+.M-list-sort {
+  display:flex; align-items:center; gap:5px;
+  font-size:12px; color:var(--ink3); cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+
+/* Карточки */
+#M-cards {
+  flex:1; overflow-y:scroll !important;
+  overflow-x:hidden;
+  padding:10px 12px 80px;
+  display:flex; flex-direction:column; gap:8px;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+  max-height:calc(52vh - 50px);
+}
+#M-cards::-webkit-scrollbar { display:none }
+
+/* Карточка */
+.Mc {
+  display:flex; border-radius:14px; overflow:hidden;
+  background:#fff; border:1px solid var(--line);
+  box-shadow:0 2px 10px rgba(0,0,0,.06);
+  cursor:pointer; flex-shrink:0;
+  -webkit-tap-highlight-color:transparent;
+  transition:transform .12s, box-shadow .12s;
+}
+.Mc:active { transform:scale(.98); box-shadow:0 1px 4px rgba(0,0,0,.08) }
+
+.Mc-stripe { width:4px; flex-shrink:0 }
+.Mc-stripe.r { background:var(--rent) }
+.Mc-stripe.s { background:var(--sale) }
+
+.Mc-img {
+  width:100px; min-width:100px;
+  position:relative; overflow:hidden; flex-shrink:0;
+}
+.Mc-bg {
+  position:absolute; inset:0;
+  background-size:cover; background-position:center;
+}
+.Mc-promo {
+  position:absolute; top:6px; left:6px;
+  background:linear-gradient(90deg,#F59E0B,#EF4444);
+  color:#fff; font-size:9px; font-weight:800;
+  padding:2px 6px; border-radius:5px; letter-spacing:.3px;
+}
+
+.Mc-body {
+  flex:1; padding:10px 11px;
+  display:flex; flex-direction:column; gap:4px; min-width:0;
+}
+.Mc-top {
+  display:flex; align-items:flex-start;
+  justify-content:space-between; gap:6px;
+}
+.Mc-badge {
+  font-size:9px; font-weight:700;
+  padding:2px 7px; border-radius:5px; display:inline-block;
+}
+.Mc-badge.r { background:var(--rentbg); color:var(--rent) }
+.Mc-badge.s { background:var(--salebg); color:var(--sale) }
+.Mc-price {
+  font-size:16px; font-weight:900; color:var(--ink);
+  letter-spacing:-.4px; margin-top:2px; line-height:1;
+}
+.Mc-fav {
+  width:28px; height:28px; border-radius:8px;
+  border:1px solid var(--line); background:#fff;
+  font-size:14px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; -webkit-tap-highlight-color:transparent;
+}
+.Mc-specs {
+  font-size:11px; color:var(--ink2);
+  display:flex; gap:7px; flex-wrap:wrap;
+}
+.Mc-addr {
+  font-size:10px; color:var(--ink3);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.Mc-foot {
+  display:flex; align-items:center;
+  justify-content:space-between; margin-top:2px;
+}
+.Mc-agent { font-size:10px; color:var(--ink3) }
+.Mc-views { font-size:10px; color:var(--ink3) }
+
+/* Empty */
+.M-empty {
+  text-align:center; padding:40px 20px;
+  display:flex; flex-direction:column; align-items:center; gap:10px;
+}
+.M-empty-ico  { font-size:40px }
+.M-empty-title { font-size:15px; font-weight:700; color:var(--ink) }
+.M-empty-sub  { font-size:12px; color:var(--ink3) }
+
+/* ─── TAB BAR ─── */
+#M-tabs {
+  position:fixed; bottom:0; left:0; right:0;
+  height:64px;
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  background:rgba(255,255,255,.98);
+  backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+  border-top:1px solid rgba(0,0,0,.08);
+  align-items:stretch;
+  z-index:200;
+}
+.M-tab {
+  flex:1; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:2px;
+  border:none; background:none; font-family:var(--font);
+  color:var(--ink3); cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+  transition:color .12s; position:relative;
+}
+.M-tab.on { color:var(--c) }
+.M-tab-ico { font-size:22px; line-height:1 }
+.M-tab-lbl { font-size:10px; font-weight:600 }
+.M-tab-badge {
+  position:absolute; top:4px; right:calc(50% - 15px);
+  min-width:16px; height:16px; border-radius:8px;
+  background:var(--sale); color:#fff;
+  font-size:9px; font-weight:800;
+  display:none; align-items:center; justify-content:center;
+  border:2px solid #fff; padding:0 3px;
+}
+
+/* ─── FAB ─── */
+#M-fab {
+  position:fixed; right:14px; bottom:76px; z-index:200;
+  width:52px; height:52px; border-radius:50%;
+  background:var(--c); color:#fff; border:none;
+  font-size:22px; cursor:pointer; flex-shrink:0;
+  box-shadow:0 4px 20px rgba(28,110,242,.42);
+  align-items:center; justify-content:center;
+  -webkit-tap-highlight-color:transparent;
+  transition:transform .12s;
+}
+#M-fab:active { transform:scale(.92) }
+
+/* ─── DETAIL (bottom sheet) ─── */
+html.mob .dp.open { display:block }
+html.mob .dc { direction:ltr !important;
+  width:100% !important; left:0 !important; right:0 !important;
+  top:auto !important; bottom:64px !important;
+  height:88dvh !important;
+  border-radius:22px 22px 0 0;
+  border-left:none !important;
+  animation:MobUp .28s cubic-bezier(.32,.72,0,1);
+}
+@keyframes MobUp {
+  from { transform:translateY(60px); opacity:0 }
+  to   { transform:none; opacity:1 }
+}
+html.mob .dby { padding:14px 14px 100px }
+
+/* ─── MODALS ─── */
+html.mob .ovl { padding:0 !important; align-items:flex-end !important }
+html.mob .modal, html.mob .pmod,
+html.mob .cabm, html.mob .prm,
+html.mob .topup-sheet {
+  width:100% !important; max-width:100% !important;
+  border-radius:22px 22px 0 0 !important;
+  max-height:92dvh !important;
+}
+
+/* Toast */
+html.mob .tst { bottom:76px }
+
+/* Fav tab active */
+html.mob #M-list-wrap { display:flex }
+
+</style>
+</head>
+<body>
+<nav>
+  <a href="#" class="logo">Nesay<em>.</em>il</a>
+  <div class="cats">
+    <button class="ctab rt on" onclick="selCat(this,'all')"><span class="ctab-ico">🏠</span>Все</button>
+    <button class="ctab rt" onclick="selCat(this,'rent')"><span class="ctab-ico">🔵</span>Аренда</button>
+    <button class="ctab st" onclick="selCat(this,'sale')"><span class="ctab-ico">🟠</span>Продажа</button>
+    <div class="sep"></div>
+    <button class="ctab rt" onclick="selCat(this,'rent-apt')"><span class="ctab-ico">🏢</span>Аренда квартир</button>
+    <button class="ctab rt" onclick="selCat(this,'rent-villa')"><span class="ctab-ico">🏡</span>Аренда домов</button>
+    <button class="ctab st" onclick="selCat(this,'buy-apt')"><span class="ctab-ico">🔑</span>Покупка квартир</button>
+    <button class="ctab st" onclick="selCat(this,'buy-villa')"><span class="ctab-ico">🌿</span>Покупка домов</button>
+  </div>
+  <div class="nav-right">
+    <div class="lsw">
+      <button class="lb" onclick="setLang('he')">עב</button>
+      <button class="lb on" onclick="setLang('ru')">РУ</button>
+      <button class="lb" onclick="setLang('en')">EN</button>
+    </div>
+    <div id="navGuest" style="display:flex;gap:8px">
+      <button class="bn bg" onclick="openAuth('login')">Войти</button>
+      <button class="bn bm" onclick="reqAuth()">+ Разместить</button>
+    </div>
+    <div id="navUser" style="display:none;align-items:center;gap:8px">
+      <span class="cp" id="navCr" onclick="refreshCredits()" style="cursor:pointer" title="Нажми чтобы обновить">₪0 баланс</span>
+      <button class="bn" style="background:linear-gradient(90deg,#F59E0B,#EF4444);color:#fff;font-size:12px;padding:7px 12px;box-shadow:0 2px 8px rgba(245,158,11,.35)" onclick="openCab();setTimeout(()=>swCab('list'),150)" title="Продвинуть объявление">⚡ Продвижение</button>
+      <div class="ub" onclick="openCab()">
+        <div class="ua" id="navAv">АК</div>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--ink)" id="navNm">Анна К.</div>
+          <div style="font-size:10px;color:var(--ink3)" id="navRl">Агент</div>
+        </div>
+      </div>
+      <button class="bn bm" onclick="openPub()">+ Разместить</button>
+    </div>
+  </div>
+</nav>
+
+<div class="layout">
+  <div class="ma">
+    <div id="map3d"></div>
+    <div class="cj">
+      <button onclick="flyTo(32.7940,34.9896,13,'Хайфа')">⚓ Хайфа</button>
+      <button onclick="flyTo(32.8467,35.0683,14,'К.-Ям')">🏖 К.-Ям</button>
+      <button onclick="flyTo(32.0853,34.7818,14,'ТА')">🌆 ТА</button>
+      <button onclick="flyTo(31.9896,34.7993,14,'Ришон')">🌇 Ришон</button>
+      <button onclick="flyTo(32.0867,34.8786,14,'Раанана')">🏘 Раанана</button>
+    </div>
+    <div class="mcnt"><strong id="mapCnt">0</strong><span>объектов</span></div>
+    <div class="mcp">
+      <button class="mcb" onclick="setView('2d')" title="2D">🗺</button>
+      <button class="mcb" onclick="setView('3d')" title="3D">🏗</button>
+      <div class="mcs"></div>
+      <button class="mcb" style="font-size:22px;font-weight:900" onclick="map&&map.zoomIn()">+</button>
+      <button class="mcb" style="font-size:22px;font-weight:900" onclick="map&&map.zoomOut()">−</button>
+      <div class="mcs"></div>
+      <button class="mcb" id="satBtn" onclick="toggleSat()">🛰</button>
+    </div>
+    <div class="mleg">
+      <div class="mlr"><div class="mld r"></div>🔵 Аренда</div>
+      <div class="mlr"><div class="mld s"></div>🟠 Продажа</div>
+    </div>
+    <div id="mapPop" class="mpop" style="display:none"></div>
+  </div>
+
+  <div class="sb">
+    <div class="sb-head">
+      <!-- Search -->
+      <div class="search-bar">
+        <span class="si">🔍</span>
+        <input type="text" id="searchInput" placeholder="Город, район, улица..." oninput="applyFilter()">
+      </div>
+      <!-- Type toggle -->
+      <div class="type-toggle">
+        <button class="tt-btn on-rent" id="ttAll" onclick="ttSwitch('all',this)">🏠 Все</button>
+        <button class="tt-btn" id="ttRent" onclick="ttSwitch('rent',this)">🔵 Аренда</button>
+        <button class="tt-btn" id="ttSale" onclick="ttSwitch('sale',this)">🟠 Продажа</button>
+      </div>
+      <!-- Filter pills -->
+      <div class="filters-scroll" id="filterPills">
+        <button class="fpill" data-filter="rooms12" onclick="toggleFPill(this)">1–2 комн.</button>
+        <button class="fpill" data-filter="rooms34" onclick="toggleFPill(this)">3–4 комн.</button>
+        <button class="fpill" data-filter="safeRoom" onclick="toggleFPill(this)">Безоп. комн.</button>
+        <button class="fpill" data-filter="parking" onclick="toggleFPill(this)">Парковка</button>
+        <button class="fpill" data-filter="balcony" onclick="toggleFPill(this)">Балкон</button>
+        <button class="fpill" data-filter="garden" onclick="toggleFPill(this)">Сад</button>
+        <button class="fpill" data-filter="sea" onclick="toggleFPill(this)">Море 🌊</button>
+        <button class="fpill" data-filter="new" onclick="toggleFPill(this)">Новые</button>
+      </div>
+    </div>
+    <div class="sort-row">
+      <div class="cnt">Найдено <b id="cntNum">0</b> объектов</div>
+      <div class="sdd">
+        <button class="sbt" onclick="document.getElementById('smn').classList.toggle('open')">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 6h18M6 12h12M10 18h4"/></svg>
+          <span id="sortLbl">Релевантность</span>▾
+        </button>
+        <div class="smn" id="smn">
+          <div class="smi on" data-v="rel" onclick="pickSort(this)">🎯 Релевантность</div>
+          <div class="smi" data-v="price-asc" onclick="pickSort(this)">💰 Цена ↑</div>
+          <div class="smi" data-v="price-desc" onclick="pickSort(this)">💰 Цена ↓</div>
+          <div class="smi" data-v="new" onclick="pickSort(this)">🆕 Сначала новые</div>
+        </div>
+      </div>
+    </div>
+    <div class="cl2" id="cardsList"></div>
+  </div>
+</div>
+
+<!-- DETAIL -->
+<div class="dp" id="detailPop">
+  <div class="dc">
+    <div class="dth r" id="dTypHdr">🔵 Аренда</div>
+    <div class="dtm">
+      <div class="dtmbg" id="dThBg"></div>
+      <div class="dtme" id="dThEm">🏢</div>
+      <button class="dcl" onclick="closeDetail()">✕</button>
+    </div>
+    <div class="dby">
+      <div class="dpr" id="dPrc"></div>
+      <div class="dad" id="dAdr"></div>
+      <div class="dsp" id="dSpc"></div>
+      <div class="dtg" id="dTgs"></div>
+      <div class="hb" id="dHon"></div>
+      <div class="dde" id="dDsc"></div>
+      <div class="dag" id="dAgt"></div>
+      <div id="dRtg" style="display:flex;align-items:center;gap:5px;margin-top:5px"></div>
+      <div class="dac">
+        <button class="bwa" onclick="showToast('WhatsApp...')" id="detWa">💬 WhatsApp</button>
+        <button class="bca" onclick="showToast('📞 054-1234567')" id="detCall">📞 Позвонить</button>
+      </div>
+      <button class="bco" onclick="openChat()" id="detChat">💬 Написать в чат</button>
+    </div>
+  </div>
+</div>
+
+<!-- AUTH -->
+<div class="ovl" id="authOvl" onclick="if(event.target===this)closeAuth()">
+<div class="modal" onclick="event.stopPropagation()" style="direction:ltr">
+  <div class="mhd"><div class="mtl" id="authTtl">Вход в Nesay.il</div><button class="mx" onclick="closeAuth()">✕</button></div>
+  <div class="mbd">
+    <div id="authS1">
+      <div class="at">
+        <button class="atb on" onclick="switchTab('login')" id="tabLg">Войти</button>
+        <button class="atb" onclick="switchTab('register')" id="tabRg">Регистрация</button>
+      </div>
+      <div id="roleWrap" style="display:none">
+        <div class="rp" style="grid-template-columns:1fr 1fr 1fr">
+          <div class="rc on" onclick="pickRole(this,'buyer')"><div class="ri">🔍</div><div class="rtt">Клиент</div><div class="rs">Аренда или покупка для себя</div></div>
+          <div class="rc" onclick="pickRole(this,'agent')"><div class="ri">🏢</div><div class="rtt">Риелтор / Агентство</div><div class="rs">Сдать или продать за комиссию</div></div>
+          <div class="rc" onclick="pickRole(this,'owner')"><div class="ri">🏠</div><div class="rtt">Собственник</div><div class="rs">Сдаю или продаю без %</div></div>
+        </div>
+        <div style="margin-bottom:14px"></div>
+      </div>
+      <div class="fgrp">
+        <input class="finput" type="email" id="authEmail" placeholder=" ">
+        <label class="flabel">Email <span class="rq">*</span></label>
+      </div>
+      <div class="fgrp">
+        <input class="finput" type="password" id="authPass" placeholder=" ">
+        <label class="flabel">Пароль <span class="rq">*</span></label>
+      </div>
+      <div class="fgrp" id="nameWrap" style="display:none">
+        <input class="finput" type="text" id="authName" placeholder=" ">
+        <label class="flabel">Имя <span class="rq">*</span></label>
+      </div>
+      <button class="bsub" id="authBtn" onclick="doAuth()">Войти</button>
+      <div class="dv">или</div>
+      <button class="ob" onclick="doOAuth()"><svg width="16" height="16" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.703-1.567 2.684-3.875 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 009 18z"/><path fill="#FBBC05" d="M3.964 10.707A5.41 5.41 0 013.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 000 9c0 1.452.348 2.827.957 4.039l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 00.957 4.961L3.964 6.293C4.672 4.166 6.656 3.58 9 3.58z"/></svg> Войти через Google</button>
+    </div>
+    <div id="authS2" style="display:none">
+      <div style="text-align:center;padding:10px 0">
+        <div style="font-size:44px;margin-bottom:12px">🔐</div>
+        <div style="font-size:16px;font-weight:900;color:var(--ink);margin-bottom:6px">2FA — Подтверждение</div>
+        <div style="font-size:13px;color:var(--ink2);margin-bottom:16px">Введите 6-значный код из Google Authenticator</div>
+        <div class="tfd" id="tfd">
+          <input maxlength="1" oninput="tfin(this,0)" onkeydown="tfkey(event,0)">
+          <input maxlength="1" oninput="tfin(this,1)" onkeydown="tfkey(event,1)">
+          <input maxlength="1" oninput="tfin(this,2)" onkeydown="tfkey(event,2)">
+          <input maxlength="1" oninput="tfin(this,3)" onkeydown="tfkey(event,3)">
+          <input maxlength="1" oninput="tfin(this,4)" onkeydown="tfkey(event,4)">
+          <input maxlength="1" oninput="tfin(this,5)" onkeydown="tfkey(event,5)">
+        </div>
+        <button class="bsub" onclick="verify2FA()">Подтвердить</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- PUBLISH MODAL -->
+<div class="ovl" id="pubOvl" onclick="if(event.target===this)closePub()">
+<div class="pmod" onclick="event.stopPropagation()" style="direction:ltr">
+  <div class="phd"><div class="ptt" id="pubTtl">Новое объявление</div><button class="mx" onclick="closePub()">✕</button></div>
+  <div class="pbd">
+    <!-- Stepper -->
+    <div class="pstp">
+      <div class="psteps">
+        <div class="pstep on" id="pn1"><div class="pstep-num">1</div><div class="pstep-lbl">Объект</div></div>
+        <div class="pstep" id="pn2"><div class="pstep-num">2</div><div class="pstep-lbl">Фото</div></div>
+        <div class="pstep" id="pn3"><div class="pstep-num">3</div><div class="pstep-lbl">Тариф</div></div>
+        <div class="pstep" id="pn4"><div class="pstep-num">4</div><div class="pstep-lbl">Оплата</div></div>
+      </div>
+    </div>
+
+    <!-- STEP 1 -->
+    <div id="pst1">
+      <!-- Deal type toggle -->
+      <div class="deal-toggle">
+        <button class="dt-btn on-r" id="dtRent" onclick="setDealType('rent')">🔵 Аренда</button>
+        <button class="dt-btn" id="dtSale" onclick="setDealType('sale')">🟠 Продажа</button>
+      </div>
+      <input type="hidden" id="pubDeal" value="rent">
+
+      <div class="fgrp-row" style="margin-bottom:16px">
+        <div class="fgrp">
+          <select class="fselect" id="pubObjType">
+            <option>Квартира</option><option>Дом / Вилла</option><option>Пентхаус</option><option>Студия</option><option>Коммерческая</option>
+          </select>
+          <label class="flabel">Тип объекта</label>
+          <span class="fselect-arrow">▾</span>
+        </div>
+        <div class="fgrp">
+          <select class="fselect" id="pubRooms">
+            <option>1</option><option>1.5</option><option>2</option><option>2.5</option><option>3</option><option>3.5</option><option>4</option><option>4.5</option><option>5+</option>
+          </select>
+          <label class="flabel">Комнат</label>
+          <span class="fselect-arrow">▾</span>
+        </div>
+      </div>
+
+      <!-- Город -->
+      <div class="fgrp" style="margin-bottom:16px">
+        <select class="fselect" id="pubCity" onchange="onCityChange()">
+          <option value="">— Выберите город —</option>
+          <option value="Tel Aviv|32.0853|34.7818">Тель-Авив</option>
+          <option value="Jerusalem|31.7683|35.2137">Иерусалим</option>
+          <option value="Haifa|32.7940|34.9896">Хайфа</option>
+          <option value="Rishon LeZion|31.9730|34.7925">Ришон-ле-Цион</option>
+          <option value="Netanya|32.3215|34.8532">Нетания</option>
+          <option value="Ashdod|31.8044|34.6553">Ашдод</option>
+          <option value="Herzliya|32.1663|34.8434">Герцлия</option>
+          <option value="Raanana|32.1847|34.8708">Раанана</option>
+          <option value="Petah Tikva|32.0878|34.8878">Петах-Тиква</option>
+          <option value="Ramat Gan|32.0823|34.8141">Рамат-Ган</option>
+          <option value="Holon|32.0117|34.7722">Холон</option>
+          <option value="Bat Yam|32.0167|34.7500">Бат-Ям</option>
+          <option value="Kiryat Yam|32.8467|35.0683">Кирьят-Ям</option>
+          <option value="Rehovot|31.8947|34.8089">Реховот</option>
+          <option value="Eilat|29.5577|34.9519">Эйлат</option>
+          <option value="Beersheba|31.2518|34.7913">Беэр-Шева</option>
+          <option value="Ashkelon|31.6688|34.5743">Ашкелон</option>
+          <option value="Bnei Brak|32.0833|34.8333">Бней-Брак</option>
+          <option value="Kfar Saba|32.1750|34.9070">Кфар-Саба</option>
+          <option value="Nazareth|32.7021|35.2978">Назарет</option>
+        </select>
+        <label class="flabel">Город <span class="rq">*</span></label>
+        <span class="fselect-arrow">▾</span>
+      </div>
+
+      <!-- Улица + номер дома -->
+      <div class="fgrp-row" style="margin-bottom:16px">
+        <div class="fgrp aw" style="flex:2">
+          <input class="finput" id="addrInp" type="text" placeholder=" " autocomplete="off"
+            disabled style="opacity:.5"
+            oninput="addrSearch(this.value)"
+            onfocus="if(this.value.length>1)document.getElementById('addrSugg').classList.remove('hid')">
+          <label class="flabel">Улица <span class="rq">*</span></label>
+          <div class="asg hid" id="addrSugg"></div>
+        </div>
+        <div class="fgrp" style="flex:1">
+          <input class="finput" id="addrHouse" type="text" placeholder=" " disabled style="opacity:.5">
+          <label class="flabel">Дом №</label>
+        </div>
+      </div>
+      <input type="hidden" id="addrLat">
+      <input type="hidden" id="addrLng">
+      <input type="hidden" id="addrCityName">
+
+      <div class="fgrp-row" style="margin-bottom:16px">
+        <div class="fgrp">
+          <input class="finput" type="number" id="pubPrice" placeholder=" " oninput="chkPrice(this.value)">
+          <label class="flabel">Цена (₪) <span class="rq">*</span></label>
+        </div>
+        <div class="fgrp">
+          <input class="finput" type="number" id="pubSqm" placeholder=" ">
+          <label class="flabel">Площадь (м²)</label>
+        </div>
+      </div>
+
+      <div class="fgrp-row" style="margin-bottom:16px">
+        <div class="fgrp">
+          <input class="finput" type="text" id="pubFloor" placeholder=" ">
+          <label class="flabel">Этаж</label>
+        </div>
+        <div class="fgrp">
+          <select class="fselect" id="pubReno">
+            <option value="">— Ремонт —</option><option>Новый</option><option>Свежий ремонт</option><option>Косметический</option><option>Требует ремонта</option>
+          </select>
+          <label class="flabel">Ремонт</label>
+          <span class="fselect-arrow">▾</span>
+        </div>
+      </div>
+
+      <div class="pw" id="priceWarn">⚠️ Цена ниже рыночной — потребуется модерация.</div>
+
+      <div class="fgrp" style="margin-bottom:8px">
+        <textarea class="ftextarea" id="pubDesc" placeholder="Расскажите об объекте — это увеличивает число откликов..."></textarea>
+      </div>
+      <button onclick="genAI()" style="margin-bottom:16px;font-family:var(--font);font-size:12px;font-weight:700;color:var(--c);background:var(--cl);border:1px solid rgba(28,110,242,.2);padding:7px 14px;border-radius:8px;cursor:pointer">✨ AI описание</button>
+
+      <div style="display:flex;justify-content:flex-end">
+        <button class="bsub" style="width:auto;padding:13px 28px" onclick="goStep(2)">Далее: Фото →</button>
+      </div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div id="pst2" style="display:none">
+      <div style="margin-bottom:16px">
+        <div style="font-size:15px;font-weight:800;color:var(--ink);margin-bottom:4px">Загрузите фото объекта</div>
+        <div style="font-size:13px;color:var(--ink3)">Хорошие фото увеличивают отклики в 3–5 раз</div>
+      </div>
+      <div class="dz" id="dropzone" ondragover="event.preventDefault();this.classList.add('ov')" ondragleave="this.classList.remove('ov')" ondrop="dzDrop(event)">
+        <div class="dzi">📸</div>
+        <div class="dzt">Перетащите фото или нажмите для выбора</div>
+        <div class="dzs">До 15 файлов · JPG/PNG · макс. 10 МБ</div>
+        <input type="file" id="dzInp" multiple accept="image/jpeg,image/png,image/webp" style="display:none" onchange="dzAdd(this.files)">
+        <button type="button" onclick="document.getElementById('dzInp').click()" style="margin-top:12px;font-family:var(--font);font-size:13px;font-weight:700;color:var(--c);background:var(--cl);border:1.5px solid rgba(28,110,242,.25);padding:9px 20px;border-radius:10px;cursor:pointer">Выбрать файлы</button>
+      </div>
+      <div class="dzl" id="dzList"></div>
+      <div id="dzCnt" style="font-size:12px;color:var(--ink3);margin-top:8px;text-align:center"></div>
+      <div style="display:flex;justify-content:space-between;margin-top:18px">
+        <button class="bbk" onclick="goStep(1)">← Назад</button>
+        <button class="bsub" style="width:auto;padding:13px 28px" onclick="goStep(3)">Далее: Тариф →</button>
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div id="pst3" style="display:none">
+      <div style="background:var(--greenbg);border-radius:14px;padding:14px 16px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;border:1px solid rgba(26,125,78,.15)">
+        <div><div style="font-size:13px;color:var(--green);font-weight:700">💎 Баланс: <b id="crBal">₪0</b></div><div style="font-size:12px;color:var(--ink2);margin-top:2px">₪100 = 1 объявление на 30 дней</div></div>
+        <button style="padding:8px 16px;border-radius:10px;border:none;background:var(--green);color:#fff;font-family:var(--font);font-size:12px;font-weight:800;cursor:pointer" onclick="showToast('...')">Купить ещё</button>
+      </div>
+      <div class="tg">
+        <div class="tc" onclick="selTier(this,100,1)"><div class="tn">Старт</div><div class="tp">₪100</div><div class="td2">1 объявление</div><div class="tsv">₪100/шт</div></div>
+        <div class="tc on" onclick="selTier(this,950,10)"><div class="tpop">Популярный</div><div class="tn">Базовый</div><div class="tp">₪950</div><div class="td2">10 объявлений</div><div class="tsv">₪95/шт · −5%</div></div>
+        <div class="tc" onclick="selTier(this,1700,20)"><div class="tn">Профи</div><div class="tp">₪1,700</div><div class="td2">20 объявлений</div><div class="tsv">₪85/шт · −15%</div></div>
+        <div class="tc" onclick="selTier(this,4000,50)"><div class="tn">Агентство</div><div class="tp">₪4,000</div><div class="td2">50 объявлений</div><div class="tsv">₪80/шт · −20%</div></div>
+      </div>
+      <button class="bsub" style="background:var(--green);margin-bottom:12px;box-shadow:0 4px 14px rgba(26,125,78,.3)" onclick="useCredit()">✅ Использовать кредит из баланса</button>
+      <div style="display:flex;justify-content:space-between">
+        <button class="bbk" onclick="goStep(2)">← Назад</button>
+        <button class="bsub" style="width:auto;padding:13px 28px" onclick="goStep(4)">Далее: Оплата →</button>
+      </div>
+    </div>
+
+    <!-- STEP 4 -->
+    <div id="pst4" style="display:none">
+      <div class="pyb">
+        <div style="font-size:14px;font-weight:700;margin-bottom:12px;color:var(--ink)">💳 Банковская карта</div>
+        <div style="display:flex;gap:6px;margin-bottom:16px"><div class="ci">VISA</div><div class="ci">MC</div><div class="ci" style="font-size:9px">AMEX</div><div class="ci" style="font-size:9px">ISRACARD</div></div>
+        <div class="fgrp">
+          <input class="finput" type="text" id="ccNum" placeholder=" " maxlength="19" oninput="var v=this.value.replace(/\D/g,'').slice(0,16);this.value=v.replace(/(.{4})/g,'$1 ').trim()">
+          <label class="flabel">Номер карты</label>
+        </div>
+        <div class="fgrp-row" style="margin-bottom:16px">
+          <div class="fgrp">
+            <input class="finput" type="text" placeholder=" " maxlength="5">
+            <label class="flabel">Срок действия</label>
+          </div>
+          <div class="fgrp">
+            <input class="finput" type="text" placeholder=" " maxlength="4">
+            <label class="flabel">CVV</label>
+          </div>
+        </div>
+        <div class="fgrp">
+          <input class="finput" type="text" placeholder=" ">
+          <label class="flabel">Имя на карте</label>
+        </div>
+      </div>
+      <div class="ttlb">
+        <div><div style="font-size:12px;color:rgba(255,255,255,.6)">К оплате</div><div style="font-size:12px;color:rgba(255,255,255,.4);margin-top:2px" id="pubPln">Базовый · 10 объявлений</div></div>
+        <div style="font-size:26px;font-weight:900" id="totPrc">₪950</div>
+      </div>
+      <div style="font-size:12px;color:var(--ink3);margin-bottom:16px;text-align:center">🔒 Защищённая оплата через Tranzila · данные карты не хранятся</div>
+      <button class="bsub" id="payBtn" onclick="submitPay()">Оплатить ₪950</button>
+      <div style="margin-top:10px"><button class="bbk" onclick="goStep(3)">← Назад</button></div>
+    </div>
+
+    <!-- SUCCESS -->
+    <div id="pstSuc" style="display:none">
+      <div class="sc2">
+        <div style="font-size:64px;margin-bottom:16px">✅</div>
+        <h3 style="font-size:22px;font-weight:900;margin-bottom:8px;color:var(--ink)">Объявление опубликовано!</h3>
+        <p style="font-size:14px;color:var(--ink2);line-height:1.6">Объект уже отображается на карте и в ленте поиска.</p>
+        <div class="sri">
+          <div class="sr2"><span class="sk2">Номер</span><span class="sv2" id="newId">#IL-00000</span></div>
+          <div class="sr2"><span class="sk2">Адрес</span><span class="sv2" id="newAdr">—</span></div>
+          <div class="sr2"><span class="sk2">Активно до</span><span class="sv2" id="newExp">—</span></div>
+          <div class="sr2"><span class="sk2">Кредитов осталось</span><span class="sv2" id="crLeft">6</span></div>
+        </div>
+        <button class="bsub" onclick="closePub()">Закрыть и посмотреть на карте</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- CHAT -->
+<div class="ovl" id="chatOvl" onclick="if(event.target===this)closeChat()">
+<div class="chm" onclick="event.stopPropagation()">
+  <div class="chh">
+    <div class="ua" style="width:36px;height:36px;font-size:13px" id="chatAv">РЦ</div>
+    <div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:800;color:var(--ink)" id="chatAgNm">Roni Tzadok</div><div style="font-size:11px;color:var(--ink3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap" id="chatLst">Ибн Гвироль 78</div></div>
+    <div style="width:8px;height:8px;border-radius:50%;background:var(--green)"></div>
+    <button class="mx" onclick="closeChat()">✕</button>
+  </div>
+  <div class="chms" id="chatMsgs">
+    <div class="msg in"><div class="mb">Здравствуйте! Интересует квартира.</div><div class="mm">14:32</div></div>
+    <div class="msg out"><div class="mb">Добрый день! Когда удобно посмотреть?</div><div class="mm">14:35 ✓✓</div></div>
+    <div class="msg in"><div class="mb">Завтра около 18:00?</div><div class="mm">14:36</div></div>
+    <div class="msg out"><div class="mb">Отлично, записал! 🏠</div><div class="mm">14:37 ✓✓</div></div>
+    <div id="typInd" style="display:none"><div class="td3"><span></span><span></span><span></span></div></div>
+  </div>
+  <div class="chiw">
+    <input class="chi" type="text" id="chatInp" placeholder="Написать..." onkeydown="if(event.key==='Enter')sendMsg()">
+    <button class="chs" onclick="sendMsg()">➤</button>
+  </div>
+</div>
+</div>
+
+<!-- CABINET -->
+<div class="ovl" id="cabOvl" onclick="if(event.target===this)closeCab()">
+<div class="cabm" onclick="event.stopPropagation()" style="direction:ltr">
+  <div class="mhd" style="flex-direction:column;align-items:stretch">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="ua" style="width:46px;height:46px;font-size:18px" id="cabAv">МК</div>
+        <div><div style="font-size:16px;font-weight:900;color:var(--ink)" id="cabNm">Пользователь</div><div style="font-size:12px;color:var(--ink3)" id="cabEmail">—</div></div>
+      </div>
+      <button class="mx" onclick="closeCab()">✕</button>
+    </div>
+    <div class="cabs">
+      <button class="cabt on" onclick="swCab('dash')" data-i18n="cab.dash">Дашборд</button>
+      <button class="cabt" onclick="swCab('list')" data-i18n="cab.listings">Объявления</button>
+      <button class="cabt" onclick="swCab('bill')" data-i18n="cab.billing">Подписка</button>
+      <button class="cabt" onclick="swCab('prof')" data-i18n="cab.profile">Профиль</button>
+    </div>
+  </div>
+  <div class="cabp on" id="cab-dash">
+    <div class="sg">
+      <div class="sc3"><div class="sv3">23</div><div class="sl">Просмотров сегодня</div><div style="font-size:11px;color:var(--green);font-weight:700;margin-top:4px">↑ 18%</div></div>
+      <div class="sc3"><div class="sv3">5</div><div class="sl">Новых сообщений</div></div>
+      <div class="sc3"><div class="sv3">4.8</div><div class="sl">Рейтинг</div></div>
+    </div>
+    <div style="margin-bottom:18px"><div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:10px">Просмотры за неделю</div><div class="cb2" id="wkChart"></div></div>
+    <div class="vfb"><div style="font-size:28px">✅</div><div><div style="font-size:13px;font-weight:800;color:var(--green)">Верифицированный агент</div><div style="font-size:12px;color:var(--ink2)">Документы проверены</div></div></div>
+  </div>
+  <div class="cabp" id="cab-list">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><div style="font-size:14px;font-weight:800">Мои объявления</div><button class="bm bn" style="font-size:12px;padding:7px 14px" onclick="closeCab();openPub()">+</button></div>
+    <table class="mt"><thead><tr><th>Объект</th><th>Статус</th><th>Просм.</th><th>Действия</th></tr></thead><tbody id="cabListTbl">
+    </tbody></table>
+  </div>
+  <div class="cabp" id="cab-bill">
+    <div class="crb">
+      <div>
+        <div style="font-size:12px;color:var(--ink3);margin-bottom:4px">Баланс</div>
+        <div class="crv" id="cabCr">₪0</div>
+        <div style="font-size:11px;color:var(--ink3);margin-top:4px">₪100 = 1 объявление на 30 дней</div>
+      </div>
+      <button style="padding:10px 20px;border-radius:10px;border:none;background:var(--c);color:#fff;font-family:var(--font);font-size:13px;font-weight:800;cursor:pointer" onclick="openTopup()">Пополнить</button>
+    </div>
+    <div style="margin-top:16px">
+      <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:10px">История транзакций</div>
+      <div id="txHistory" style="font-size:12px;color:var(--ink3);text-align:center;padding:20px">Пока нет транзакций</div>
+    </div>
+  </div>
+  <div class="cabp" id="cab-prof">
+    <div class="fgrp-row" style="margin-bottom:16px">
+      <div class="fgrp"><input class="finput" type="text" id="profName" value="" placeholder=" "><label class="flabel has-val">Имя</label></div>
+      <div class="fgrp"><input class="finput" type="tel" value="+972-54-123-4567" placeholder=" "><label class="flabel has-val">Телефон</label></div>
+    </div>
+    <div style="margin-top:4px"><button class="bsub" onclick="showToast('Сохранено ✅')">Сохранить</button></div>
+    <div style="text-align:center;margin-top:12px"><button onclick="logout()" style="font-family:var(--font);font-size:12px;color:var(--red);background:none;border:none;cursor:pointer;text-decoration:underline">Выйти</button></div>
+  </div>
+</div>
+</div>
+
+<!-- PROMO -->
+<div class="ovl" id="promoOvl" onclick="if(event.target===this)closePromo()">
+<div class="prm" onclick="event.stopPropagation()">
+  <div class="prh"><div class="phi">⚡</div><div class="pht">Поднять в ТОП</div><div class="phs">24 часа в топе ленты</div></div>
+  <div class="prb">
+    <div class="pfi"><div class="pfc">👁</div>В 5–8 раз больше просмотров</div>
+    <div class="pfi"><div class="pfc">📌</div>Закрепляется выше всех</div>
+    <div class="ppb"><div><div style="font-size:12px;color:var(--ink3)">Стоимость</div><div style="font-size:11px;color:var(--ink3)">24 ч</div></div><div style="font-size:24px;font-weight:900;color:var(--ink)">₪50</div></div>
+    <button class="bpp" id="promoPayBtn" onclick="payPromo()">⚡ Оплатить ₪50</button>
+    <div style="text-align:center;margin-top:12px"><button onclick="closePromo()" style="font-family:var(--font);font-size:12px;color:var(--ink3);background:none;border:none;cursor:pointer">Отмена</button></div>
+  </div>
+</div>
+</div>
+
+<!-- TOPUP MODAL — Apple style -->
+<div class="ovl" id="topupOvl" onclick="if(event.target===this)closeTopup()">
+<div class="topup-sheet" onclick="event.stopPropagation()">
+  <!-- Header -->
+  <div class="topup-header">
+    <div>
+      <div class="topup-title">Пополнение баланса</div>
+      <div class="topup-subtitle">Текущий баланс: <span id="topupBal">₪0</span></div>
+    </div>
+    <button class="topup-close" onclick="closeTopup()">✕</button>
+  </div>
+
+  <!-- Plans -->
+  <div class="topup-plans">
+    <div class="tplan" onclick="selTopup(this,100,1)" id="tp100">
+      <div class="tplan-name">Старт</div>
+      <div class="tplan-price">₪100</div>
+      <div class="tplan-desc">1 объявление</div>
+    </div>
+    <div class="tplan tplan-active" onclick="selTopup(this,500,5)" id="tp500">
+      <div class="tplan-badge">Популярный</div>
+      <div class="tplan-name">Базовый</div>
+      <div class="tplan-price">₪500</div>
+      <div class="tplan-desc">5 объявлений</div>
+      <div class="tplan-save">₪100/шт</div>
+    </div>
+    <div class="tplan" onclick="selTopup(this,1000,12)" id="tp1000">
+      <div class="tplan-name">Профи</div>
+      <div class="tplan-price">₪1,000</div>
+      <div class="tplan-desc">12 объявлений</div>
+      <div class="tplan-save" style="color:var(--green)">−17%</div>
+    </div>
+    <div class="tplan" onclick="selTopup(this,2000,30)" id="tp2000">
+      <div class="tplan-name">Агентство</div>
+      <div class="tplan-price">₪2,000</div>
+      <div class="tplan-desc">30 объявлений</div>
+      <div class="tplan-save" style="color:var(--green)">−33%</div>
+    </div>
+  </div>
+
+  <!-- Card -->
+  <div class="topup-card-section">
+    <div class="topup-card-label">
+      <span>Способ оплаты</span>
+      <div class="topup-card-icons">
+        <span class="card-icon">VISA</span>
+        <span class="card-icon">MC</span>
+        <span class="card-icon">AMEX</span>
+      </div>
+    </div>
+    <div class="topup-inputs">
+      <div class="topup-input-wrap">
+        <input class="topup-input" type="text" id="topupCard" placeholder="Номер карты" maxlength="19"
+          oninput="var v=this.value.replace(/\D/g,'').slice(0,16);this.value=v.replace(/(.{4})/g,'$1 ').trim()" style="direction:ltr;text-align:left">
+        <span class="topup-input-icon">💳</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <input class="topup-input" type="text" id="topupExp" placeholder="ММ / ГГ" maxlength="5"
+          oninput="var vv=this.value.replace(/\D/g,'');if(vv.length>2)vv=vv.slice(0,2)+'/'+vv.slice(2,4);this.value=vv" style="direction:ltr;text-align:left">
+        <input class="topup-input" type="text" id="topupCvv" placeholder="CVV" maxlength="4" style="direction:ltr;text-align:left">
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary -->
+  <div class="topup-summary">
+    <div class="topup-summary-row">
+      <span>Сумма пополнения</span>
+      <span id="topupTotal" style="font-weight:700">₪500</span>
+    </div>
+    <div class="topup-summary-row" style="font-size:11px;color:var(--ink3)">
+      <span>🔒 Защищённая оплата через Tranzila</span>
+      <span>Данные не хранятся</span>
+    </div>
+  </div>
+
+  <button class="topup-pay-btn" id="topupBtn" onclick="doTopup()">Пополнить на ₪500</button>
+</div>
+</div>
+
+<!-- COMPARE BAR -->
+<div class="cmpb" id="cmpBar">
+  <div style="font-size:13px;font-weight:800;color:var(--ink);white-space:nowrap">⚖ Сравнение</div>
+  <div style="display:flex;gap:9px;flex:1" id="cmpSlots">
+    <div class="csl" id="cs0"><span style="font-size:18px;opacity:.3">+</span></div>
+    <div class="csl" id="cs1"><span style="font-size:18px;opacity:.3">+</span></div>
+    <div class="csl" id="cs2"><span style="font-size:18px;opacity:.3">+</span></div>
+  </div>
+  <button class="bcmp" id="doCmp" disabled onclick="openCmpT()">Сравнить</button>
+  <button style="padding:8px 14px;border-radius:10px;border:1.5px solid var(--line);background:none;font-family:var(--font);font-size:12px;color:var(--ink3);cursor:pointer" onclick="clearCmp()">✕</button>
+</div>
+<div class="ovl" id="cmpOvl" onclick="if(event.target===this)closeCmpT()">
+<div class="cmpt" onclick="event.stopPropagation()">
+  <div class="mhd"><div class="mtl">⚖ Сравнение</div><button class="mx" onclick="closeCmpT()">✕</button></div>
+  <div style="padding:0 22px 22px"><table class="ct" id="cmpTbl"></table></div>
+</div>
+</div>
+
+<div class="tst" id="toast"></div>
+<button class="cf" onclick="openChat()">💬<span class="cn">3</span></button>
+<a href="#" class="wab" onclick="showToast('WhatsApp...'); return false;">💬</a>
+<script>
+mapboxgl.accessToken='pk.eyJ1IjoibmVzYXkiLCJhIjoiY21xcWZqZDZnMDJseTJwcXZ4eTI5NDBlZiJ9.lVL6iBY0zZoc-FSFQ3joRQ';
+
+// ═══ DATA ═══
+const listings=[
+  {id:1,dealType:'rent',thumb:'linear-gradient(135deg,#1a3a5c,#0d5480)',icon:'🏢',priceNum:8500,addr:{ru:'Ибн Гвироль 78, Тель-Авив',he:'אבן גבירול 78, תל אביב',en:'Ibn Gabirol 78, Tel Aviv'},rooms:4,sqm:110,floor:'7/14',tags:{ru:['Безоп. комн. ✓','Балкон ✓','Парковка','Кондиц.'],he:["ממ\"ד ✓",'מרפסת ✓','חניה','מזגן'],en:['Safe room ✓','Balcony ✓','Parking','A/C']},hi:[0,1],desc:{ru:'Отличная квартира в Северном Тель-Авиве. Высокий этаж, открытый вид.',he:'דירה מצוינת בצפון תל אביב.',en:'Excellent apartment in North Tel Aviv.'},agent:{name:'Roni Tzadok',initials:'RT',type:'agent',verified:true,deals:43,rating:4.9,reviews:127,honesty:92},badge:'top',promoted:true,_promoMins:1380,lat:32.0853,lng:34.7818},
+  {id:2,dealType:'rent',thumb:'linear-gradient(135deg,#2d4a1e,#4a7c2f)',icon:'🌿',priceNum:6200,addr:{ru:'Биалик 12, Ришон',he:'ביאליק 12, ראשון לציון',en:'Bialik 12, Rishon LeZion'},rooms:3,sqm:85,floor:'2/6',tags:{ru:['Сад ✓','Парковка','Двор'],he:['גינה ✓','חניה','קדמי'],en:['Garden ✓','Parking','Front']},hi:[0],desc:{ru:'Красивая квартира с частным садом.',he:'דירה יפה עם גינה פרטית.',en:'Beautiful apartment with private garden.'},agent:{name:'Michal Israeli',initials:'MI',type:'owner',verified:false,deals:3,rating:4.2,reviews:8,honesty:45},badge:'new',lat:31.9896,lng:34.7993},
+  {id:3,dealType:'sale',thumb:'linear-gradient(135deg,#5c1a3a,#8f2d5c)',icon:'🏙️',priceNum:2800000,addr:{ru:'Ротшильд 88, Тель-Авив',he:'רוטשילד 88, תל אביב',en:'Rothschild 88, Tel Aviv'},rooms:4.5,sqm:166,floor:'18/18',tags:{ru:['Безоп. комн. ✓','Крыша ✓','2 паркинга','Вид на море'],he:["ממ\"ד ✓",'גג ✓','2 חניות','נוף ים'],en:['Safe room ✓','Roof ✓','2 parking','Sea view']},hi:[0,1],desc:{ru:'Пентхаус на Ротшильд с видом на море.',he:'פנטהאוס ברוטשילד עם נוף לים.',en:'Penthouse on Rothschild with sea view.'},agent:{name:'Anglo-Saxon',initials:'AS',type:'agency',verified:true,deals:210,rating:4.7,reviews:532,honesty:88},badge:null,lat:32.0699,lng:34.7744},
+  {id:4,dealType:'rent',thumb:'linear-gradient(135deg,#1a3a5c,#2c5f8a)',icon:'🏘️',priceNum:4500,addr:{ru:'Герцль 44, Хайфа',he:'הרצל 44, חיפה',en:'Herzl 44, Haifa'},rooms:2,sqm:55,floor:'1/4',tags:{ru:['Балкон','Лифт'],he:['מרפסת','מעלית'],en:['Balcony','Elevator']},hi:[],desc:{ru:'Тихая 2-комнатная квартира.',he:'דירת 2 חדרים שקטה.',en:'Quiet 2-room apartment.'},agent:{name:'David Levy',initials:'DL',type:'agent',verified:false,deals:19,rating:4.0,reviews:31,honesty:62},badge:null,lat:32.7940,lng:34.9896},
+  {id:5,dealType:'sale',thumb:'linear-gradient(135deg,#3a2a0e,#7a5a20)',icon:'🏠',priceNum:1950000,addr:{ru:'Шиболим 3, Раанана',he:'שיבולים 3, רעננה',en:"Shibolim 3, Ra'anana"},rooms:5,sqm:140,floor:'1/1',tags:{ru:['Сад ✓','2 паркинга','Кондиц.'],he:['גינה ✓','2 חניות','מזגן'],en:['Garden ✓','2 parking','A/C']},hi:[0],desc:{ru:'Просторный дом с садом.',he:'בית מרווח עם גינה.',en:'Spacious house with garden.'},agent:{name:'RE/MAX',initials:'RM',type:'agency',verified:true,deals:380,rating:4.8,reviews:891,honesty:95},badge:null,lat:32.0867,lng:34.8786},
+  {id:6,dealType:'sale',thumb:'linear-gradient(135deg,#0e2a3a,#1a5c7a)',icon:'🌊',priceNum:1400000,addr:{ru:'Ха-Намаль 7, Хайфа',he:'הנמל 7, חיפה',en:'Ha-Namal 7, Haifa'},rooms:3,sqm:78,floor:'4/8',tags:{ru:['Вид на море ✓','Безоп. комн. ✓'],he:['נוף ים ✓',"ממ\"ד ✓"],en:['Sea view ✓','Safe room ✓']},hi:[0,1],desc:{ru:'Квартира с видом на море.',he:'דירה עם נוף לים.',en:'Sea-view apartment.'},agent:{name:'Israel Kadmi',initials:'IK',type:'owner',verified:false,deals:1,rating:0,reviews:0,honesty:20},badge:'new',lat:32.8100,lng:34.9896}
+];
+(function(){
+  const streets=[{ru:'Герцль',he:'הרצל',en:'Herzl'},{ru:'Алленби',he:'אלנבי',en:'Allenby'},{ru:'Бен-Гурион',he:'בן גוריון',en:'Ben Gurion'},{ru:'Жаботинский',he:"ז'בוטינסקי",en:'Jabotinsky'},{ru:'Вайцман',he:'ויצמן',en:'Weizmann'},{ru:'Бялик',he:'ביאליק',en:'Bialik'},{ru:'Ротшильд',he:'רוטשילד',en:'Rothschild'},{ru:'Кинг Джордж',he:'קינג ג\'ורג',en:'King George'}];
+  const cities=[{ru:'Хайфа',he:'חיפה',en:'Haifa',lat:32.7940,lng:34.9896},{ru:'Кирьят-Ям',he:'קריית ים',en:'Kiryat Yam',lat:32.8467,lng:35.0683},{ru:'Кирьят-Бялик',he:'קריית ביאליק',en:'Kiryat Bialik',lat:32.8275,lng:35.0837},{ru:'Нешер',he:'נשר',en:'Nesher',lat:32.7682,lng:35.0467},{ru:'Акко',he:'עכו',en:'Akko',lat:32.9237,lng:35.0683}];
+  const grads=['linear-gradient(135deg,#1a3a5c,#0d5480)','linear-gradient(135deg,#2d4a1e,#4a7c2f)','linear-gradient(135deg,#5c1a3a,#8f2d5c)','linear-gradient(135deg,#3a2a0e,#7a5a20)','linear-gradient(135deg,#0e2a3a,#1a5c7a)'];
+  const icons=['🏢','🏠','🏘️','🏡','🌿','🏙️'];
+  const ags=[{name:'RE/MAX',initials:'RM',type:'agency',verified:true,deals:380,rating:4.8,reviews:891,honesty:95},{name:'David Levy',initials:'DL',type:'agent',verified:false,deals:19,rating:4.0,reviews:31,honesty:62},{name:'Tamar Gold',initials:'TG',type:'agent',verified:true,deals:67,rating:4.6,reviews:154,honesty:84}];
+  const tags=[{ru:['Безоп. комн. ✓','Балкон ✓','Лифт'],he:["ממ\"ד ✓",'מרפסת ✓','מעלית'],en:['Safe room ✓','Balcony ✓','Elevator']},{ru:['Парковка','Сад','Балкон'],he:['חניה','גינה','מרפסת'],en:['Parking','Garden','Balcony']},{ru:['Вид на море ✓','Балкон'],he:['נוף ים ✓','מרפסת'],en:['Sea view ✓','Balcony']}];
+  const b=listings.length;
+  for(let k=0;k<80;k++){
+    const c=cities[k%cities.length];const dt=Math.random()<.6?'rent':'sale';
+    const rooms=[1,1.5,2,2.5,3,3.5,4,4.5,5][Math.floor(Math.random()*9)];
+    const sqm=Math.floor(35+Math.random()*150);const fl=Math.floor(1+Math.random()*13);
+    const st=streets[Math.floor(Math.random()*streets.length)];const num=Math.floor(2+Math.random()*180);
+    const pnum=dt==='rent'?Math.floor(3000+Math.random()*9000):Math.floor(900000+Math.random()*2500000);
+    const tg=tags[Math.floor(Math.random()*tags.length)];const ag=ags[Math.floor(Math.random()*ags.length)];
+    listings.push({id:b+k+1,dealType:dt,thumb:grads[Math.floor(Math.random()*grads.length)],icon:icons[Math.floor(Math.random()*icons.length)],priceNum:pnum,addr:{ru:st.ru+' '+num+', '+c.ru,he:st.he+' '+num+', '+c.he,en:st.en+' '+num+', '+c.en},rooms,sqm,floor:fl+'/'+(fl+Math.floor(1+Math.random()*12)),tags:tg,hi:[0],desc:{ru:'Уютная квартира в '+c.ru+'.',he:'דירה נחמדה ב'+c.he+'.',en:'Cozy apt in '+c.en+'.'},agent:ag,badge:Math.random()<.08?'new':null,lat:c.lat+(Math.random()-.5)*.03,lng:c.lng+(Math.random()-.5)*.03});
+  }
+})();
+
+// ═══ STATE ═══
+let lang='ru',activeCat='all',activeIdx=-1,loggedIn=false,selectedRole='user',authMode='login';
+let tierPrice=950,tierCredits=10,map=null,mapLoaded=false,satelliteOn=false;
+let cmpList=[],promoTargetIdx=-1,filteredListings=[...listings],currentSort='rel';
+let dzFiles=[],markersArr=[],userCredits=0,addrTimer=null;
+let activeFilters=new Set();
+let activeType='all'; // 'all','rent','sale'
+
+// ═══ MAPBOX с статичными DOM маркерами ═══
+function initMap(){
+  map=new mapboxgl.Map({
+    container:'map3d',style:'mapbox://styles/mapbox/dark-v11',
+    center:[34.7818,32.0853],zoom:12,pitch:55,bearing:-15,antialias:true,attributionControl:false
+  });
+  map.addControl(new mapboxgl.AttributionControl({compact:true}),'bottom-right');
+  map.scrollZoom.setWheelZoomRate(1/450);
+  map.on('load',()=>{
+    mapLoaded=true;
+    try{if(!map.getLayer('3d-buildings')&&map.getSource('composite'))map.addLayer({id:'3d-buildings',source:'composite','source-layer':'building',filter:['==','extrude','true'],type:'fill-extrusion',minzoom:14,paint:{'fill-extrusion-color':['interpolate',['linear'],['get','height'],0,'#12173a',20,'#1a2050',50,'#1e2860',100,'#222d70'],'fill-extrusion-height':['interpolate',['linear'],['zoom'],14,0,14.05,['get','height']],'fill-extrusion-base':['interpolate',['linear'],['zoom'],14,0,14.05,['get','min_height']],'fill-extrusion-opacity':0.88}})}catch(e){}
+    rebuildMarkers(filteredListings);
+    map.on('move',()=>{if(activeIdx>=0)updatePopupPos(activeIdx)});
+    map.on('click',()=>document.getElementById('mapPop').style.display='none');
+  });
+}
+
+function makePinEl(d,idx){
+  const isR=d.dealType==='rent',isP=!!d.promoted;
+  const cls=isP?'pm':isR?'rm':'sm';
+  const v=d.priceNum;
+  const lbl=(v>=1000000?('₪'+(v/1000000).toFixed(1)+'M'+(isR?'/מ':'')):(v>=1000?'₪'+Math.round(v/1000)+'K'+(isR?'/מ':''):'₪'+v));
+  const el=document.createElement('div');
+  el.className='mbp';
+  el.innerHTML=`<div class="mbb ${cls}">${isP?'⚡ ':isR?'':' '}${lbl}</div><div class="mba ${cls}"></div>`;
+  el.addEventListener('click',()=>openDetail(idx));
+  el.addEventListener('mouseenter',()=>{el.classList.add('hl');showPopup(idx)});
+  el.addEventListener('mouseleave',()=>{el.classList.remove('hl');document.getElementById('mapPop').style.display='none'});
+  el.addEventListener('touchend',e=>{e.preventDefault();openDetail(idx)});
+  return el;
+}
+
+function rebuildMarkers(data){
+  markersArr.forEach(m=>m.remove());markersArr=[];
+  if(!mapLoaded||!map)return;
+  (data||filteredListings).forEach(d=>{
+    const idx=listings.indexOf(d);if(idx<0)return;
+    const el=makePinEl(d,idx);
+    const m=new mapboxgl.Marker({element:el,anchor:'bottom',pitchAlignment:'viewport',rotationAlignment:'viewport'})
+      .setLngLat([d.lng,d.lat]).addTo(map);
+    m._idx=idx;markersArr.push(m);
+  });
+  document.getElementById('mapCnt').textContent=(data||filteredListings).length;
+}
+
+function showPopup(idx){
+  const d=listings[idx];if(!d||!map||!mapLoaded)return;
+  const isR=d.dealType==='rent';
+  const pop=document.getElementById('mapPop');
+  pop.style.display='block';
+  pop.innerHTML=`<span class="pt2 ${isR?'r':'s'}">${isR?'🔵 Аренда':'🟠 Продажа'}</span><div class="pp2">₪${d.priceNum.toLocaleString()}${isR?'/מ':''}</div><div class="pa2">📍 ${d.addr[lang]}</div><div class="pc2"><span class="pch">${d.rooms} комн.</span><span class="pch">${d.sqm} м²</span>${d.tags[lang].slice(0,2).map((t,j)=>`<span class="pch ${d.hi.includes(j)?'hi':''}">${t}</span>`).join('')}</div><div class="pag">${d.agent.name}${d.agent.verified?' ✓':''} · 🏅 ${d.agent.honesty}/100</div><div class="parr"></div>`;
+  updatePopupPos(idx);
+}
+function updatePopupPos(idx){
+  const d=listings[idx];if(!d||!map||!mapLoaded)return;
+  const pt=map.project([d.lng,d.lat]);
+  const r=document.getElementById('map3d').getBoundingClientRect();
+  const pop=document.getElementById('mapPop');
+  pop.style.left=Math.max(8,Math.min(pt.x-110,r.width-236))+'px';
+  pop.style.top=Math.max(8,pt.y-170)+'px';
+}
+
+function setView(v){if(!map)return;if(v==='2d')map.easeTo({pitch:0,bearing:0,duration:700});else map.easeTo({pitch:55,bearing:-15,duration:700})}
+function toggleSat(){
+  satelliteOn=!satelliteOn;document.getElementById('satBtn').classList.toggle('on',satelliteOn);
+  if(!map)return;
+  map.setStyle(satelliteOn?'mapbox://styles/mapbox/satellite-streets-v12':'mapbox://styles/mapbox/dark-v11');
+  map.once('style.load',()=>{mapLoaded=true;try{map.addLayer({id:'3d-buildings',source:'composite','source-layer':'building',filter:['==','extrude','true'],type:'fill-extrusion',minzoom:14,paint:{'fill-extrusion-color':'#1a2050','fill-extrusion-height':['get','height'],'fill-extrusion-base':['get','min_height'],'fill-extrusion-opacity':0.88}})}catch(e){}rebuildMarkers(filteredListings)});
+}
+function flyTo(lat,lng,zoom,name){if(map)map.flyTo({center:[lng,lat],zoom,pitch:55,bearing:-15,duration:1400,essential:true});showToast('✈️ '+name)}
+
+// ═══ ADDRESS AUTOCOMPLETE — параллельный поиск RU+HE+EN ═══
+// ═══ CITY + ADDRESS — двухшаговый выбор ═══
+let selectedCityData=null;
+
+function onCityChange(){
+  const sel=document.getElementById('pubCity');
+  const val=sel.value;
+  const inp=document.getElementById('addrInp');
+  const house=document.getElementById('addrHouse');
+  const sg=document.getElementById('addrSugg');
+  if(!val){
+    selectedCityData=null;
+    inp.disabled=true;inp.style.opacity='.5';inp.value='';inp.classList.remove('has-val');
+    house.disabled=true;house.style.opacity='.5';house.value='';
+    return;
+  }
+  const [cityName,lat,lng]=val.split('|');
+  selectedCityData={name:cityName,lat:parseFloat(lat),lng:parseFloat(lng)};
+  document.getElementById('addrCityName').value=cityName;
+  document.getElementById('addrLat').value=lat;
+  document.getElementById('addrLng').value=lng;
+  inp.disabled=false;inp.style.opacity='1';inp.value='';inp.classList.remove('has-val');inp.placeholder=' ';
+  house.disabled=false;house.style.opacity='1';
+  sg.classList.add('hid');
+  if(map&&mapLoaded)map.flyTo({center:[parseFloat(lng),parseFloat(lat)],zoom:13,pitch:45,bearing:-15,duration:1000,essential:true});
+  showToast('📍 '+cityName);
+  inp.focus();
+}
+
+async function addrSearch(q){
+  clearTimeout(addrTimer);
+  const sg=document.getElementById('addrSugg');
+  if(!selectedCityData){sg.classList.add('hid');return}
+  if(!q||q.length<2){sg.classList.add('hid');return}
+  sg.innerHTML='<div class="ald">🔍 Поиск...</div>';
+  sg.classList.remove('hid');
+
+  addrTimer=setTimeout(async()=>{
+    try{
+      const city=selectedCityData.name;
+      const lat=selectedCityData.lat;
+      const lng=selectedCityData.lng;
+
+      // Photon — открытый геокодер на базе OpenStreetMap, лучше работает с ивритом
+      const url=`https://photon.komoot.io/api/?q=${encodeURIComponent(q+' '+city)}&lat=${lat}&lon=${lng}&limit=8&lang=en&bbox=${lng-.15},${lat-.15},${lng+.15},${lat+.15}`;
+      const res=await fetch(url);
+      const data=await res.json();
+      const features=(data.features||[]).filter(f=>{
+        const p=f.properties||{};
+        // Только Израиль
+        return p.country_code==='IL'||p.country==='Israel';
+      }).slice(0,7);
+
+      if(!features.length){
+        // Fallback — показываем подсказку ввести вручную
+        sg.innerHTML=`<div class="ald" style="color:var(--ink3);padding:10px 14px">
+          Улица не найдена автоматически.<br>
+          <span style="font-size:11px">Введите адрес вручную и нажмите «Далее»</span>
+        </div>
+        <div class="asi" onclick="selAddrManual()" tabindex="0">
+          <span class="asi-ico">✏️</span>
+          <div><div class="asi-main">Ввести вручную: "${q}"</div>
+          <div class="asi-sub">${city}</div></div>
+        </div>`;
+        return;
+      }
+
+      sg.innerHTML=features.map(f=>{
+        const p=f.properties||{};
+        const coords=f.geometry?.coordinates||[lng,lat];
+        const street=p.street||p.name||q;
+        const houseNum=p.housenumber?` ${p.housenumber}`:'';
+        const district=p.district||p.suburb||p.city||city;
+        let ico='🛣️';
+        if(p.housenumber||p.type==='house')ico='🏠';
+        else if(p.type==='amenity')ico='🏬';
+        else if(p.type==='park'||p.type==='nature')ico='🌳';
+        const nm=JSON.stringify(street).replace(/"/g,'&quot;');
+        const hn=JSON.stringify((houseNum).trim()).replace(/"/g,'&quot;');
+        return `<div class="asi" onclick="selAddr(${nm},${hn},${coords[1]},${coords[0]})" tabindex="0">
+          <span class="asi-ico">${ico}</span>
+          <div>
+            <div class="asi-main">${street}${houseNum?'<b style="color:var(--c)">'+houseNum+'</b>':''}</div>
+            <div class="asi-sub">${district}</div>
+          </div>
+        </div>`;
+      }).join('');
+      sg.classList.remove('hid');
+    }catch(e){
+      sg.innerHTML=`<div class="ald">
+        <div style="color:var(--ink3);margin-bottom:6px">Поиск недоступен</div>
+        <div class="asi" onclick="selAddrManual()" tabindex="0" style="border-radius:8px;background:var(--cl)">
+          <span class="asi-ico">✏️</span>
+          <div><div class="asi-main">Ввести адрес вручную</div></div>
+        </div>
+      </div>`;
+    }
+  },400);
+}
+
+function selAddrManual(){
+  // Пользователь вводит адрес вручную — берём что написал и координаты города
+  const inp=document.getElementById('addrInp');
+  const q=inp.value;
+  document.getElementById('addrSugg').classList.add('hid');
+  if(!document.getElementById('addrLat').value&&selectedCityData){
+    document.getElementById('addrLat').value=selectedCityData.lat;
+    document.getElementById('addrLng').value=selectedCityData.lng;
+  }
+  document.getElementById('addrHouse').focus();
+  showToast('📍 Адрес введён вручную');
+}
+
+function selAddr(street,houseNum,lat,lng){
+  const inp=document.getElementById('addrInp');
+  const house=document.getElementById('addrHouse');
+  inp.value=street;
+  inp.classList.add('has-val');
+  if(houseNum&&!house.value)house.value=houseNum;
+  if(houseNum)house.classList.add('has-val');
+  document.getElementById('addrLat').value=lat;
+  document.getElementById('addrLng').value=lng;
+  document.getElementById('addrSugg').classList.add('hid');
+  if(map&&mapLoaded)map.flyTo({center:[parseFloat(lng),parseFloat(lat)],zoom:17,pitch:55,bearing:-15,duration:900,essential:true});
+  // Фокус на номер дома если он не заполнен
+  if(!house.value)house.focus();
+}
+
+// Floating label helper — when input gets value from JS
+document.addEventListener('input',e=>{
+  if(e.target.classList.contains('finput')){
+    e.target.classList.toggle('has-val',e.target.value.length>0);
+  }
+});
+
+// ═══ FILTER ═══
+// Фильтры работают: pills соответствуют тегам в данных
+const FILTER_MAP={
+  rooms12:(d)=>d.rooms<=2,
+  rooms34:(d)=>d.rooms>=3&&d.rooms<=4,
+  safeRoom:(d)=>d.tags.ru.some(t=>t.includes('Безоп') || t.includes("ממ\"ד") || t.includes('Safe')),
+  parking:(d)=>d.tags.ru.some(t=>t.includes('Парков') || t.includes('חניה') || t.includes('Parking')),
+  balcony:(d)=>d.tags.ru.some(t=>t.includes('Балкон') || t.includes('מרפסת') || t.includes('Balcony')),
+  garden:(d)=>d.tags.ru.some(t=>t.includes('Сад') || t.includes('גינה') || t.includes('Garden')),
+  sea:(d)=>d.tags.ru.some(t=>t.includes('море') || t.includes('ים') || t.includes('Sea')),
+  new:(d)=>d.badge==='new',
+};
+
+function toggleFPill(el){
+  const f=el.dataset.filter;
+  el.classList.toggle('on');
+  if(el.classList.contains('on'))activeFilters.add(f);
+  else activeFilters.delete(f);
+  applyFilter();
+}
+
+function ttSwitch(type,btn){
+  activeType=type;
+  document.querySelectorAll('.tt-btn').forEach(b=>b.classList.remove('on-rent','on-sale'));
+  if(type==='all')btn.classList.add('on-rent');
+  else if(type==='rent')btn.classList.add('on-rent');
+  else btn.classList.add('on-sale');
+  // sync top cats
+  activeCat=type;
+  closeDetail();
+  applyFilter();
+}
+
+function getFiltered(){
+  let d=[...listings];
+  const q=(document.getElementById('searchInput')?.value||'').toLowerCase().trim();
+  if(q)d=d.filter(x=>
+    x.addr.ru.toLowerCase().includes(q)||
+    x.addr.he.toLowerCase().includes(q)||
+    x.addr.en.toLowerCase().includes(q)
+  );
+  if(activeType==='rent')d=d.filter(x=>x.dealType==='rent');
+  else if(activeType==='sale')d=d.filter(x=>x.dealType==='sale');
+  else if(['rent-apt','rent-villa'].includes(activeCat))d=d.filter(x=>x.dealType==='rent');
+  else if(['buy-apt','buy-villa'].includes(activeCat))d=d.filter(x=>x.dealType==='sale');
+  // Apply active pills (OR logic within each filter, AND between filters)
+  if(activeFilters.size>0){
+    // group: if pills from same category are on, treat as OR; keep items matching any active filter
+    // Простая реализация: показываем объявление если оно проходит ХОТЯ БЫ ОДИН из включённых фильтров
+    // (так работает большинство площадок - не исключают, а приоритизируют)
+    // Для корректного поведения: фильтры — пересечение (И)
+    for(const f of activeFilters){
+      if(FILTER_MAP[f])d=d.filter(FILTER_MAP[f]);
+    }
+  }
+  if(currentSort==='price-asc')d.sort((a,b)=>a.priceNum-b.priceNum);
+  else if(currentSort==='price-desc')d.sort((a,b)=>b.priceNum-a.priceNum);
+  else if(currentSort==='new')d.sort((a,b)=>b.id-a.id);
+  return mixPromoted(d);
+}
+
+function applyFilter(){
+  filteredListings=getFiltered();
+  renderCards(filteredListings);
+  rebuildMarkers(filteredListings);
+}
+
+function selCat(btn,cat){
+  document.querySelectorAll('.ctab').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');activeCat=cat;
+  if(cat==='rent'||cat==='rent-apt'||cat==='rent-villa')activeType='rent';
+  else if(cat==='sale'||cat==='buy-apt'||cat==='buy-villa')activeType='sale';
+  else activeType='all';
+  // sync sidebar toggles
+  document.querySelectorAll('.tt-btn').forEach(b=>b.classList.remove('on-rent','on-sale'));
+  if(activeType==='rent')document.getElementById('ttRent').classList.add('on-rent');
+  else if(activeType==='sale')document.getElementById('ttSale').classList.add('on-sale');
+  else document.getElementById('ttAll').classList.add('on-rent');
+  closeDetail();applyFilter();
+}
+
+function pickSort(el){
+  document.querySelectorAll('.smi').forEach(i=>i.classList.remove('on'));
+  el.classList.add('on');currentSort=el.dataset.v;
+  document.getElementById('sortLbl').textContent=el.textContent.replace(/^[🎯💰🆕]\s*/,'');
+  document.getElementById('smn').classList.remove('open');applyFilter();
+}
+
+// ═══ RENDER CARDS — горизонтальный современный стиль ═══
+function renderCards(data){
+  const list=document.getElementById('cardsList');list.innerHTML='';
+  if(!data.length){
+    list.innerHTML=`<div style="text-align:center;padding:40px 20px;color:var(--ink3)">
+      <div style="font-size:40px;margin-bottom:12px">🔍</div>
+      <div style="font-size:15px;font-weight:700;color:var(--ink);margin-bottom:6px">${t('card.empty_title')}</div>
+      <div style="font-size:13px">${t('card.empty_sub')}</div>
+      <button onclick="resetFilters()" style="margin-top:14px;font-family:var(--font);font-size:13px;font-weight:700;color:var(--c);background:var(--cl);border:1.5px solid rgba(28,110,242,.2);padding:9px 20px;border-radius:10px;cursor:pointer">${t('card.reset')}</button>
+    </div>`;
+    document.getElementById('cntNum').textContent=0;document.getElementById('mapCnt').textContent=0;return;
+  }
+  data.forEach(d=>{
+    const idx=listings.indexOf(d);const isR=d.dealType==='rent';
+    const div=document.createElement('div');
+    div.className=`card${d.promoted?' promo':''}${activeIdx===idx?' active':''}`;
+    div.dataset.id=d.id;
+    const h=Math.floor((d._promoMins||0)/60),m=Math.round((d._promoMins||0)%60);
+    const pStr='₪'+d.priceNum.toLocaleString()+(isR?('/'+t('mo')):'');
+    // Build photo slides
+    const allPhotos=d.allPhotos||(d.userPhoto?[d.userPhoto]:[]);
+    const hasPhotos=allPhotos.length>0;
+    const photoCount=allPhotos.length||d.photos||0;
+    let photoHtml='';
+    if(hasPhotos&&allPhotos.length>1){
+      photoHtml=`<div class="card-slides" id="slides_${idx}" style="transform:translateX(0%)">
+        ${allPhotos.map(u=>`<div class="card-slide" style="background:url('${u}') center/cover"></div>`).join('')}
+      </div>
+      <button class="slide-btn slide-prev" onclick="event.stopPropagation();slidePhoto(${idx},-1)">‹</button>
+      <button class="slide-btn slide-next" onclick="event.stopPropagation();slidePhoto(${idx},1)">›</button>
+      <div class="slide-dots" id="dots_${idx}">${allPhotos.map((_,i)=>`<div class="slide-dot${i===0?' on':''}"></div>`).join('')}</div>`;
+    } else if(hasPhotos){
+      photoHtml=`<div class="card-img-bg" style="background:url('${allPhotos[0]}') center/cover"></div>`;
+    } else {
+      photoHtml=`<div class="card-img-bg" style="background:${d.thumb}"></div><div class="card-img-emoji">${d.icon}</div>`;
+    }
+    let inner='';
+    if(d.promoted)inner+=`<div class="promo-strip" style="width:100%">⚡ TOP<span style="opacity:.8;font-size:9px;margin-right:auto"> · ${h}ч ${m}м</span></div>`;
+    inner+=`<div class="card-stripe ${isR?'r':'s'}"></div>
+    <div class="card-img">
+      ${photoHtml}
+      ${photoCount>0?`<div class="card-photo-cnt">📷 ${photoCount}</div>`:''}
+      ${d.badge?`<div class="card-badge badge-${d.badge}">${d.badge==='top'?'TOP':'NEW'}</div>`:''}
+    </div>
+    <div class="card-body">
+      <div class="card-top-row">
+        <div>
+          <span class="card-type-badge ${isR?'r':'s'}">${isR?t('deal.rent'):t('deal.sale')}</span>
+          <div class="card-price" style="margin-top:3px">${pStr}</div>
+        </div>
+        <div class="card-acts" style="flex-shrink:0">
+          <button class="act-btn" onclick="event.stopPropagation();toggleFav(this,${idx})" title="Сохранить">🤍</button>
+          <button class="act-btn" id="cmpB${idx}" onclick="event.stopPropagation();toggleCmp(${idx})" title="Сравнить" style="font-size:10px;font-weight:800">⚖</button>
+        </div>
+      </div>
+      <div class="card-specs">
+        <span class="card-spec">🛏 ${d.rooms} ${t('card.rooms')}</span>
+        <span class="card-spec-sep"></span>
+        <span class="card-spec">📐 ${d.sqm} ${t('card.sqm')}</span>
+        <span class="card-spec-sep"></span>
+        <span class="card-spec">🏢 ${d.floor} ${t('card.floor')}</span>
+      </div>
+      <div class="card-addr">📍 ${d.addr[lang]}</div>
+      <div class="card-tags">${d.tags[lang].slice(0,3).map((t,j)=>`<span class="ctag ${d.hi.includes(j)?'hi':''}">${t}</span>`).join('')}</div>
+      <div class="card-bot">
+        <div class="agent-info">${d.agent.name}${d.agent.verified?` <span class="vt">✓</span>`:''}</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:11px;color:var(--ink3)">
+          ${(d.views||0)>0?`<span>👁 ${d.views||0}</span>`:''}
+          ${(d.fav_count||0)>0?`<span>❤️ ${d.fav_count||0}</span>`:''}
+          ${d.agent.rating>0?`<span style="color:#F59E0B;font-weight:700">★ ${d.agent.rating}</span>`:''}
+        </div>
+      </div>
+    </div>`;
+    div.innerHTML=inner;
+    div.style.flexDirection='column';
+    div.onclick=()=>openDetail(idx);
+    div.onmouseenter=()=>{const mk=markersArr.find(x=>x._idx===idx);if(mk){mk.getElement().classList.add('hl');showPopup(idx)}};
+    div.onmouseleave=()=>{const mk=markersArr.find(x=>x._idx===idx);if(mk)mk.getElement().classList.remove('hl');document.getElementById('mapPop').style.display='none'};
+    list.appendChild(div);
+  });
+  const lm=document.createElement('div');lm.style.cssText='text-align:center;padding:10px 0 4px';
+  lm.innerHTML=`<button style="font-family:var(--font);font-size:13px;font-weight:700;color:var(--ink2);border:1.5px solid var(--line);border-radius:20px;background:var(--white);padding:10px 28px;cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor='var(--c)';this.style.color='var(--c)'" onmouseout="this.style.borderColor='var(--line)';this.style.color='var(--ink2)'" onclick="showToast(t('toast.loading'))">${t('card.load_more')}</button>`;
+  list.appendChild(lm);
+  document.getElementById('cntNum').textContent=data.length;
+  document.getElementById('mapCnt').textContent=data.length;
+  const cntObj=document.querySelector('.cnt');if(cntObj)cntObj.innerHTML=t('count')+' <b id="cntNum">'+data.length+'</b> '+t('count_obj');
+}
+
+function resetFilters(){
+  activeFilters.clear();
+  document.querySelectorAll('.fpill').forEach(p=>p.classList.remove('on'));
+  activeType='all';
+  document.querySelectorAll('.tt-btn').forEach(b=>b.classList.remove('on-rent','on-sale'));
+  document.getElementById('ttAll').classList.add('on-rent');
+  applyFilter();
+}
+
+// ═══ DETAIL ═══
+function openDetail(idx){
+  // Считаем просмотр
+  const _dv=listings[idx];
+  if(_dv&&_dv.id&&String(_dv.id).length>10){
+    fetch(`${API}/listings/${_dv.id}/view`,{method:'POST'}).catch(()=>{});
+    if(_dv.views!==undefined)_dv.views=(_dv.views||0)+1;
+  }
+  activeIdx=idx;const d=listings[idx];if(!d)return;
+  const isR=d.dealType==='rent';
+  const pStr='₪'+d.priceNum.toLocaleString()+(isR?('/'+t('mo')):'');
+  document.getElementById('dTypHdr').className=`dth ${isR?'r':'s'}`;
+  document.getElementById('dTypHdr').textContent=isR?t('deal.rent'):t('deal.sale');
+  const bg=document.getElementById('dThBg'),em=document.getElementById('dThEm');
+  if(d.userPhoto){bg.style.backgroundImage=`url('${d.userPhoto}')`;bg.style.backgroundSize='cover';em.style.display='none'}
+  else{bg.style.background=d.thumb;bg.style.backgroundImage='';em.style.display='flex';em.textContent=d.icon}
+  document.getElementById('dPrc').textContent=pStr;
+  document.getElementById('dAdr').textContent='📍 '+d.addr[lang];
+  document.getElementById('dSpc').innerHTML=`<div class="spi"><div class="sv">${d.rooms}</div><div class="sk">${t('detail.rooms')}</div></div><div class="spi"><div class="sv">${d.sqm}</div><div class="sk">${t('detail.sqm')}</div></div><div class="spi"><div class="sv">${d.floor}</div><div class="sk">${t('detail.floor')}</div></div>`;
+  document.getElementById('dTgs').innerHTML=d.tags[lang].map((t,i)=>`<span class="dtga ${d.hi.includes(i)?'hi':''}">${t}</span>`).join('');
+  const ag=d.agent;
+  document.getElementById('dHon').innerHTML=ag.honesty>0?`<div class="hl"><span>🏅 ${t('detail.honesty')}</span><span style="font-weight:800;color:var(--ink)">${ag.honesty}/100</span></div><div class="ht"><div class="hf" style="width:${ag.honesty}%"></div></div>`:'';
+  document.getElementById('dDsc').textContent=d.desc[lang]||d.desc.ru||'';
+  document.getElementById('dAgt').innerHTML=`<div class="agav">${ag.initials}</div><div><div style="font-size:13px;font-weight:700;color:var(--ink)">${ag.name}${ag.verified?' <span style="color:var(--green)">✓</span>':''}</div><div style="font-size:11px;color:var(--ink3)">${t('agent.type.'+(ag.type||'agent'))}</div></div>`;
+  document.getElementById('dRtg').innerHTML=ag.rating>0?`<span class="st">${'★'.repeat(Math.round(ag.rating))}${'☆'.repeat(5-Math.round(ag.rating))}</span><span style="font-size:11px;color:var(--ink3)">${ag.rating} (${ag.reviews})</span>`:'';
+  document.getElementById('chatAv').textContent=ag.initials;
+  document.getElementById('chatAgNm').textContent=ag.name;
+  document.getElementById('chatLst').textContent=d.addr[lang]+' · '+pStr;
+  document.getElementById('detailPop').classList.add('open');
+  document.querySelectorAll('.card').forEach(c=>c.classList.toggle('active',c.dataset.id==d.id));
+  document.querySelector(`.card[data-id="${d.id}"]`)?.scrollIntoView({behavior:'smooth',block:'nearest'});
+  markersArr.forEach(mk=>{mk.getElement().style.zIndex=mk._idx===idx?'9999':'';if(mk._idx===idx)mk.getElement().classList.add('hl')});
+  if(map&&mapLoaded){map.flyTo({center:[d.lng,d.lat],zoom:16,pitch:60,bearing:-20,duration:900,essential:true});setTimeout(()=>showPopup(idx),650)}
+}
+function closeDetail(){activeIdx=-1;document.getElementById('detailPop').classList.remove('open');document.querySelectorAll('.card').forEach(c=>c.classList.remove('active'));markersArr.forEach(mk=>{mk.getElement().style.zIndex='';mk.getElement().classList.remove('hl')});document.getElementById('mapPop').style.display='none'}
+
+// ═══ PUBLISH ═══
+let pubStep=1;
+function setDealType(type){
+  document.getElementById('pubDeal').value=type;
+  document.getElementById('dtRent').className='dt-btn'+(type==='rent'?' on-r':'');
+  document.getElementById('dtSale').className='dt-btn'+(type==='sale'?' on-s':'');
+}
+function goStep(n){
+  pubStep=n;
+  ['pst1','pst2','pst3','pst4','pstSuc'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none'});
+  const m={'1':'pst1','2':'pst2','3':'pst3','4':'pst4','success':'pstSuc'};
+  const el=document.getElementById(m[String(n)]||'pst1');if(el)el.style.display='';
+  [1,2,3,4].forEach(i=>{const nd=document.getElementById('pn'+i);if(!nd)return;nd.classList.remove('on','dn');if(i<n)nd.classList.add('dn');else if(i===n)nd.classList.add('on')});
+}
+function useCredit(){_publish()}
+function submitPay(){_publish()}
+async function _publish(){
+  const cityName=document.getElementById('addrCityName')?.value||'';
+  const street=document.getElementById('addrInp')?.value||'';
+  const house=document.getElementById('addrHouse')?.value||'';
+  const addr=[street+(house?' '+house:''),cityName].filter(Boolean).join(', ')||'Адрес не указан';
+  const lat=parseFloat(document.getElementById('addrLat')?.value)||selectedCityData?.lat||32.0853;
+  const lng=parseFloat(document.getElementById('addrLng')?.value)||selectedCityData?.lng||34.7818;
+  const price=parseFloat(document.getElementById('pubPrice')?.value)||0;
+  const rooms=parseFloat(document.getElementById('pubRooms')?.value)||1;
+  const sqm=parseFloat(document.getElementById('pubSqm')?.value)||null;
+  const floor=document.getElementById('pubFloor')?.value||null;
+  const dealType=document.getElementById('pubDeal')?.value||'rent';
+  const desc=document.getElementById('pubDesc')?.value||'';
+  const isR=dealType==='rent';
+  const firstPhoto=dzFiles.length>0?dzFiles[0].url:null;
+  const agName=document.getElementById('navNm')?.textContent||'Agent';
+
+  if(!price){showToast(t('err.price'));return}
+  if(!street){showToast(t('err.street'));return}
+  if(!cityName){showToast(t('err.city'));return}
+
+  // Пробуем сохранить на сервер
+  const token=localStorage.getItem('nesay_token');
+  let savedToDb=false;
+  let dbId=null;
+
+  if(token){
+    try{
+      const res=await fetch(`${API}/listings`,{
+        method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+        body:JSON.stringify({
+          deal_type:dealType,
+          property_type:'apartment',
+          city_id:getCityId(cityName),
+          street,house_number:house,
+          lat,lng,price,rooms,sqm,
+          description:{ru:desc,he:desc,en:desc}
+        })
+      });
+      if(res.ok){
+        const data=await res.json();
+        savedToDb=true;
+        dbId=data.id;
+        // Загружаем фото на сервер если есть
+        if(dzFiles.length>0&&dbId){
+          try{
+            const photoRes=await fetch(`${API}/listings/${dbId}/photos`,{
+              method:'POST',
+              headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+              body:JSON.stringify({photos:dzFiles.map(f=>f.url)})
+            });
+            if(photoRes.ok){
+              const pd=await photoRes.json();
+              if(pd.urls&&pd.urls.length>0){
+                // Обновляем фото в локальном объявлении
+                newL.userPhoto=pd.urls[0];
+                newL.cover_photo=pd.urls[0];
+              }
+            }
+          }catch(e){console.warn('Photo upload error:',e)}
+        }
+        showToast('✅ Сохранено в базе данных!');
+      } else {
+        const err=await res.json();
+        console.warn('API error:',err);
+      }
+    }catch(e){console.warn('API недоступен:',e)}
+  }
+
+  // В любом случае добавляем локально на карту
+  const newId=dbId||Date.now();
+  const newL={id:newId,dealType,promoted:false,_userAdded:true,
+    thumb:'linear-gradient(135deg,#1C6EF2,#0d5480)',icon:'🏠',
+    userPhoto:firstPhoto,photos:dzFiles.length||1,priceNum:price,
+    addr:{ru:addr,he:addr,en:addr},rooms,sqm:sqm||85,floor:floor||'—',
+    tags:{ru:['Новое ✓'],he:['חדש ✓'],en:['New ✓']},hi:[0],
+    desc:{ru:desc||'Новое объявление.',he:'מודעה חדשה.',en:'New listing.'},
+    agent:{name:agName,initials:agName.slice(0,2).toUpperCase(),type:'agent',verified:loggedIn,deals:0,rating:0,reviews:0,honesty:50},
+    badge:'new',lat,lng};
+  listings.unshift(newL);
+  saveUserListings();
+  applyFilter();
+  if(map&&mapLoaded)setTimeout(()=>map.flyTo({center:[lng,lat],zoom:16,pitch:60,bearing:-20,duration:1100,essential:true}),300);
+
+  userCredits=Math.max(0,userCredits-1);
+  document.getElementById('navCr').textContent='₪'+userCredits+' '+t('nav.balance');
+  const cabCr=document.getElementById('cabCr');if(cabCr)cabCr.textContent='₪'+userCredits;
+  const crBal=document.getElementById('crBal');if(crBal)crBal.textContent='₪'+userCredits;
+
+  const tbl=document.getElementById('cabListTbl');
+  if(tbl){const tr=document.createElement('tr');const newIdx=listings.indexOf(newL);
+    tr.innerHTML=`<td><b>${addr.split(',')[0]}</b><br><span style="font-size:11px;color:var(--ink3)">₪${price.toLocaleString()}${isR?'/мес':''} · ${rooms} комн.</span></td><td><span class="sd sa"></span>Активно</td><td>0</td><td style="display:flex;gap:5px;flex-wrap:wrap"><button class="mb2" onclick="openPromoFromCab(${newIdx})" style="color:var(--orange);border-color:var(--orange)">⚡ Продвинуть</button><button class="mb2 dn">Снять</button></td>`;
+    tbl.insertBefore(tr,tbl.firstChild)}
+
+  const exp=new Date(Date.now()+30*24*3600*1000);
+  document.getElementById('newId').textContent='#IL-'+String(newId).toString().slice(-5);
+  document.getElementById('newAdr').textContent=addr.slice(0,32)+(addr.length>32?'…':'');
+  document.getElementById('newExp').textContent=exp.toLocaleDateString('ru-RU')+' (30 дней)';
+  document.getElementById('crLeft').textContent=userCredits;
+  goStep('success');
+  if(!savedToDb)showToast('✅ Объявление добавлено на карту!');
+}
+
+// Получить ID города по имени
+function getCityId(name){
+  const map={'Tel Aviv':1,'Jerusalem':2,'Haifa':3,'Rishon LeZion':4,'Netanya':5,'Ashdod':6,'Herzliya':7,'Raanana':8,'Petah Tikva':9,'Ramat Gan':10,'Holon':11,'Bat Yam':12,'Kiryat Yam':13,'Rehovot':14,'Eilat':15};
+  return map[name]||1;
+}
+function openPub(){
+  if(!loggedIn){openAuth('login');return}
+  document.getElementById('pubOvl').classList.add('open');
+  goStep(1);dzFiles=[];renderDz();
+  // Сброс адреса
+  selectedCityData=null;
+  document.getElementById('pubCity').value='';
+  const inp=document.getElementById('addrInp');
+  inp.value='';inp.disabled=true;inp.style.opacity='.5';inp.classList.remove('has-val');
+  const house=document.getElementById('addrHouse');
+  house.value='';house.disabled=true;house.style.opacity='.5';
+  document.getElementById('addrLat').value='';
+  document.getElementById('addrLng').value='';
+  document.getElementById('addrCityName').value='';
+  document.getElementById('addrSugg').classList.add('hid');
+  setDealType('rent');
+}
+function closePub(){document.getElementById('pubOvl').classList.remove('open')}
+function selTier(card,p,c){document.querySelectorAll('.tc').forEach(x=>x.classList.remove('on'));card.classList.add('on');tierPrice=p;tierCredits=c;document.getElementById('totPrc').textContent='₪'+p.toLocaleString();document.getElementById('payBtn').textContent='Оплатить ₪'+p.toLocaleString();document.getElementById('pubPln').textContent=c+' объявлений'}
+function chkPrice(v){document.getElementById('priceWarn').style.display=(v&&parseFloat(v)<5000)?'block':'none'}
+function genAI(){const ta=document.getElementById('pubDesc');ta.value='...';setTimeout(()=>{ta.value='Светлая квартира с качественным ремонтом. Просторная планировка, большой балкон. Рядом парк, метро, отличная транспортная доступность.';showToast('✨ AI описание готово')},900)}
+
+// DROPZONE
+function dzDrop(e){e.preventDefault();document.getElementById('dropzone').classList.remove('ov');dzAdd(e.dataTransfer.files)}
+function dzAdd(files){[...files].forEach(f=>{if(dzFiles.length>=15){showToast('Макс. 15 фото');return}if(!/image\/(jpeg|png|webp)/.test(f.type)){showToast('JPG/PNG только');return}if(f.size>10*1024*1024){showToast(f.name.slice(0,20)+' > 10 МБ');return}const r=new FileReader();r.onload=ev=>{dzFiles.push({file:f,url:ev.target.result});renderDz()};r.readAsDataURL(f)});document.getElementById('dzInp').value=''}
+function dzRemove(i){dzFiles.splice(i,1);renderDz()}
+function renderDz(){const l=document.getElementById('dzList');if(!l)return;l.innerHTML=dzFiles.map((f,i)=>`<div class="dzth" style="background-image:url('${f.url}')"><button class="dzrm" onclick="dzRemove(${i})" type="button">✕</button></div>`).join('');const cnt=document.getElementById('dzCnt');if(cnt)cnt.textContent=dzFiles.length>0?dzFiles.length+' фото выбрано':''}
+
+// AUTH
+function openAuth(mode){authMode=mode;document.getElementById('authOvl').classList.add('open');document.getElementById('authS1').style.display='';document.getElementById('authS2').style.display='none';switchTab(mode)}
+function closeAuth(){document.getElementById('authOvl').classList.remove('open')}
+function switchTab(tab){authMode=tab;const isR=tab==='register';document.getElementById('tabLg').classList.toggle('on',!isR);document.getElementById('tabRg').classList.toggle('on',isR);document.getElementById('roleWrap').style.display=isR?'':'none';document.getElementById('nameWrap').style.display=isR?'':'none';document.getElementById('authBtn').textContent=isR?'Зарегистрироваться':'Войти';document.getElementById('authTtl').textContent=(isR?'Регистрация':'Вход')+' — Nesay.il'}
+function pickRole(card,role){document.querySelectorAll('.rc').forEach(c=>c.classList.remove('on'));card.classList.add('on');selectedRole=role;}
+// ═══ I18N — полный словарь ═══
+const I18N={
+  ru:{
+    'nav.all':'Все','nav.rent':'Аренда','nav.sale':'Продажа',
+    'nav.rent_apt':'Аренда квартир','nav.rent_villa':'Аренда домов',
+    'nav.buy_apt':'Покупка квартир','nav.buy_villa':'Покупка домов',
+    'nav.signin':'Войти','nav.publish':'+ Разместить','nav.balance':'баланс',
+    'nav.promote':'⚡ Продвижение',
+    'role.agent':'Агент','role.owner':'Собственник','role.buyer':'Покупатель',
+    'search.placeholder':'Город, район, улица...',
+    'filter.all':'🏠 Все','filter.rent':'🔵 Аренда','filter.sale':'🟠 Продажа',
+    'filter.rooms12':'1–2 комн.','filter.rooms34':'3–4 комн.',
+    'filter.saferoom':'Безоп. комн.','filter.parking':'Парковка',
+    'filter.balcony':'Балкон','filter.garden':'Сад','filter.sea':'Море 🌊','filter.new':'Новые',
+    'sort.label':'Релевантность','sort.rel':'🎯 Релевантность',
+    'sort.price_asc':'💰 Цена ↑','sort.price_desc':'💰 Цена ↓','sort.new':'🆕 Сначала новые',
+    'count':'Найдено','count_obj':'объектов',
+    'map.rent':'🔵 Аренда','map.sale':'🟠 Продажа','map.objects':'объектов',
+    'city.haifa':'⚓ Хайфа','city.kyam':'🏖 К.-Ям','city.ta':'🌆 ТА',
+    'city.rishon':'🌇 Ришон','city.raanana':'🏘 Раанана',
+    'deal.rent':'🔵 Аренда','deal.sale':'🟠 Продажа',
+    'card.rooms':'комн.','card.sqm':'м²','card.floor':'эт.',
+    'card.save':'Сохранить','card.compare':'Сравнить',
+    'card.load_more':'Загрузить ещё →',
+    'card.empty_title':'Объявлений не найдено','card.empty_sub':'Попробуйте изменить фильтры',
+    'card.reset':'Сбросить фильтры',
+    'detail.rooms':'комн.','detail.sqm':'м²','detail.floor':'этаж',
+    'detail.honesty':'Индекс честности',
+    'detail.wa':'💬 WhatsApp','detail.call':'📞 Позвонить','detail.chat':'💬 Написать в чат',
+    'agent.type.agent':'Агент','agent.type.owner':'Владелец','agent.type.agency':'Агентство',
+    'auth.title_login':'Вход в Nesay.il','auth.title_reg':'Регистрация — Nesay.il',
+    'auth.login':'Войти','auth.register':'Регистрация',
+    'auth.btn_login':'Войти','auth.btn_register':'Зарегистрироваться',
+    'auth.email':'Email','auth.password':'Пароль','auth.name':'Имя',
+    'auth.or':'или','auth.google':'Войти через Google',
+    'auth.2fa':'2FA — Подтверждение','auth.2fa_sub':'Введите 6-значный код из Google Authenticator',
+    'auth.2fa_btn':'Подтвердить',
+    'role.buyer_title':'Клиент','role.buyer_sub':'Аренда или покупка для себя',
+    'role.agent_title':'Риелтор / Агентство','role.agent_sub':'Сдать или продать за комиссию',
+    'role.owner_title':'Собственник','role.owner_sub':'Сдаю или продаю без %',
+    'pub.title':'Новое объявление','pub.step1':'Объект','pub.step2':'Фото','pub.step3':'Тариф','pub.step4':'Оплата',
+    'pub.deal_rent':'🔵 Аренда','pub.deal_sale':'🟠 Продажа',
+    'pub.city':'Город','pub.street':'Улица','pub.house':'Дом №',
+    'pub.price':'Цена (₪)','pub.sqm':'Площадь (м²)','pub.floor':'Этаж','pub.reno':'Ремонт',
+    'pub.desc':'Расскажите об объекте — это увеличивает число откликов...',
+    'pub.ai':'✨ AI описание','pub.next':'Далее','pub.back':'← Назад',
+    'pub.photo_title':'Загрузите фото объекта','pub.photo_sub':'Хорошие фото увеличивают отклики в 3–5 раз',
+    'pub.drop':'Перетащите фото или нажмите для выбора','pub.drop_sub':'До 15 файлов · JPG/PNG · макс. 10 МБ',
+    'pub.choose':'Выбрать файлы',
+    'pub.balance_label':'Баланс','pub.buy_more':'Купить ещё','pub.use_credit':'✅ Использовать кредит из баланса',
+    'pub.pay_card':'💳 Банковская карта',
+    'pub.card_num':'Номер карты','pub.card_exp':'ММ/ГГ','pub.card_cvv':'CVV',
+    'pub.pay_btn':'Оплатить',
+    'pub.success':'Объявление опубликовано! 🎉',
+    'pub.success_sub':'Ваш объект добавлен на карту и виден всем пользователям',
+    'pub.listing_id':'ID объявления','pub.address':'Адрес','pub.expires':'Активно до',
+    'pub.balance_left':'Остаток баланса','pub.close':'Закрыть',
+    'pub.price_warn':'⚠️ Цена ниже рыночной — потребуется модерация.',
+    'pub.reno.new':'Новый','pub.reno.fresh':'Свежий ремонт','pub.reno.cosm':'Косметический','pub.reno.needs':'Требует ремонта',
+    'pub.prop.apt':'Квартира','pub.prop.villa':'Дом/Вилла','pub.prop.studio':'Студия','pub.prop.comm':'Коммерческая',
+    'pub.rooms_label':'Комнат',
+    'cab.dash':'Дашборд','cab.listings':'Объявления','cab.billing':'Подписка','cab.profile':'Профиль',
+    'cab.views_today':'Просмотров сегодня','cab.messages':'Новых сообщений','cab.rating':'Рейтинг',
+    'cab.week_chart':'Просмотры за неделю',
+    'cab.verified':'Верифицированный агент','cab.verified_sub':'Документы проверены',
+    'cab.my_listings':'Мои объявления',
+    'cab.col_obj':'Объект','cab.col_status':'Статус','cab.col_views':'Просм.','cab.col_actions':'Действия',
+    'cab.active':'Активно','cab.inactive':'Неактивно',
+    'cab.promote':'⚡ ТОП','cab.remove':'Снять',
+    'cab.balance':'Баланс','cab.topup':'Пополнить','cab.tx_title':'История транзакций','cab.no_tx':'Пока нет транзакций',
+    'cab.topup_entry':'Пополнение',
+    'cab.save':'Сохранить','cab.logout':'Выйти',
+    'cab.phone':'Телефон','cab.name':'Имя',
+    'topup.title':'Пополнение баланса','topup.current':'Текущий баланс:',
+    'topup.card_num':'Номер карты','topup.card_exp':'ММ/ГГ','topup.card_cvv':'CVV',
+    'topup.summary':'К оплате','topup.btn':'Пополнить на',
+    'topup.plan1':'Старт','topup.plan2':'Базовый','topup.plan3':'Профи','topup.plan4':'Агентство',
+    'topup.popular':'Популярный',
+    'promo.title':'Поднять в ТОП','promo.sub':'24 часа в топе ленты',
+    'promo.views':'В 5–8 раз больше просмотров','promo.pin':'Закрепляется выше всех',
+    'promo.cost':'Стоимость','promo.pay':'⚡ Оплатить ₪50','promo.cancel':'Отмена',
+    'chat.placeholder':'Написать...',
+    'cmp.title':'Сравнение объектов','cmp.close':'Закрыть',
+    'cmp.price':'Цена','cmp.rooms':'Комнат','cmp.sqm':'Площадь','cmp.sqm_price':'₪/м²','cmp.honesty':'Честность',
+    'toast.saved':'✅ Сохранено в базе данных!',
+    'toast.welcome':'✅ Добро пожаловать,',
+    'toast.balance':'— ваш баланс',
+    'toast.loading':'Загружено ещё...',
+    'toast.need_auth':'Войдите чтобы сохранить',
+    'toast.max_cmp':'Максимум 3 объекта для сравнения',
+    'err.price':'❌ Укажите цену','err.street':'❌ Укажите улицу','err.city':'❌ Выберите город',
+    'err.email':'Введите email','err.pass':'Минимум 8 символов',
+    'err.card':'❌ Введите номер карты','err.exp':'❌ Введите срок действия','err.cvv':'❌ Введите CVV',
+    'days':['Пн','Вт','Ср','Чт','Пт','Сб','Вс'],
+    'addr.manual_prompt':'Введите адрес вручную и нажмите «Далее»',
+    'addr.manual_btn':'Ввести вручную:',
+    'addr.searching':'🔍 Поиск...','addr.not_found':'Улица не найдена автоматически.',
+    'addr.unavail':'Поиск недоступен','addr.enter_manual':'Ввести адрес вручную',
+    'addr.toast':'📍 Адрес введён вручную',
+    'mo':'мес.','per_mo':'/мес',
+    'confirm.remove':'Снять объявление?',
+    'loading':'Загрузка...','err.load':'Ошибка загрузки','server.down':'Сервер недоступен',
+    'no_listings':'Объявлений пока нет',
+    'topup.processing':'Обрабатываем...',
+    'topup.topup_word':'Пополнить на',
+    'topup.success':'✅ Баланс пополнен на',
+    'topup.pay_method':'Способ оплаты',
+    'pub.1_listing':'1 объявление','pub.per_unit':'₪100/шт',
+  },
+  en:{
+    'nav.all':'All','nav.rent':'Rent','nav.sale':'Sale',
+    'nav.rent_apt':'Rent Apartments','nav.rent_villa':'Rent Houses',
+    'nav.buy_apt':'Buy Apartments','nav.buy_villa':'Buy Houses',
+    'nav.signin':'Sign In','nav.publish':'+ List Property','nav.balance':'balance',
+    'nav.promote':'⚡ Promote',
+    'role.agent':'Agent','role.owner':'Owner','role.buyer':'Buyer',
+    'search.placeholder':'City, area, street...',
+    'filter.all':'🏠 All','filter.rent':'🔵 Rent','filter.sale':'🟠 Sale',
+    'filter.rooms12':'1–2 rooms','filter.rooms34':'3–4 rooms',
+    'filter.saferoom':'Safe room','filter.parking':'Parking',
+    'filter.balcony':'Balcony','filter.garden':'Garden','filter.sea':'Sea 🌊','filter.new':'New',
+    'sort.label':'Relevance','sort.rel':'🎯 Relevance',
+    'sort.price_asc':'💰 Price ↑','sort.price_desc':'💰 Price ↓','sort.new':'🆕 Newest first',
+    'count':'Found','count_obj':'listings',
+    'map.rent':'🔵 Rent','map.sale':'🟠 Sale','map.objects':'listings',
+    'city.haifa':'⚓ Haifa','city.kyam':'🏖 Kiryat Yam','city.ta':'🌆 Tel Aviv',
+    'city.rishon':'🌇 Rishon','city.raanana':'🏘 Raanana',
+    'deal.rent':'🔵 Rent','deal.sale':'🟠 Sale',
+    'card.rooms':'rooms','card.sqm':'m²','card.floor':'fl.',
+    'card.save':'Save','card.compare':'Compare',
+    'card.load_more':'Load more →',
+    'card.empty_title':'No listings found','card.empty_sub':'Try changing your filters',
+    'card.reset':'Reset filters',
+    'detail.rooms':'rooms','detail.sqm':'m²','detail.floor':'floor',
+    'detail.honesty':'Honesty index',
+    'detail.wa':'💬 WhatsApp','detail.call':'📞 Call','detail.chat':'💬 Chat',
+    'agent.type.agent':'Agent','agent.type.owner':'Owner','agent.type.agency':'Agency',
+    'auth.title_login':'Sign In to Nesay.il','auth.title_reg':'Register — Nesay.il',
+    'auth.login':'Sign In','auth.register':'Register',
+    'auth.btn_login':'Sign In','auth.btn_register':'Create Account',
+    'auth.email':'Email','auth.password':'Password','auth.name':'Name',
+    'auth.or':'or','auth.google':'Continue with Google',
+    'auth.2fa':'2FA Verification','auth.2fa_sub':'Enter the 6-digit code from Google Authenticator',
+    'auth.2fa_btn':'Confirm',
+    'role.buyer_title':'Buyer','role.buyer_sub':'Looking to rent or buy',
+    'role.agent_title':'Agent / Agency','role.agent_sub':'List properties for commission',
+    'role.owner_title':'Owner','role.owner_sub':'Renting or selling directly',
+    'pub.title':'New Listing','pub.step1':'Property','pub.step2':'Photos','pub.step3':'Plan','pub.step4':'Payment',
+    'pub.deal_rent':'🔵 Rent','pub.deal_sale':'🟠 Sale',
+    'pub.city':'City','pub.street':'Street','pub.house':'House №',
+    'pub.price':'Price (₪)','pub.sqm':'Area (m²)','pub.floor':'Floor','pub.reno':'Condition',
+    'pub.desc':'Tell about the property — this increases responses...',
+    'pub.ai':'✨ AI description','pub.next':'Next','pub.back':'← Back',
+    'pub.photo_title':'Upload property photos','pub.photo_sub':'Good photos increase responses 3–5x',
+    'pub.drop':'Drag photos or click to select','pub.drop_sub':'Up to 15 files · JPG/PNG · max 10 MB',
+    'pub.choose':'Choose files',
+    'pub.balance_label':'Balance','pub.buy_more':'Buy more','pub.use_credit':'✅ Use balance credit',
+    'pub.pay_card':'💳 Bank Card',
+    'pub.card_num':'Card number','pub.card_exp':'MM/YY','pub.card_cvv':'CVV',
+    'pub.pay_btn':'Pay',
+    'pub.success':'Listing published! 🎉',
+    'pub.success_sub':'Your property is on the map and visible to all users',
+    'pub.listing_id':'Listing ID','pub.address':'Address','pub.expires':'Active until',
+    'pub.balance_left':'Balance left','pub.close':'Close',
+    'pub.price_warn':'⚠️ Price is below market — moderation required.',
+    'pub.reno.new':'New','pub.reno.fresh':'Recently renovated','pub.reno.cosm':'Cosmetic','pub.reno.needs':'Needs renovation',
+    'pub.prop.apt':'Apartment','pub.prop.villa':'House/Villa','pub.prop.studio':'Studio','pub.prop.comm':'Commercial',
+    'pub.rooms_label':'Rooms',
+    'cab.dash':'Dashboard','cab.listings':'Listings','cab.billing':'Billing','cab.profile':'Profile',
+    'cab.views_today':'Views today','cab.messages':'New messages','cab.rating':'Rating',
+    'cab.week_chart':'Views this week',
+    'cab.verified':'Verified agent','cab.verified_sub':'Documents checked',
+    'cab.my_listings':'My Listings',
+    'cab.col_obj':'Property','cab.col_status':'Status','cab.col_views':'Views','cab.col_actions':'Actions',
+    'cab.active':'Active','cab.inactive':'Inactive',
+    'cab.promote':'⚡ TOP','cab.remove':'Remove',
+    'cab.balance':'Balance','cab.topup':'Top Up','cab.tx_title':'Transaction history','cab.no_tx':'No transactions yet',
+    'cab.topup_entry':'Top-up',
+    'cab.save':'Save','cab.logout':'Sign Out',
+    'cab.phone':'Phone','cab.name':'Name',
+    'topup.title':'Top Up Balance','topup.current':'Current balance:',
+    'topup.card_num':'Card number','topup.card_exp':'MM/YY','topup.card_cvv':'CVV',
+    'topup.summary':'Total','topup.btn':'Pay',
+    'topup.plan1':'Starter','topup.plan2':'Basic','topup.plan3':'Pro','topup.plan4':'Agency',
+    'topup.popular':'Popular',
+    'promo.title':'Boost to TOP','promo.sub':'24 hours at top of feed',
+    'promo.views':'5–8x more views','promo.pin':'Pinned above all listings',
+    'promo.cost':'Cost','promo.pay':'⚡ Pay ₪50','promo.cancel':'Cancel',
+    'chat.placeholder':'Write a message...',
+    'cmp.title':'Compare listings','cmp.close':'Close',
+    'cmp.price':'Price','cmp.rooms':'Rooms','cmp.sqm':'Area','cmp.sqm_price':'₪/m²','cmp.honesty':'Honesty',
+    'toast.saved':'✅ Saved to database!',
+    'toast.welcome':'✅ Welcome,',
+    'toast.balance':'— your balance',
+    'toast.loading':'Loading more...',
+    'toast.need_auth':'Sign in to save',
+    'toast.max_cmp':'Max 3 items to compare',
+    'err.price':'❌ Enter price','err.street':'❌ Enter street','err.city':'❌ Select city',
+    'err.email':'Enter email','err.pass':'Minimum 8 characters',
+    'err.card':'❌ Enter card number','err.exp':'❌ Enter expiry date','err.cvv':'❌ Enter CVV',
+    'days':['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+    'addr.manual_prompt':'Street not found. Enter manually and press Next',
+    'addr.manual_btn':'Enter manually:',
+    'addr.searching':'🔍 Searching...','addr.not_found':'Street not found automatically.',
+    'addr.unavail':'Search unavailable','addr.enter_manual':'Enter address manually',
+    'addr.toast':'📍 Address entered manually',
+    'mo':'mo.','per_mo':'/mo',
+    'confirm.remove':'Remove this listing?',
+    'loading':'Loading...','err.load':'Failed to load','server.down':'Server unavailable',
+    'no_listings':'No listings yet',
+    'topup.processing':'Processing...','topup.topup_word':'Pay','topup.success':'✅ Balance topped up by',
+    'topup.pay_method':'Payment method',
+    'pub.1_listing':'1 listing','pub.per_unit':'₪100/each',
+  },
+  he:{
+    'nav.all':'הכל','nav.rent':'שכירות','nav.sale':'מכירה',
+    'nav.rent_apt':'השכרת דירות','nav.rent_villa':'השכרת בתים',
+    'nav.buy_apt':'קניית דירות','nav.buy_villa':'קניית בתים',
+    'nav.signin':'כניסה','nav.publish':'+ פרסם מודעה','nav.balance':'יתרה',
+    'nav.promote':'⚡ קידום',
+    'role.agent':'סוכן','role.owner':'בעל נכס','role.buyer':'קונה',
+    'search.placeholder':'עיר, שכונה, רחוב...',
+    'filter.all':'🏠 הכל','filter.rent':'🔵 שכירות','filter.sale':'🟠 מכירה',
+    'filter.rooms12':'1–2 חד\'','filter.rooms34':'3–4 חד\'',
+    'filter.saferoom':'ממ"ד','filter.parking':'חניה',
+    'filter.balcony':'מרפסת','filter.garden':'גינה','filter.sea':'ים 🌊','filter.new':'חדש',
+    'sort.label':'רלוונטיות','sort.rel':'🎯 רלוונטיות',
+    'sort.price_asc':'💰 מחיר ↑','sort.price_desc':'💰 מחיר ↓','sort.new':'🆕 החדשים קודם',
+    'count':'נמצאו','count_obj':'מודעות',
+    'map.rent':'🔵 שכירות','map.sale':'🟠 מכירה','map.objects':'מודעות',
+    'city.haifa':'⚓ חיפה','city.kyam':'🏖 קריית ים','city.ta':'🌆 תל אביב',
+    'city.rishon':'🌇 ראשון','city.raanana':'🏘 רעננה',
+    'deal.rent':'🔵 שכירות','deal.sale':'🟠 מכירה',
+    'card.rooms':'חד\'','card.sqm':'מ"ר','card.floor':'קומה',
+    'card.save':'שמור','card.compare':'השווה',
+    'card.load_more':'טען עוד →',
+    'card.empty_title':'לא נמצאו מודעות','card.empty_sub':'נסה לשנות את הפילטרים',
+    'card.reset':'איפוס פילטרים',
+    'detail.rooms':'חד\'','detail.sqm':'מ"ר','detail.floor':'קומה',
+    'detail.honesty':'מדד אמינות',
+    'detail.wa':'💬 ווטסאפ','detail.call':'📞 התקשר','detail.chat':'💬 שלח הודעה',
+    'agent.type.agent':'סוכן','agent.type.owner':'בעל נכס','agent.type.agency':'משרד תיווך',
+    'auth.title_login':'כניסה ל-Nesay.il','auth.title_reg':'הרשמה — Nesay.il',
+    'auth.login':'כניסה','auth.register':'הרשמה',
+    'auth.btn_login':'כניסה','auth.btn_register':'הרשמה',
+    'auth.email':'אימייל','auth.password':'סיסמה','auth.name':'שם',
+    'auth.or':'או','auth.google':'כניסה עם גוגל',
+    'auth.2fa':'אימות דו-שלבי','auth.2fa_sub':'הכנס קוד 6 ספרות מ-Google Authenticator',
+    'auth.2fa_btn':'אשר',
+    'role.buyer_title':'לקוח','role.buyer_sub':'מחפש שכירות או קנייה',
+    'role.agent_title':'מתווך / משרד','role.agent_sub':'להשכיר או למכור בעמלה',
+    'role.owner_title':'בעל נכס','role.owner_sub':'משכיר או מוכר ישירות',
+    'pub.title':'מודעה חדשה','pub.step1':'נכס','pub.step2':'תמונות','pub.step3':'תעריף','pub.step4':'תשלום',
+    'pub.deal_rent':'🔵 שכירות','pub.deal_sale':'🟠 מכירה',
+    'pub.city':'עיר','pub.street':'רחוב','pub.house':'מס\' בית',
+    'pub.price':'מחיר (₪)','pub.sqm':'שטח (מ"ר)','pub.floor':'קומה','pub.reno':'מצב',
+    'pub.desc':'ספר על הנכס — זה מגדיל את מספר הפניות...',
+    'pub.ai':'✨ תיאור AI','pub.next':'הבא','pub.back':'← חזור',
+    'pub.photo_title':'העלה תמונות לנכס','pub.photo_sub':'תמונות טובות מגדילות פניות פי 3–5',
+    'pub.drop':'גרור תמונות או לחץ לבחירה','pub.drop_sub':'עד 15 קבצים · JPG/PNG · מקסימום 10 מ"ב',
+    'pub.choose':'בחר קבצים',
+    'pub.balance_label':'יתרה','pub.buy_more':'קנה עוד','pub.use_credit':'✅ השתמש בקרדיט',
+    'pub.pay_card':'💳 כרטיס אשראי',
+    'pub.card_num':'מספר כרטיס','pub.card_exp':'MM/YY','pub.card_cvv':'CVV',
+    'pub.pay_btn':'שלם',
+    'pub.success':'המודעה פורסמה! 🎉',
+    'pub.success_sub':'הנכס שלך על המפה וגלוי לכל המשתמשים',
+    'pub.listing_id':'מזהה מודעה','pub.address':'כתובת','pub.expires':'פעיל עד',
+    'pub.balance_left':'יתרה נותרת','pub.close':'סגור',
+    'pub.price_warn':'⚠️ מחיר נמוך מהשוק — נדרש בדיקת מנהל.',
+    'pub.reno.new':'חדש','pub.reno.fresh':'שיפוץ טרי','pub.reno.cosm':'קוסמטי','pub.reno.needs':'דרוש שיפוץ',
+    'pub.prop.apt':'דירה','pub.prop.villa':'בית/וילה','pub.prop.studio':'סטודיו','pub.prop.comm':'מסחרי',
+    'pub.rooms_label':'חדרים',
+    'cab.dash':'לוח בקרה','cab.listings':'מודעות','cab.billing':'חיוב','cab.profile':'פרופיל',
+    'cab.views_today':'צפיות היום','cab.messages':'הודעות חדשות','cab.rating':'דירוג',
+    'cab.week_chart':'צפיות השבוע',
+    'cab.verified':'סוכן מאומת','cab.verified_sub':'מסמכים נבדקו',
+    'cab.my_listings':'המודעות שלי',
+    'cab.col_obj':'נכס','cab.col_status':'סטטוס','cab.col_views':'צפיות','cab.col_actions':'פעולות',
+    'cab.active':'פעיל','cab.inactive':'לא פעיל',
+    'cab.promote':'⚡ TOP','cab.remove':'הסר',
+    'cab.balance':'יתרה','cab.topup':'הפקד','cab.tx_title':'היסטוריית עסקאות','cab.no_tx':'אין עסקאות עדיין',
+    'cab.topup_entry':'הפקדה',
+    'cab.save':'שמור','cab.logout':'יציאה',
+    'cab.phone':'טלפון','cab.name':'שם',
+    'topup.title':'טעינת יתרה','topup.current':'יתרה נוכחית:',
+    'topup.card_num':'מספר כרטיס','topup.card_exp':'MM/YY','topup.card_cvv':'CVV',
+    'topup.summary':'סה"כ לתשלום','topup.btn':'שלם',
+    'topup.plan1':'סטארט','topup.plan2':'בסיסי','topup.plan3':'פרו','topup.plan4':'משרד',
+    'topup.popular':'פופולרי',
+    'promo.title':'קדם לTOP','promo.sub':'24 שעות בראש הפיד',
+    'promo.views':'פי 5–8 יותר צפיות','promo.pin':'מוצמד מעל כולם',
+    'promo.cost':'עלות','promo.pay':'⚡ שלם ₪50','promo.cancel':'ביטול',
+    'chat.placeholder':'כתוב הודעה...',
+    'cmp.title':'השוואת נכסים','cmp.close':'סגור',
+    'cmp.price':'מחיר','cmp.rooms':'חדרים','cmp.sqm':'שטח','cmp.sqm_price':'₪/מ"ר','cmp.honesty':'אמינות',
+    'toast.saved':'✅ נשמר במסד הנתונים!',
+    'toast.welcome':'✅ ברוך הבא,',
+    'toast.balance':'— יתרתך',
+    'toast.loading':'טוען עוד...',
+    'toast.need_auth':'כנס כדי לשמור',
+    'toast.max_cmp':'מקסימום 3 נכסים להשוואה',
+    'err.price':'❌ הכנס מחיר','err.street':'❌ הכנס רחוב','err.city':'❌ בחר עיר',
+    'err.email':'הכנס אימייל','err.pass':'מינימום 8 תווים',
+    'err.card':'❌ הכנס מספר כרטיס','err.exp':'❌ הכנס תוקף','err.cvv':'❌ הכנס CVV',
+    'days':['ב\'','ג\'','ד\'','ה\'','ו\'','ש\'','א\''],
+    'addr.manual_prompt':'הרחוב לא נמצא. הכנס ידנית ולחץ "הבא"',
+    'addr.manual_btn':'הכנס ידנית:',
+    'addr.searching':'🔍 מחפש...','addr.not_found':'הרחוב לא נמצא אוטומטית.',
+    'addr.unavail':'החיפוש לא זמין','addr.enter_manual':'הכנס כתובת ידנית',
+    'addr.toast':'📍 כתובת הוכנסה ידנית',
+    'mo':'חו\'','per_mo':'/חו\'',
+    'confirm.remove':'להסיר את המודעה?',
+    'loading':'טוען...','err.load':'שגיאה בטעינה','server.down':'השרת לא זמין',
+    'no_listings':'אין מודעות עדיין',
+    'topup.processing':'מעבד...','topup.topup_word':'שלם','topup.success':'✅ היתרה הוטענה ב-',
+    'topup.pay_method':'אמצעי תשלום',
+    'pub.1_listing':'מודעה אחת','pub.per_unit':'₪100/יחידה',
+  }
+};
+
+function t(k){return (I18N[lang]||I18N.ru)[k]||k;}
+
+// ═══ API — подключение к серверу ═══
+const API='http://10.100.102.101:4000/api';
+
+async function doAuth(){
+  const email=document.getElementById('authEmail')?.value?.trim();
+  const pass=document.querySelector('#authS1 input[type="password"]')?.value;
+  const name=document.getElementById('authName')?.value?.trim();
+  if(!email){showToast(t('err.email'));return}
+  if(!pass||pass.length<8){showToast(t('err.pass'));return}
+  const btn=document.getElementById('authBtn');
+  btn.textContent='...';btn.disabled=true;
+  try{
+    const url=authMode==='register'?`${API}/auth/register`:`${API}/auth/login`;
+    const body=authMode==='register'
+      ?{email,password:pass,name:name||'Пользователь',role:selectedRole==='owner'?'owner':(selectedRole==='agent'?'agent':'buyer')}
+      :{email,password:pass};
+    const res=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const data=await res.json();
+    if(!res.ok){showToast('❌ '+(data.error||'Ошибка'));return}
+    localStorage.setItem('nesay_token',data.token);
+    // Получаем свежие данные из БД (включая актуальные кредиты)
+    const meRes=await fetch(`${API}/auth/me`,{headers:{Authorization:'Bearer '+data.token}});
+    const freshUser=meRes.ok?(await meRes.json()):data.user;
+    finishAuth(freshUser);
+    setTimeout(()=>refreshCredits(),300);
+  }catch(e){showToast('❌ '+t('server.down'));}
+  finally{btn.textContent=authMode==='register'?'Зарегистрироваться':'Войти';btn.disabled=false}
+}
+function tfin(inp,idx){if(inp.value.length===1&&idx<5)document.querySelectorAll('#tfd input')[idx+1].focus()}
+function tfkey(e,idx){if(e.key==='Backspace'&&idx>0&&!e.target.value)document.querySelectorAll('#tfd input')[idx-1].focus()}
+function verify2FA(){const code=Array.from(document.querySelectorAll('#tfd input')).map(i=>i.value).join('');if(code.length===6)finishAuth('agent@nesay.il');else showToast('Введите все 6 цифр')}
+function finishAuth(user){
+  const u=typeof user==='object'?user:{email:user,name:'Пользователь',role:selectedRole||'buyer',credits:0};
+  loggedIn=true;
+  const isAgent=u.role==='agent'||u.role==='owner';
+  closeAuth();
+  document.getElementById('navGuest').style.display='none';
+  document.getElementById('navUser').style.display='flex';
+  const displayName=u.name||(u.email||'').split('@')[0]||'Пользователь';
+  // Навбар
+  document.getElementById('navNm').textContent=displayName;
+  const roleEl=document.getElementById('navRl');roleEl.textContent=isAgent?(u.role==='owner'?t('role.owner'):t('role.agent')):t('role.buyer');roleEl.dataset.role=u.role||'buyer';
+  document.getElementById('navAv').textContent=displayName.slice(0,2).toUpperCase();
+  document.getElementById('navCr').style.display=isAgent?'':'none';
+  userCredits=u.credits||0;
+  document.getElementById('navCr').textContent='₪'+userCredits+' '+t('nav.balance');
+  // Кабинет
+  const cabAv=document.getElementById('cabAv');if(cabAv)cabAv.textContent=displayName.slice(0,2).toUpperCase();
+  const cabNm=document.getElementById('cabNm');if(cabNm)cabNm.textContent=displayName+(u.verified?' ✓':'');
+  const cabEmail=document.getElementById('cabEmail');if(cabEmail)cabEmail.textContent=u.email||'';
+  const profName=document.getElementById('profName');if(profName)profName.value=displayName;
+  const cabCr=document.getElementById('cabCr');if(cabCr)cabCr.textContent='₪'+userCredits;
+  const crBal=document.getElementById('crBal');if(crBal)crBal.textContent='₪'+userCredits;
+  showToast(t('toast.welcome')+' '+displayName+'!');
+}
+function doOAuth(){selectedRole='agent';setTimeout(()=>finishAuth('agent@nesay.il'),900)}
+function reqAuth(){if(!loggedIn)openAuth('login');else openPub()}
+function logout(){loggedIn=false;localStorage.removeItem('nesay_token');closeCab();document.getElementById('navGuest').style.display='flex';document.getElementById('navUser').style.display='none';showToast('👋')}
+
+// CHAT
+function openChat(){document.getElementById('chatOvl').classList.add('open');document.querySelector('.cn').style.display='none';setTimeout(()=>document.getElementById('chatMsgs').scrollTop=9999,50)}
+function closeChat(){document.getElementById('chatOvl').classList.remove('open')}
+function sendMsg(){const inp=document.getElementById('chatInp');const txt=inp.value.trim();if(!txt)return;inp.value='';const msgs=document.getElementById('chatMsgs'),typ=document.getElementById('typInd');const d=document.createElement('div');d.className='msg in';d.innerHTML=`<div class="mb">${txt}</div><div class="mm">${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div>`;msgs.insertBefore(d,typ);msgs.scrollTop=msgs.scrollHeight;typ.style.display='';msgs.scrollTop=msgs.scrollHeight;setTimeout(()=>{typ.style.display='none';const r=['👍','!מעולה','OK!','Отлично!'];const x=document.createElement('div');x.className='msg out';x.innerHTML=`<div class="mb">${r[Math.floor(Math.random()*r.length)]}</div><div class="mm">${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})} ✓✓</div>`;msgs.insertBefore(x,typ);msgs.scrollTop=msgs.scrollHeight},1400)}
+
+// CABINET
+function openCab(){document.getElementById('cabOvl').classList.add('open');renderWkChart();loadMyListings()}
+async function loadMyListings(){
+  const token=localStorage.getItem('nesay_token');
+  if(!token)return;
+  const tbl=document.getElementById('cabListTbl');
+  if(!tbl)return;
+  tbl.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--ink3);padding:20px">Загрузка...</td></tr>';
+  try{
+    const res=await fetch(`${API}/listings/my/all`,{headers:{Authorization:'Bearer '+token}});
+    if(!res.ok){tbl.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--ink3);padding:20px">Ошибка загрузки</td></tr>';return}
+    const data=await res.json();
+    if(!data.length){tbl.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--ink3);padding:20px">Объявлений пока нет</td></tr>';return}
+    tbl.innerHTML=data.map((d,i)=>{
+      const cn=d.city_name||{};const city=cn.ru||cn.en||'';
+      const addr=(d.street||'')+(d.house_number?' '+d.house_number:'')+(city?', '+city:'');
+      const price='₪'+parseInt(d.price).toLocaleString()+(d.deal_type==='rent'?'/мес':'');
+      const status=d.status==='active'?'<span class="sd sa"></span>Активно':'<span class="sd sx"></span>Неактивно';
+      return `<tr>
+        <td><b>${addr.split(',')[0]||'Без адреса'}</b><br><span style="font-size:11px;color:var(--ink3)">${price} · ${d.rooms} комн.</span></td>
+        <td>${status}</td>
+        <td>👁 ${d.views||0} &nbsp; ❤️ ${d.fav_count||0}</td>
+        <td style="display:flex;gap:5px;flex-wrap:wrap">
+          <button class="mb2" onclick="openPromoModal()" style="color:var(--orange);border-color:var(--orange)">⚡ ТОП</button>
+          <button class="mb2 dn" onclick="deleteMyListing('${d.id}',this)">Снять</button>
+        </td>
+      </tr>`;
+    }).join('');
+  }catch(e){tbl.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--ink3);padding:20px">Сервер недоступен</td></tr>'}
+}
+async function deleteMyListing(id,btn){
+  if(!confirm(t('confirm.remove')))return;
+  const token=localStorage.getItem('nesay_token');
+  try{
+    const res=await fetch(`${API}/listings/${id}`,{method:'DELETE',headers:{Authorization:'Bearer '+token}});
+    if(res.ok){btn.closest('tr').remove();showToast('✅ Объявление снято')}
+  }catch(e){showToast('❌ Ошибка')}
+}
+function closeCab(){document.getElementById('cabOvl').classList.remove('open')}
+function swCab(tab){document.querySelectorAll('.cabt').forEach((b,i)=>b.classList.toggle('on',['dash','list','bill','prof'][i]===tab));document.querySelectorAll('.cabp').forEach(p=>p.classList.remove('on'));document.getElementById('cab-'+tab).classList.add('on')}
+function renderWkChart(){const data=[12,28,19,35,42,23,30];const days=t('days');const max=Math.max(...data);const ch=document.getElementById('wkChart');if(!ch)return;ch.innerHTML=data.map((v,i)=>`<div class="brc"><div class="bv">${v}</div><div class="br ${i===4?'hi':''}" style="height:${v/max*100}%"></div><div class="bdy">${days[i]}</div></div>`).join('')}
+
+// PROMO
+function openPromoModal(idx){promoTargetIdx=idx;document.getElementById('promoOvl').classList.add('open')}
+function closePromo(){document.getElementById('promoOvl').classList.remove('open')}
+function payPromo(){const btn=document.getElementById('promoPayBtn');btn.textContent='...';btn.disabled=true;setTimeout(()=>{if(promoTargetIdx>=0){listings[promoTargetIdx].promoted=true;listings[promoTargetIdx]._promoMins=1440}closePromo();applyFilter();showToast('⚡ TOP 24h активирован!')},900)}
+setInterval(()=>{let ch=false;listings.forEach(d=>{if(d.promoted&&d._promoMins>0){d._promoMins=Math.max(0,d._promoMins-1/60);if(d._promoMins<=0)d.promoted=false;ch=true}});if(ch)renderCards(filteredListings)},1000);
+
+// COMPARE
+function toggleCmp(idx){const btn=document.getElementById('cmpB'+idx);const a=cmpList.indexOf(idx);if(a>=0){cmpList.splice(a,1);if(btn){btn.style.color='var(--ink3)';btn.style.background='none';btn.style.borderColor='var(--line)'}}else{if(cmpList.length>=3){showToast(t('toast.max_cmp'));return}cmpList.push(idx);if(btn){btn.style.color='var(--c)';btn.style.background='var(--cl)';btn.style.borderColor='var(--c)'}}updCmpBar()}
+function updCmpBar(){const bar=document.getElementById('cmpBar');bar.classList.toggle('open',cmpList.length>0);for(let s=0;s<3;s++){const sl=document.getElementById('cs'+s);if(!sl)continue;if(s<cmpList.length){const d=listings[cmpList[s]];sl.className='csl fl';sl.innerHTML=`<span class="csn">${d.addr[lang].split(',')[0]}</span><button class="csrm" onclick="toggleCmp(${cmpList[s]})">✕</button>`}else{sl.className='csl';sl.innerHTML=`<span style="font-size:18px;opacity:.3">+</span>`}}document.getElementById('doCmp').disabled=cmpList.length<2}
+function clearCmp(){cmpList.forEach(i=>{const b=document.getElementById('cmpB'+i);if(b){b.style.color='var(--ink3)';b.style.background='none';b.style.borderColor='var(--line)'}});cmpList=[];updCmpBar()}
+function openCmpT(){if(cmpList.length<2)return;const items=cmpList.map(i=>listings[i]);const prices=items.map(d=>d.priceNum);const psm=items.map((d,i)=>Math.round(prices[i]/d.sqm));const rows=[{l:'Цена',vals:items.map((d,i)=>({v:'₪'+prices[i].toLocaleString(),best:prices[i]===Math.min(...prices),worst:prices[i]===Math.max(...prices)&&cmpList.length>1}))},{l:'Комнат',vals:items.map(d=>({v:d.rooms,best:d.rooms===Math.max(...items.map(x=>x.rooms))}))},{l:'Площадь',vals:items.map(d=>({v:d.sqm+' м²',best:d.sqm===Math.max(...items.map(x=>x.sqm))}))},{l:'₪/м²',vals:items.map((d,i)=>({v:'₪'+psm[i].toLocaleString(),best:psm[i]===Math.min(...psm),worst:psm[i]===Math.max(...psm)&&cmpList.length>1}))},{l:'Честность',vals:items.map(d=>({v:d.agent.honesty+'/100',best:d.agent.honesty===Math.max(...items.map(x=>x.agent.honesty))}))}];const hd='<thead><tr><th></th>'+items.map(d=>`<th><div style="font-size:28px;margin-bottom:6px">${d.icon}</div><div style="font-size:15px;font-weight:900;color:var(--ink)">₪${d.priceNum.toLocaleString()}</div><div style="font-size:11px;color:var(--ink3)">${d.addr[lang].split(',')[0]}</div></th>`).join('')+'</tr></thead>';const body='<tbody>'+rows.map(r=>`<tr><td>${r.l}</td>${r.vals.map(v=>`<td class="${v.best?'bv2':''} ${v.worst?'wv':''}">${v.v}</td>`).join('')}</tr>`).join('')+'</tbody>';document.getElementById('cmpTbl').innerHTML=hd+body;document.getElementById('cmpOvl').classList.add('open')}
+function closeCmpT(){document.getElementById('cmpOvl').classList.remove('open')}
+
+// LANG
+function setLang(l){
+  lang=l;
+  const isHe=l==='he';
+  document.querySelectorAll('.lb').forEach(b=>{const txt=b.textContent.trim();b.classList.toggle('on',(l==='he'&&txt==='עב')||(l==='ru'&&txt==='РУ')||(l==='en'&&txt==='EN'))});
+  document.documentElement.lang=l;
+  document.documentElement.dir=isHe?'rtl':'ltr';
+  document.body.dir=isHe?'rtl':'ltr';
+  // Mobile elements always LTR
+  ['M-bar','M-list-wrap','M-tabs'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el)el.setAttribute('dir','ltr');
+  });
+  const si=document.getElementById('searchInput');if(si)si.placeholder=t('search.placeholder');
+  const ttMap={'ttAll':'filter.all','ttRent':'filter.rent','ttSale':'filter.sale'};
+  Object.entries(ttMap).forEach(([id,key])=>{const el=document.getElementById(id);if(el)el.textContent=t(key)});
+  const pillMap={'rooms12':'filter.rooms12','rooms34':'filter.rooms34','safeRoom':'filter.saferoom','parking':'filter.parking','balcony':'filter.balcony','garden':'filter.garden','sea':'filter.sea','new':'filter.new'};
+  document.querySelectorAll('.fpill[data-filter]').forEach(p=>{const k=pillMap[p.dataset.filter];if(k)p.textContent=t(k)});
+  const sortKeyMap={'rel':'sort.rel','price-asc':'sort.price_asc','price-desc':'sort.price_desc','new':'sort.new'};
+  const slbl=document.getElementById('sortLbl');if(slbl)slbl.textContent=t(sortKeyMap[currentSort]||'sort.label').replace(/^[\u{1F3AF}\u{1F4B0}\u{1F195}\s]*/u,'');
+  document.querySelectorAll('.smi').forEach(mi=>{const k=sortKeyMap[mi.dataset.v];if(k)mi.textContent=t(k)});
+  const mcntSpan=document.querySelector('.mcnt span');if(mcntSpan)mcntSpan.textContent=t('map.objects');
+  const chi=document.getElementById('chatInp');if(chi)chi.placeholder=t('chat.placeholder');
+  applyI18nStatic();
+  applyFilter();
+  renderWkChart();
+  if(loggedIn){document.getElementById('navCr').textContent='\u20aa'+userCredits+' '+t('nav.balance');}
+}
+
+// MISC
+async function toggleFav(btn,idx){
+  const d=listings[idx];
+  const token=localStorage.getItem('nesay_token');
+  if(!token){showToast(t('toast.need_auth'));return}
+  const liked=btn.textContent.includes('❤️');
+  btn.textContent=liked?'🤍':'❤️';
+  if(d&&d.id&&String(d.id).length>10){
+    try{
+      const res=await fetch(`${API}/listings/${d.id}/favorite`,{method:'POST',headers:{Authorization:'Bearer '+token}});
+      if(res.ok){
+        const rd=await res.json();
+        if(d)d.fav_count=rd.count;
+        showToast(rd.liked?'❤️ '+t('card.save'):'✕ '+t('card.save'));
+      }
+    }catch(e){}
+  }else{showToast(liked?'✕':'❤️ '+t('card.save'))}
+}
+let _tt;
+function showToast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>el.classList.remove('show'),2800)}
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.sdd'))document.getElementById('smn')?.classList.remove('open');
+  if(!e.target.closest('.aw'))document.getElementById('addrSugg')?.classList.add('hid');
+});
+
+// Keyboard navigation for address suggestions
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape')document.getElementById('addrSugg')?.classList.add('hid');
+});
+
+// TOPUP — пополнение баланса
+let topupAmount=500,topupCredits=5;
+function openTopup(){document.getElementById('topupOvl').classList.add('open');document.getElementById('topupBal').textContent='₪'+userCredits}
+function closeTopup(){document.getElementById('topupOvl').classList.remove('open')}
+function selTopup(card,amount,credits){document.querySelectorAll('#topupOvl .tc').forEach(c=>c.classList.remove('on'));card.classList.add('on');topupAmount=amount;topupCredits=amount;/* shekels = amount */document.getElementById('topupTotal').textContent='₪'+amount.toLocaleString();document.getElementById('topupBtn').textContent='Пополнить на ₪'+amount.toLocaleString()}
+async function doTopup(){
+  const card=document.getElementById('topupCard')?.value?.replace(/\s/g,'');
+  const exp=document.getElementById('topupExp')?.value;
+  const cvv=document.getElementById('topupCvv')?.value;
+  if(!card||card.length<16){showToast('❌ Введите номер карты');return}
+  if(!exp||exp.length<5){showToast('❌ Введите срок действия');return}
+  if(!cvv||cvv.length<3){showToast('❌ Введите CVV');return}
+  const btn=document.getElementById('topupBtn');btn.textContent='Обрабатываем...';btn.disabled=true;
+  setTimeout(async()=>{
+    try{
+      const token=localStorage.getItem('nesay_token');
+      const res=await fetch(`${API}/payments/topup`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({amount:topupAmount,credits:topupCredits})});
+      if(res.ok){
+        const rd=await res.json();
+        userCredits=rd.credits||userCredits+topupAmount;
+        document.getElementById('navCr').textContent='₪'+userCredits+' '+t('nav.balance');
+        const cabCr=document.getElementById('cabCr');if(cabCr)cabCr.textContent='₪'+userCredits;
+        const tb=document.getElementById('topupBal');if(tb)tb.textContent='₪'+userCredits;
+        const hist=document.getElementById('txHistory');
+        if(hist){if(hist.textContent.includes('Пока нет'))hist.innerHTML='';const row=document.createElement('div');row.style.cssText='display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line);font-size:12px';row.innerHTML=`<span style="color:var(--ink2)">Пополнение</span><span style="color:var(--green);font-weight:700">+₪${topupAmount}</span>`;hist.insertBefore(row,hist.firstChild)}
+        closeTopup();showToast('✅ Баланс пополнен на ₪'+topupAmount+'!');
+      }else{showToast('❌ Ошибка оплаты')}
+    }catch(e){userCredits+=topupAmount;document.getElementById('navCr').textContent='₪'+userCredits+' баланс';const cabCr=document.getElementById('cabCr');if(cabCr)cabCr.textContent='₪'+userCredits;closeTopup();showToast('✅ Баланс пополнен на ₪'+topupAmount+'!')}
+    btn.textContent='Пополнить на ₪'+topupAmount.toLocaleString();btn.disabled=false;
+  },2000);
+}
+
+// ═══ PROMO FROM CABINET ═══
+function openPromoFromCab(idx){promoTargetIdx=idx;closeCab();document.getElementById('promoOvl').classList.add('open')}
+
+// ═══ INDEXEDDB — сохранение объявлений с фото (лимит ~гигабайты) ═══
+const DB_NAME='nesay_db', DB_VER=2, STORE='listings';
+let db=null;
+
+function openDB(){
+  return new Promise((res,rej)=>{
+    if(db){res(db);return}
+    const req=indexedDB.open(DB_NAME,DB_VER);
+    req.onupgradeneeded=e=>{
+      const d=e.target.result;
+      if(!d.objectStoreNames.contains(STORE))d.createObjectStore(STORE,{keyPath:'id'});
+    };
+    req.onsuccess=e=>{db=e.target.result;res(db)};
+    req.onerror=e=>rej(e.target.error);
+  });
+}
+
+async function saveUserListings(){
+  try{
+    const idb=await openDB();
+    const userL=listings.filter(d=>d._userAdded);
+    const tx=idb.transaction(STORE,'readwrite');
+    const store=tx.objectStore(STORE);
+    // Сохраняем ПОЛНОСТЬЮ включая userPhoto (base64)
+    userL.forEach(d=>store.put({...d}));
+    await new Promise((res,rej)=>{tx.oncomplete=res;tx.onerror=e=>rej(e.target.error)});
+  }catch(e){console.warn('IDB save:',e)}
+}
+
+async function loadUserListings(){
+  try{
+    const idb=await openDB();
+    const tx=idb.transaction(STORE,'readonly');
+    const store=tx.objectStore(STORE);
+    const all=await new Promise((res,rej)=>{
+      const req=store.getAll();
+      req.onsuccess=e=>res(e.target.result);
+      req.onerror=e=>rej(e.target.error);
+    });
+    // Восстанавливаем: сортируем по id убыванию (новые первыми)
+    all.sort((a,b)=>b.id-a.id).forEach(d=>{
+      if(!listings.find(x=>x.id===d.id)){
+        d._userAdded=true;
+        listings.unshift(d);
+      }
+    });
+    // После загрузки — рендерим с реальными фото
+    filteredListings=getFiltered();
+    renderCards(filteredListings);
+    if(mapLoaded)rebuildMarkers(filteredListings);
+  }catch(e){console.warn('IDB load:',e)}
+}
+
+// ═══ АВТОВХОД при открытии страницы ═══
+async function tryAutoLogin(){
+  const token=localStorage.getItem('nesay_token');
+  if(!token)return;
+  try{
+    const res=await fetch(`${API}/auth/me`,{headers:{Authorization:'Bearer '+token}});
+    if(res.ok){
+      const user=await res.json();
+      user.credits=Number(user.credits)||0;
+      finishAuth(user);
+      setTimeout(()=>refreshCredits(),300);
+    }
+    else localStorage.removeItem('nesay_token');
+  }catch(e){}
+}
+
+// Обновить кредиты с сервера
+async function refreshCredits(){
+  const token=localStorage.getItem('nesay_token');
+  if(!token)return;
+  try{
+    const res=await fetch(API+'/auth/me',{headers:{'Authorization':'Bearer '+token}});
+    if(res.ok){
+      const u=await res.json();
+      userCredits=Number(u.credits)||0;
+      document.getElementById('navCr').textContent='₪'+userCredits+' '+t('nav.balance');
+      const cabCr=document.getElementById('cabCr');if(cabCr)cabCr.textContent='₪'+userCredits;
+      const crBal=document.getElementById('crBal');if(crBal)crBal.textContent='₪'+userCredits;
+      showToast('₪'+userCredits+' — ваш баланс');
+    }
+  }catch(e){showToast('Сервер недоступен');}
+}
+
+// ═══ PHOTO SLIDER ═══
+const slideIdx={};
+function slidePhoto(idx,dir){
+  if(!slideIdx[idx])slideIdx[idx]=0;
+  const d=listings[idx];
+  const photos=d.allPhotos||(d.userPhoto?[d.userPhoto]:[]);
+  if(photos.length<2)return;
+  slideIdx[idx]=(slideIdx[idx]+dir+photos.length)%photos.length;
+  const sl=document.getElementById('slides_'+idx);
+  if(sl)sl.style.transform=`translateX(-${slideIdx[idx]*100}%)`;
+  const dots=document.getElementById('dots_'+idx);
+  if(dots){dots.querySelectorAll('.slide-dot').forEach((d,i)=>d.classList.toggle('on',i===slideIdx[idx]))}
+}
+
+// ═══ TOP MIXING — алгоритм как OLX ═══
+function mixPromoted(data){
+  const promoted=data.filter(d=>d.promoted);
+  const normal=data.filter(d=>!d.promoted);
+  if(!promoted.length)return data;
+  const result=[];
+  let pi=0,ni=0,pos=0;
+  while(ni<normal.length||pi<promoted.length){
+    // Каждые 3 обычных — 1 топовое (ротация)
+    if(pi<promoted.length&&pos%4===0){
+      result.push(promoted[pi%promoted.length]);pi++;
+    } else if(ni<normal.length){
+      result.push(normal[ni]);ni++;
+    } else if(pi<promoted.length){
+      result.push(promoted[pi%promoted.length]);pi++;
+    }
+    pos++;
+  }
+  return result;
+}
+
+// Apply i18n on page load
+function applyI18nStatic(){
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const k=el.getAttribute('data-i18n');
+    if(k)el.textContent=t(k);
+  });
+}
+
+// INIT — карта и карточки сначала без пользовательских объявлений,
+// потом IndexedDB подгружает их асинхронно с фото
+applyI18nStatic();
+filteredListings=getFiltered();
+renderCards(filteredListings);
+renderWkChart();
+try{initMap()}catch(e){console.warn('Mapbox:',e)}
+// Грузим сохранённые объявления (включая фото) из IndexedDB
+loadUserListings();
+// Автовход если токен сохранён в localStorage
+tryAutoLogin();
+// Загружаем объявления из базы данных
+(async function loadFromDB(){
+  try{
+    const res=await fetch(API+'/listings?limit=50');
+    if(!res.ok)return;
+    const data=await res.json();
+    const dbListings=data.listings||[];
+    if(!dbListings.length)return;
+    let added=0;
+    dbListings.forEach(function(d){
+      if(listings.find(function(x){return String(x.id)===String(d.id);}))return;
+      var cn=d.city_name||{};
+      var cityName=cn[lang]||cn.ru||cn.en||'';
+      var street=(d.street||'')+(d.house_number?' '+d.house_number:'');
+      var addr=[street,cityName].filter(Boolean).join(', ')||'Адрес не указан';
+      var desc=d.description||{};
+      listings.unshift({
+        id:d.id,
+        dealType:d.deal_type,
+        promoted:d.promoted||false,
+        allPhotos:d.all_photos||[],
+        thumb:'linear-gradient(135deg,#1C6EF2,#0d5480)',
+        icon:'🏠',
+        priceNum:parseInt(d.price)||0,
+        addr:{ru:addr,he:addr,en:addr},
+        rooms:parseFloat(d.rooms)||1,
+        sqm:parseInt(d.sqm)||0,
+        floor:d.floor||'—',
+        tags:{ru:['Активно ✓'],he:['פעיל ✓'],en:['Active ✓']},
+        hi:[0],
+        desc:{ru:desc.ru||desc.en||'',he:desc.he||'',en:desc.en||desc.ru||''},
+        agent:{
+          name:d.agent_name||'Агент',
+          initials:(d.agent_name||'АГ').slice(0,2).toUpperCase(),
+          type:d.agent_role||'agent',
+          verified:d.agent_verified||false,
+          deals:0,rating:0,reviews:0,honesty:50
+        },
+        views:parseInt(d.views)||0,
+        fav_count:parseInt(d.fav_count)||0,
+        badge:'new',
+        lat:parseFloat(d.lat)||32.0853,
+        lng:parseFloat(d.lng)||34.7818
+      });
+      added++;
+    });
+    if(added>0){
+      filteredListings=getFiltered();
+      renderCards(filteredListings);
+      if(mapLoaded)rebuildMarkers(filteredListings);
+    }
+  }catch(e){console.warn('DB load error:',e);}
+})();
+</script>
+
+
+
+
+
+<!-- ═════════════ MOBILE UI ═════════════ -->
+
+<!-- TOP BAR -->
+<div id="M-bar" dir="ltr">
+  <div class="M-row">
+    <div class="M-search">
+      <span style="font-size:16px;color:var(--ink3)">🔍</span>
+      <input id="M-q" type="text" placeholder="Город, район, улица..."
+             oninput="M.search(this.value)">
+    </div>
+    <div class="M-lang lsw">
+      <button class="lb" onclick="M.lang('he')">עב</button>
+      <button class="lb on" onclick="M.lang('ru')">РУ</button>
+      <button class="lb" onclick="M.lang('en')">EN</button>
+    </div>
+    <div class="M-avatar" id="M-av" onclick="M.avatarClick()">👤</div>
+  </div>
+  <div class="M-row">
+    <div class="M-pills" id="M-pills">
+      <button class="M-pill all" id="Mp-all"  onclick="M.setType('all',this)">🏠 Все</button>
+      <button class="M-pill"     id="Mp-rent" onclick="M.setType('rent',this)">🔵 Аренда</button>
+      <button class="M-pill"     id="Mp-sale" onclick="M.setType('sale',this)">🟠 Продажа</button>
+    </div>
+  </div>
+</div>
+
+<!-- LIST WRAP -->
+<div id="M-list-wrap" dir="ltr">
+  <div class="M-list-head">
+    <span class="M-list-cnt" id="M-cnt">0 объектов</span>
+    <span class="M-list-sort" onclick="M.cycleSort()">
+      <span id="M-sort-ico">🎯</span>
+      <span id="M-sort-lbl">Релевантность</span> ▾
+    </span>
+  </div>
+  <div id="M-cards"></div>
+</div>
+
+<!-- TAB BAR -->
+<div id="M-tabs" dir="ltr">
+  <button class="M-tab" id="Mt-map"  onclick="M.tab('map')">
+    <span class="M-tab-ico">🗺</span>
+    <span class="M-tab-lbl">Карта</span>
+  </button>
+  <button class="M-tab on" id="Mt-list" onclick="M.tab('list')">
+    <span class="M-tab-ico">📋</span>
+    <span class="M-tab-lbl">Объявления</span>
+  </button>
+  <button class="M-tab" id="Mt-fav"  onclick="M.tab('fav')">
+    <span class="M-tab-ico">❤️</span>
+    <span class="M-tab-lbl">Избранные</span>
+    <span class="M-tab-badge" id="M-fav-badge"></span>
+  </button>
+  <button class="M-tab" id="Mt-me"   onclick="M.tab('me')">
+    <span class="M-tab-ico" id="Mt-me-ico">👤</span>
+    <span class="M-tab-lbl" id="Mt-me-lbl">Войти</span>
+  </button>
+</div>
+
+<!-- FAB -->
+<button id="M-fab" onclick="M.fab()">✏️</button>
+
+<script>
+
+// ═══════════════════════════════════════════
+//  MOBILE — чистая реализация
+// ═══════════════════════════════════════════
+(function(){
+
+const IS_MOB = Math.min(window.screen.width, window.screen.height) <= 768
+            || window.innerWidth <= 768;
+
+if (IS_MOB) document.documentElement.classList.add('mob');
+
+if (!IS_MOB) return; // вся логика только для мобилки
+
+// ── STATE ──
+let favIds   = new Set();
+let curTab   = 'map';
+let sortIdx  = 0;
+let favOnly  = false;
+
+const SORTS = [
+  { key:'rel',        ico:'🎯', ru:'Релевантность', en:'Relevance',  he:'רלוונטיות' },
+  { key:'price-asc',  ico:'💰', ru:'Цена ↑',        en:'Price ↑',    he:'מחיר ↑'   },
+  { key:'price-desc', ico:'💰', ru:'Цена ↓',        en:'Price ↓',    he:'מחיר ↓'   },
+  { key:'new',        ico:'🆕', ru:'Новые',          en:'Newest',     he:'חדשים'    },
+];
+
+// ── RENDER CARDS ──
+function renderMob() {
+  const container = document.getElementById('M-cards');
+  if (!container) return;
+
+  const data = favOnly
+    ? filteredListings.filter(d => favIds.has(String(d.id)))
+    : filteredListings;
+
+  // count
+  const cntEl = document.getElementById('M-cnt');
+  if (cntEl) cntEl.textContent = data.length + ' ' + t('count_obj');
+
+  if (!data.length) {
+    container.innerHTML =
+      '<div class="M-empty">'
+      + '<div class="M-empty-ico">' + (favOnly ? '❤️' : '🔍') + '</div>'
+      + '<div class="M-empty-title">' + (favOnly ? 'Нет избранных' : t('card.empty_title')) + '</div>'
+      + '<div class="M-empty-sub">'  + (favOnly ? 'Нажмите ❤️ на карточке' : t('card.empty_sub')) + '</div>'
+      + '</div>';
+    return;
+  }
+
+  container.innerHTML = '';
+  data.slice(0, 60).forEach(function(d) {
+    const idx = listings.indexOf(d);
+    if (idx < 0) return;
+    const isR  = d.dealType === 'rent';
+    const pStr = '₪' + d.priceNum.toLocaleString() + (isR ? '/' + t('mo') : '');
+    const photos = d.allPhotos || (d.userPhoto ? [d.userPhoto] : []);
+    const ph   = photos[0] || null;
+    const isFav = favIds.has(String(d.id));
+
+    const div = document.createElement('div');
+    div.className = 'Mc' + (d.promoted ? ' promo' : '');
+    div.setAttribute('dir','ltr');
+
+    let img = ph
+      ? '<div class="Mc-bg" style="background:url(\'' + ph + '\') center/cover"></div>'
+      : '<div class="Mc-bg" style="background:' + d.thumb + '"></div>'
+        + '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:28px">' + d.icon + '</div>';
+
+    div.innerHTML =
+      '<div class="Mc-stripe ' + (isR ? 'r' : 's') + '"></div>'
+      + '<div class="Mc-img">'
+        + img
+        + (d.promoted ? '<div class="Mc-promo">⚡ TOP</div>' : '')
+      + '</div>'
+      + '<div class="Mc-body">'
+        + '<div class="Mc-top">'
+          + '<div>'
+            + '<span class="Mc-badge ' + (isR ? 'r' : 's') + '">' + (isR ? t('deal.rent') : t('deal.sale')) + '</span>'
+            + '<div class="Mc-price">' + pStr + '</div>'
+          + '</div>'
+          + '<button class="Mc-fav" onclick="event.stopPropagation();M.toggleFav(this,' + idx + ')">'
+            + (isFav ? '❤️' : '🤍') + '</button>'
+        + '</div>'
+        + '<div class="Mc-specs">'
+          + '<span>🛏 ' + d.rooms + ' ' + t('card.rooms') + '</span>'
+          + '<span>📐 ' + d.sqm + ' ' + t('card.sqm') + '</span>'
+          + '<span>🏢 ' + d.floor + ' ' + t('card.floor') + '</span>'
+        + '</div>'
+        + '<div class="Mc-addr">📍 ' + d.addr[lang] + '</div>'
+        + '<div class="Mc-foot">'
+          + '<span class="Mc-agent">' + d.agent.name + (d.agent.verified ? ' <span style="color:var(--green)">✓</span>' : '') + '</span>'
+          + ((d.views || 0) > 0 ? '<span class="Mc-views">👁 ' + d.views + '</span>' : '')
+        + '</div>'
+      + '</div>';
+
+    div.onclick = function() { openDetail(idx); };
+    container.appendChild(div);
+  });
+}
+
+// ── FAV BADGE ──
+function updateFavBadge() {
+  const badge = document.getElementById('M-fav-badge');
+  if (!badge) return;
+  if (favIds.size > 0) {
+    badge.style.display = 'flex';
+    badge.textContent = favIds.size;
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
+// ── PUBLIC API ──
+window.M = {
+
+  search: function(q) {
+    const si = document.getElementById('searchInput');
+    if (si) { si.value = q; applyFilter(); }
+  },
+
+  lang: function(l) {
+    setLang(l);
+    // sync mob lang buttons
+    document.querySelectorAll('.M-lang .lb').forEach(function(b) {
+      const txt = b.textContent.trim();
+      b.classList.toggle('on',
+        (l==='he'&&txt==='עב')||(l==='ru'&&txt==='РУ')||(l==='en'&&txt==='EN'));
+    });
+    // sync pills text
+    var pills = { all: t('filter.all'), rent: t('filter.rent'), sale: t('filter.sale') };
+    Object.keys(pills).forEach(function(k) {
+      var el = document.getElementById('Mp-' + k);
+      if (el) el.textContent = pills[k];
+    });
+    renderMob();
+  },
+
+  setType: function(type, btn) {
+    favOnly = false;
+    activeType = type; activeCat = type;
+    document.querySelectorAll('.M-pill').forEach(function(p) {
+      p.classList.remove('all','rent','sale');
+    });
+    btn.classList.add(type === 'all' ? 'all' : type);
+    applyFilter();
+  },
+
+  cycleSort: function() {
+    sortIdx = (sortIdx + 1) % SORTS.length;
+    const s = SORTS[sortIdx];
+    currentSort = s.key;
+    var icoEl = document.getElementById('M-sort-ico');
+    var lblEl = document.getElementById('M-sort-lbl');
+    if (icoEl) icoEl.textContent = s.ico;
+    if (lblEl) lblEl.textContent = s[lang] || s.ru;
+    applyFilter();
+  },
+
+  tab: function(name) {
+    curTab = name;
+    document.querySelectorAll('.M-tab').forEach(function(b) { b.classList.remove('on'); });
+    var el = document.getElementById('Mt-' + name);
+    if (el) el.classList.add('on');
+
+    // Show/hide map vs list
+    var ma = document.querySelector('.ma');
+    var lw = document.getElementById('M-list-wrap');
+
+    if (name === 'map') {
+      favOnly = false;
+      if (ma) { ma.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:64px;height:auto'; }
+      if (lw) lw.style.display = 'none';
+      if (window.map) setTimeout(function(){map.resize();},200);
+    } else if (name === 'list') {
+      favOnly = false;
+      if (ma) { ma.style.cssText = 'height:45vh;flex-shrink:0'; }
+      if (lw) { lw.style.display = 'flex'; lw.style.flex = '1'; }
+      if (window.map) setTimeout(function(){map.resize();},200);
+      renderMob();
+    } else if (name === 'fav') {
+      favOnly = true;
+      if (ma) { ma.style.cssText = 'height:45vh;flex-shrink:0'; }
+      if (lw) { lw.style.display = 'flex'; lw.style.flex = '1'; }
+      renderMob();
+    } else if (name === 'me') {
+      if (window.loggedIn) openCab();
+      else openAuth('login');
+    }
+  },
+
+  avatarClick: function() {
+    if (window.loggedIn) openCab(); else openAuth('login');
+  },
+
+  fab: function() {
+    if (window.loggedIn) openPub(); else openAuth('login');
+  },
+
+  toggleFav: function(btn, idx) {
+    const d = listings[idx];
+    if (!d) return;
+    const id = String(d.id);
+    if (favIds.has(id)) {
+      favIds.delete(id);
+      btn.textContent = '🤍';
+    } else {
+      favIds.add(id);
+      btn.textContent = '❤️';
+    }
+    updateFavBadge();
+    // Call main toggleFav for API
+    toggleFav(btn, idx);
+    if (favOnly) renderMob();
+  },
+
+  onAuthDone: function(user) {
+    const nm = (user.name || '').slice(0,2).toUpperCase() || '👤';
+    const av = document.getElementById('M-av');
+    const ico = document.getElementById('Mt-me-ico');
+    const lbl = document.getElementById('Mt-me-lbl');
+    if (av)  { av.textContent = nm; av.classList.add('auth'); }
+    if (ico) ico.textContent = nm;
+    if (lbl) lbl.textContent = t('cab.profile');
+  },
+
+  afterRender: function(data) {
+    renderMob();
+    const cntEl = document.getElementById('M-cnt');
+    if (cntEl) cntEl.textContent = (data||filteredListings).length + ' ' + t('count_obj');
+  }
+};
+
+// ── HOOK renderCards ──
+var _origRC = window.renderCards;
+window.renderCards = function(data) {
+  _origRC(data);
+  setTimeout(function() { M.afterRender(data); }, 0);
+};
+
+// ── HOOK finishAuth ──
+var _origFA = window.finishAuth;
+window.finishAuth = function(user) {
+  _origFA(user);
+  var u = typeof user === 'object' ? user : { name:'' };
+  M.onAuthDone(u);
+};
+
+// ── INIT ──
+function init() {
+  // Стартовое состояние — список объявлений
+  M.tab('list');
+  renderMob();
+  // sync lang
+  document.querySelectorAll('.M-lang .lb').forEach(function(b) {
+    const txt = b.textContent.trim();
+    b.classList.toggle('on',
+      (lang==='he'&&txt==='עב')||(lang==='ru'&&txt==='РУ')||(lang==='en'&&txt==='EN'));
+  });
+  // initial count
+  var cntEl = document.getElementById('M-cnt');
+  if (cntEl) cntEl.textContent = filteredListings.length + ' ' + t('count_obj');
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  setTimeout(init, 100);
+}
+
+})();
+
+</script>
+</body>
+</html>
