@@ -547,6 +547,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:var(--nav-h);
    Активируется через JS class .mob на <html>
 ═══════════════════════════════════════════ */
 
+/* Prevent accidental marker clicks during map pan */
+.mapboxgl-marker { cursor: pointer; }
+html.mob .mapboxgl-canvas { touch-action: pan-x pan-y; }
 /* Скрываем мобильный UI на десктопе */
 #M-bar, #M-list-wrap, #M-tabs, #M-fab { display:none }
 
@@ -1518,6 +1521,15 @@ function initMap(){
   map.addControl(new mapboxgl.AttributionControl({compact:true}),'bottom-right');
   map.scrollZoom.setWheelZoomRate(1/450);
   map.on('load',()=>{
+    // Set map language based on current lang
+    try{
+      const mapLang=lang==='he'?'he':lang==='en'?'en':'ru';
+      map.getStyle().layers.forEach(layer=>{
+        if(layer.type==='symbol'&&layer.layout&&layer.layout['text-field']){
+          map.setLayoutProperty(layer.id,'text-field',['get','name_'+mapLang]||['get','name']);
+        }
+      });
+    }catch(e){}
     mapLoaded=true;
     try{if(!map.getLayer('3d-buildings')&&map.getSource('composite'))map.addLayer({id:'3d-buildings',source:'composite','source-layer':'building',filter:['==','extrude','true'],type:'fill-extrusion',minzoom:14,paint:{'fill-extrusion-color':['interpolate',['linear'],['get','height'],0,'#12173a',20,'#1a2050',50,'#1e2860',100,'#222d70'],'fill-extrusion-height':['interpolate',['linear'],['zoom'],14,0,14.05,['get','height']],'fill-extrusion-base':['interpolate',['linear'],['zoom'],14,0,14.05,['get','min_height']],'fill-extrusion-opacity':0.88}})}catch(e){}
     rebuildMarkers(filteredListings);
@@ -2539,6 +2551,8 @@ function closeCmpT(){document.getElementById('cmpOvl').classList.remove('open')}
 // LANG
 function setLang(l){
   lang=l;
+  setTimeout(function(){updateMapLang(l);},100);
+  document.querySelectorAll('#M-bar .lb').forEach(function(b){var txt=b.textContent.trim();b.classList.toggle('on',(l==='he'&&txt==='עב')||(l==='ru'&&txt==='РУ')||(l==='en'&&txt==='EN'));});
   const isHe=l==='he';
   document.querySelectorAll('.lb').forEach(b=>{const txt=b.textContent.trim();b.classList.toggle('on',(l==='he'&&txt==='עב')||(l==='ru'&&txt==='РУ')||(l==='en'&&txt==='EN'))});
   document.documentElement.lang=l;
@@ -2563,6 +2577,24 @@ function setLang(l){
   applyFilter();
   renderWkChart();
   if(loggedIn){document.getElementById('navCr').textContent='\u20aa'+userCredits+' '+t('nav.balance');}
+  // Sync mob lang buttons
+  document.querySelectorAll('#M-bar .lb').forEach(function(b){
+    var txt=b.textContent.trim();
+    b.classList.toggle('on',(l==='he'&&txt==='עב')||(l==='ru'&&txt==='РУ')||(l==='en'&&txt==='EN'));
+  });
+  // Update map language
+  if(window.map){
+    try{
+      var ml=l==='he'?'he':l==='en'?'en':'ru';
+      window.map.getStyle().layers.forEach(function(layer){
+        if(layer.type==='symbol'){
+          try{window.map.setLayoutProperty(layer.id,'text-field',['coalesce',['get','name_'+ml],['get','name']]);}catch(e){}
+        }
+      });
+    }catch(e){}
+  }
+  // Mob cards re-render
+  if(typeof M!=='undefined'&&M.renderCards)M.renderCards();
 }
 
 // MISC
@@ -2583,6 +2615,7 @@ async function toggleFav(btn,idx){
     }catch(e){}
   }else{showToast(liked?'✕':'❤️ '+t('card.save'))}
 }
+function updateMapLang(l){if(!window.map)return;try{var ml=l==='he'?'he':l==='en'?'en':'ru';window.map.getStyle().layers.forEach(function(layer){if(layer.type==='symbol'){try{window.map.setLayoutProperty(layer.id,'text-field',['coalesce',['get','name_'+ml],['get','name']]);}catch(e){}}});}catch(e){}}
 let _tt;
 function showToast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>el.classList.remove('show'),2800)}
 document.addEventListener('click',e=>{
@@ -2964,7 +2997,7 @@ function renderMob() {
       '<div class="Mc-stripe ' + (isR ? 'r' : 's') + '"></div>'
       + '<div class="Mc-img">'
         + img
-        + (d.promoted ? '<div class="Mc-promo">⚡ TOP</div>' : '')
+        + (d.promoted ? '<div style="position:absolute;top:6px;left:6px;background:linear-gradient(90deg,#F59E0B,#EF4444);color:#fff;font-size:9px;font-weight:800;padding:2px 6px;border-radius:4px">⚡</div>' : '')
       + '</div>'
       + '<div class="Mc-body">'
         + '<div class="Mc-top">'
