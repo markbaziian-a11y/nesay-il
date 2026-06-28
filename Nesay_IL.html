@@ -547,327 +547,103 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:var(--nav-h);
    Активируется через JS class .mob на <html>
 ═══════════════════════════════════════════ */
 
-/* Prevent accidental marker clicks during map pan */
-.mapboxgl-marker { cursor: pointer; }
-html.mob .mapboxgl-canvas { touch-action: pan-x pan-y; }
-/* Скрываем мобильный UI на десктопе */
-#M-bar, #M-list-wrap, #M-tabs, #M-fab { display:none }
+/* ═══════════════════════════════════════════════════════
+   NESAY.IL — PREMIUM MOBILE UI
+   Уровень: Airbnb × Bird × Yad2
+═══════════════════════════════════════════════════════ */
 
-html.mob #M-bar,
-html.mob #M-list-wrap,
-html.mob #M-tabs,
-html.mob #M-fab { display:flex }
-
-html.mob #M-list-wrap { display:flex }
-
-/* ── Когда мобилка активна ── */
-html.mob nav        { display:none !important }
-html.mob .sb        { display:none !important }
-html.mob .wab,
-html.mob .cf        { display:none !important }
-html.mob body       { overflow:hidden; height:100dvh }
-
-html.mob .layout {
-  display:flex !important;
-  flex-direction:column !important;
-  padding-top:0 !important;
-  height:100dvh;
-  height:100vh;
-  overflow:hidden;
+/* ── Базовые переменные ── */
+:root {
+  --mob-radius: 22px;
+  --mob-tab-h: 72px;
+  --mob-sheet-handle: 80px;
+  --mob-safe-top: env(safe-area-inset-top, 0px);
+  --mob-safe-bot: env(safe-area-inset-bottom, 0px);
+  --glass: rgba(255,255,255,0.92);
+  --glass-blur: blur(24px);
+  --shadow-card: 0 2px 16px rgba(0,0,0,0.10), 0 1px 4px rgba(0,0,0,0.06);
+  --shadow-float: 0 8px 32px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.10);
+  --shadow-fab: 0 8px 28px rgba(28,110,242,0.45);
 }
 
-/* Карта — верхняя половина */
-html.mob .ma {
-  position:relative !important;
-  height:45vh !important;
-  width:100% !important;
-  flex-shrink:0 !important;
-  order:1;
-  min-height:0;
-}
-
-/* ─── TOP BAR поверх карты ─── */
-#M-bar {
-  position:absolute;
-  top:0; left:0; right:0;
-  z-index:50;
-  flex-direction:column;
-  gap:8px;
-  padding:12px 12px 0;
-  pointer-events:none;
-}
-#M-bar > * { pointer-events:all }
-
-.M-row { display:flex; gap:8px; align-items:center }
-
-/* Поиск */
-.M-search {
-  flex:1; display:flex; align-items:center; gap:8px;
-  height:46px; padding:0 14px;
-  background:rgba(255,255,255,.97);
-  border-radius:16px;
-  box-shadow:0 4px 20px rgba(0,0,0,.18);
-}
-.M-search input {
-  flex:1; border:none; background:none; outline:none;
-  font-family:var(--font); font-size:14px; color:var(--ink);
-}
-.M-search input::placeholder { color:var(--ink3) }
-
-/* Аватар / кнопка входа */
-.M-avatar {
-  width:46px; height:46px; border-radius:50%;
-  background:#fff;
-  box-shadow:0 4px 20px rgba(0,0,0,.18);
-  display:flex; align-items:center; justify-content:center;
-  font-size:11px; font-weight:800; color:var(--ink);
-  cursor:pointer; flex-shrink:0;
-  border:2px solid #fff;
-  -webkit-tap-highlight-color:transparent;
-}
-.M-avatar.auth { background:var(--c); color:#fff }
-
-/* Переключатель языка */
-.M-lang {
-  display:flex; gap:1px;
-  background:rgba(255,255,255,.97);
-  border-radius:14px; padding:4px;
-  box-shadow:0 4px 20px rgba(0,0,0,.18);
-  flex-shrink:0;
-}
-.M-lang .lb { padding:5px 8px; border-radius:10px; font-size:11px }
-.M-lang .lb.on { background:var(--c); color:#fff }
-
-/* Тип-пилюли */
-.M-pills {
-  display:flex; gap:7px;
-  overflow-x:auto; scrollbar-width:none;
-}
-.M-pills::-webkit-scrollbar { display:none }
-.M-pill {
-  flex-shrink:0; height:32px; padding:0 14px;
-  border-radius:20px; border:none;
-  font-family:var(--font); font-size:12px; font-weight:700;
-  cursor:pointer; white-space:nowrap;
-  background:rgba(255,255,255,.95);
-  color:var(--ink2);
-  box-shadow:0 2px 10px rgba(0,0,0,.12);
-  -webkit-tap-highlight-color:transparent;
-  transition:all .15s;
-}
-.M-pill.rent { background:var(--rentbg); color:var(--rent) }
-.M-pill.sale { background:var(--salebg); color:var(--sale) }
-.M-pill.all  { background:var(--c); color:#fff }
-
-/* MAP controls compact */
-html.mob .cj   { display:none }
-html.mob .mcnt { display:none }
-html.mob .mleg { display:none }
-html.mob .mcp  {
-  position:absolute;
-  right:10px; bottom:12px;
-  background:rgba(255,255,255,.96);
-  border-radius:14px;
-  box-shadow:0 4px 16px rgba(0,0,0,.13);
-  padding:3px;
-}
-html.mob .mcb  { width:36px;height:36px;font-size:14px;border-radius:10px;color:var(--ink) }
-html.mob .mcs  { background:var(--line) }
-
-/* ─── LIST WRAP — нижняя половина ─── */
-#M-list-wrap {
-  flex:1;
-  flex-direction:column;
-  background:#fff;
-  order:2;
-  overflow:hidden;
-  box-shadow:0 -4px 20px rgba(0,0,0,.08);
-  min-height:0;
-  max-height:calc(52vh - 64px);
-}
-
-/* Шапка списка */
-.M-list-head {
-  display:flex; align-items:center;
-  justify-content:space-between;
-  padding:12px 16px 10px;
-  border-bottom:1px solid var(--line);
-  flex-shrink:0;
-}
-.M-list-cnt  { font-size:13px; font-weight:700; color:var(--ink) }
-.M-list-sort {
-  display:flex; align-items:center; gap:5px;
-  font-size:12px; color:var(--ink3); cursor:pointer;
-  -webkit-tap-highlight-color:transparent;
-}
-
-/* Карточки */
-#M-cards {
-  flex:1; overflow-y:scroll !important;
-  overflow-x:hidden;
-  padding:10px 12px 80px;
-  display:flex; flex-direction:column; gap:8px;
-  -webkit-overflow-scrolling:touch;
-  scrollbar-width:none;
-  max-height:calc(52vh - 50px);
-}
-#M-cards::-webkit-scrollbar { display:none }
-
-/* Карточка */
-.Mc {
-  display:flex; border-radius:14px; overflow:hidden;
-  background:#fff; border:1px solid var(--line);
-  box-shadow:0 2px 10px rgba(0,0,0,.06);
-  cursor:pointer; flex-shrink:0;
-  -webkit-tap-highlight-color:transparent;
-  transition:transform .12s, box-shadow .12s;
-}
-.Mc:active { transform:scale(.98); box-shadow:0 1px 4px rgba(0,0,0,.08) }
-
-.Mc-stripe { width:4px; flex-shrink:0 }
-.Mc-stripe.r { background:var(--rent) }
-.Mc-stripe.s { background:var(--sale) }
-
-.Mc-img {
-  width:100px; min-width:100px;
-  position:relative; overflow:hidden; flex-shrink:0;
-}
-.Mc-bg {
-  position:absolute; inset:0;
-  background-size:cover; background-position:center;
-}
-.Mc-promo {
-  position:absolute; top:6px; left:6px;
-  background:linear-gradient(90deg,#F59E0B,#EF4444);
-  color:#fff; font-size:9px; font-weight:800;
-  padding:2px 6px; border-radius:5px; letter-spacing:.3px;
-}
-
-.Mc-body {
-  flex:1; padding:10px 11px;
-  display:flex; flex-direction:column; gap:4px; min-width:0;
-}
-.Mc-top {
-  display:flex; align-items:flex-start;
-  justify-content:space-between; gap:6px;
-}
-.Mc-badge {
-  font-size:9px; font-weight:700;
-  padding:2px 7px; border-radius:5px; display:inline-block;
-}
-.Mc-badge.r { background:var(--rentbg); color:var(--rent) }
-.Mc-badge.s { background:var(--salebg); color:var(--sale) }
-.Mc-price {
-  font-size:16px; font-weight:900; color:var(--ink);
-  letter-spacing:-.4px; margin-top:2px; line-height:1;
-}
-.Mc-fav {
-  width:28px; height:28px; border-radius:8px;
-  border:1px solid var(--line); background:#fff;
-  font-size:14px; cursor:pointer;
-  display:flex; align-items:center; justify-content:center;
-  flex-shrink:0; -webkit-tap-highlight-color:transparent;
-}
-.Mc-specs {
-  font-size:11px; color:var(--ink2);
-  display:flex; gap:7px; flex-wrap:wrap;
-}
-.Mc-addr {
-  font-size:10px; color:var(--ink3);
-  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-}
-.Mc-foot {
-  display:flex; align-items:center;
-  justify-content:space-between; margin-top:2px;
-}
-.Mc-agent { font-size:10px; color:var(--ink3) }
-.Mc-views { font-size:10px; color:var(--ink3) }
-
-/* Empty */
-.M-empty {
-  text-align:center; padding:40px 20px;
-  display:flex; flex-direction:column; align-items:center; gap:10px;
-}
-.M-empty-ico  { font-size:40px }
-.M-empty-title { font-size:15px; font-weight:700; color:var(--ink) }
-.M-empty-sub  { font-size:12px; color:var(--ink3) }
-
-/* ─── TAB BAR ─── */
-#M-tabs {
-  position:fixed; bottom:0; left:0; right:0;
-  height:64px;
-  padding-bottom:env(safe-area-inset-bottom,0px);
-  background:rgba(255,255,255,.98);
-  backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
-  border-top:1px solid rgba(0,0,0,.08);
-  align-items:stretch;
-  z-index:200;
-}
-.M-tab {
-  flex:1; display:flex; flex-direction:column;
-  align-items:center; justify-content:center; gap:2px;
-  border:none; background:none; font-family:var(--font);
-  color:var(--ink3); cursor:pointer;
-  -webkit-tap-highlight-color:transparent;
-  transition:color .12s; position:relative;
-}
-.M-tab.on { color:var(--c) }
-.M-tab-ico { font-size:22px; line-height:1 }
-.M-tab-lbl { font-size:10px; font-weight:600 }
-.M-tab-badge {
-  position:absolute; top:4px; right:calc(50% - 15px);
-  min-width:16px; height:16px; border-radius:8px;
-  background:var(--sale); color:#fff;
-  font-size:9px; font-weight:800;
-  display:none; align-items:center; justify-content:center;
-  border:2px solid #fff; padding:0 3px;
-}
-
-/* ─── FAB ─── */
-#M-fab {
-  position:fixed; right:14px; bottom:76px; z-index:200;
-  width:52px; height:52px; border-radius:50%;
-  background:var(--c); color:#fff; border:none;
-  font-size:22px; cursor:pointer; flex-shrink:0;
-  box-shadow:0 4px 20px rgba(28,110,242,.42);
-  align-items:center; justify-content:center;
-  -webkit-tap-highlight-color:transparent;
-  transition:transform .12s;
-}
-#M-fab:active { transform:scale(.92) }
-
-/* ─── DETAIL (bottom sheet) ─── */
-html.mob .dp.open { display:block }
-html.mob .dc { direction:ltr !important;
-  width:100% !important; left:0 !important; right:0 !important;
-  top:auto !important; bottom:64px !important;
-  height:88dvh !important;
-  border-radius:22px 22px 0 0;
-  border-left:none !important;
-  animation:MobUp .28s cubic-bezier(.32,.72,0,1);
-}
-@keyframes MobUp {
-  from { transform:translateY(60px); opacity:0 }
-  to   { transform:none; opacity:1 }
-}
-html.mob .dby { padding:14px 14px 100px }
-
-/* ─── MODALS ─── */
-html.mob .ovl { padding:0 !important; align-items:flex-end !important }
-html.mob .modal, html.mob .pmod,
-html.mob .cabm, html.mob .prm,
-html.mob .topup-sheet {
-  width:100% !important; max-width:100% !important;
-  border-radius:22px 22px 0 0 !important;
-  max-height:92dvh !important;
-}
-
-/* Toast */
-html.mob .tst { bottom:76px }
-
-/* Fav tab active */
-html.mob #M-list-wrap { display:flex }
-
+/* ── Скрываем десктопный UI ── */
+html.mob nav{display:none!important}html.mob .sb{display:none!important}html.mob .wab,html.mob .cf{display:none!important}
+html.mob body{overflow:hidden;height:100dvh;background:#F2F2F7}
+html.mob .layout{display:flex!important;flex-direction:column!important;padding-top:0!important;height:100dvh;overflow:hidden}
+html.mob .ma{position:relative!important;height:45vh!important;width:100%!important;flex-shrink:0!important;order:1;min-height:0}
+html.mob .cj{display:none}html.mob .mcnt{display:none}html.mob .mleg{display:none}
+html.mob .mcp{position:absolute;right:12px;bottom:14px;background:rgba(255,255,255,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,.18);padding:4px}
+html.mob .mcb{width:40px;height:40px;border-radius:12px;color:var(--ink);background:none;font-size:15px}
+html.mob .mcs{background:rgba(0,0,0,.08);margin:2px 0}
+#M-bar{position:absolute;top:0;left:0;right:0;z-index:100;padding:calc(env(safe-area-inset-top,0px) + 12px) 14px 0;display:flex;flex-direction:column;gap:9px;pointer-events:none}
+#M-bar>*{pointer-events:all}
+.M-toprow{display:flex;gap:10px;align-items:center}
+.M-search-box{flex:1;display:flex;align-items:center;gap:9px;height:48px;padding:0 16px;background:rgba(255,255,255,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.7)}
+.M-search-box input{flex:1;border:none;background:none;outline:none;font-family:var(--font);font-size:14px;color:var(--ink);font-weight:500}
+.M-search-box input::placeholder{color:var(--ink3)}
+.M-search-ico{font-size:15px;color:var(--ink3);flex-shrink:0}
+.M-av-btn{width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 8px 32px rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.7);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--ink);cursor:pointer;flex-shrink:0;transition:transform .15s;-webkit-tap-highlight-color:transparent}
+.M-av-btn:active{transform:scale(.93)}
+.M-av-btn.authed{background:var(--c);color:#fff;border-color:var(--c)}
+.M-lang-sw{display:flex;background:rgba(255,255,255,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:14px;padding:4px;gap:2px;box-shadow:0 8px 32px rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.7);flex-shrink:0}
+.M-lang-sw .lb{padding:5px 9px;border-radius:10px;font-size:11px;font-weight:700;color:var(--ink2);border:none;background:none;cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent}
+.M-lang-sw .lb.on{background:var(--c);color:#fff;box-shadow:0 2px 8px rgba(28,110,242,.3)}
+.M-pill-row{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.M-pill-row::-webkit-scrollbar{display:none}
+.M-pill{flex-shrink:0;height:34px;padding:0 16px;border-radius:20px;border:1px solid rgba(255,255,255,.6);font-family:var(--font);font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;background:rgba(255,255,255,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);color:var(--ink2);box-shadow:0 2px 12px rgba(0,0,0,.12);transition:all .18s;-webkit-tap-highlight-color:transparent}
+.M-pill.p-all{background:rgba(28,110,242,.12);color:var(--c);border-color:rgba(28,110,242,.2)}
+.M-pill.p-rent{background:var(--rentbg);color:var(--rent)}
+.M-pill.p-sale{background:var(--salebg);color:var(--sale)}
+#M-list-wrap{flex:1;display:flex;flex-direction:column;background:#F2F2F7;order:2;overflow:hidden;min-height:0}
+.M-list-head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px 10px;background:#fff;border-bottom:1px solid rgba(0,0,0,.06);flex-shrink:0}
+.M-cnt-lbl{font-size:13px;font-weight:700;color:var(--ink)}
+.M-sort-btn{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--ink3);cursor:pointer;padding:6px 12px;background:#F2F2F7;border-radius:20px;-webkit-tap-highlight-color:transparent}
+#M-cards{flex:1;overflow-y:auto;padding:10px 12px 160px;display:flex;flex-direction:column;gap:10px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+#M-cards::-webkit-scrollbar{display:none}
+.Mc{display:flex;border-radius:18px;overflow:hidden;background:#fff;box-shadow:0 2px 16px rgba(0,0,0,.10),0 1px 4px rgba(0,0,0,.06);cursor:pointer;flex-shrink:0;border:1px solid rgba(0,0,0,.04);transition:transform .12s,box-shadow .12s;-webkit-tap-highlight-color:transparent}
+.Mc:active{transform:scale(.98);box-shadow:0 1px 6px rgba(0,0,0,.08)}
+.Mc-stripe{width:4px;flex-shrink:0}
+.Mc-stripe.r{background:linear-gradient(180deg,#3B82F6,#60A5FA)}
+.Mc-stripe.s{background:linear-gradient(180deg,#F97316,#FB923C)}
+.Mc-img{width:105px;min-width:105px;position:relative;overflow:hidden;flex-shrink:0}
+.Mc-bg{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .3s}
+.Mc:active .Mc-bg{transform:scale(1.04)}
+.Mc-top-badge{position:absolute;top:8px;left:8px;background:linear-gradient(135deg,#F59E0B,#EF4444);color:#fff;font-size:9px;font-weight:800;padding:3px 7px;border-radius:6px;box-shadow:0 2px 8px rgba(239,68,68,.4)}
+.Mc-body{flex:1;padding:11px 12px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.Mc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:6px}
+.Mc-badge{font-size:9px;font-weight:700;padding:3px 8px;border-radius:6px;display:inline-block;letter-spacing:.2px}
+.Mc-badge.r{background:#EFF6FF;color:#2563EB}
+.Mc-badge.s{background:#FFF7ED;color:#EA580C}
+.Mc-price{font-size:17px;font-weight:900;color:var(--ink);letter-spacing:-.5px;margin-top:3px;line-height:1}
+.Mc-fav{width:30px;height:30px;border-radius:10px;border:1.5px solid rgba(0,0,0,.08);background:#F9F9F9;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;-webkit-tap-highlight-color:transparent}
+.Mc-fav:active{transform:scale(.88)}
+.Mc-fav.on{border-color:#FCA5A5;background:#FFF1F1}
+.Mc-specs{font-size:11px;color:var(--ink2);display:flex;gap:8px;flex-wrap:wrap;font-weight:500}
+.Mc-addr{font-size:11px;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.Mc-foot{display:flex;align-items:center;justify-content:space-between;margin-top:2px}
+.Mc-agent{font-size:10px;color:var(--ink3);font-weight:500}
+.Mc-views{font-size:10px;color:var(--ink3)}
+.M-empty{text-align:center;padding:40px 20px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.M-empty-ico{font-size:44px}
+.M-empty-title{font-size:16px;font-weight:700;color:var(--ink)}
+.M-empty-sub{font-size:13px;color:var(--ink3)}
+#M-tabs{position:fixed;bottom:0;left:0;right:0;height:calc(72px + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px);background:rgba(255,255,255,.95);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-top:.5px solid rgba(0,0,0,.12);display:flex;align-items:stretch;z-index:500}
+.M-tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border:none;background:none;font-family:var(--font);color:#8E8E93;cursor:pointer;padding:8px 0 6px;transition:color .12s;position:relative;-webkit-tap-highlight-color:transparent}
+.M-tab.on{color:var(--c)}
+.M-tab-ico{font-size:22px;line-height:1}
+.M-tab-lbl{font-size:10px;font-weight:600;letter-spacing:.1px}
+.M-tab-dot{position:absolute;top:5px;right:calc(50% - 16px);min-width:16px;height:16px;border-radius:8px;background:#FF3B30;color:#fff;font-size:9px;font-weight:800;display:none;align-items:center;justify-content:center;border:2px solid #fff;padding:0 3px}
+#M-fab{position:fixed;right:16px;bottom:calc(72px + env(safe-area-inset-bottom,0px) + 16px);z-index:400;width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,#1C6EF2,#0EA5E9);color:#fff;border:none;font-size:22px;cursor:pointer;box-shadow:0 8px 28px rgba(28,110,242,.45);display:flex;align-items:center;justify-content:center;transition:transform .15s;-webkit-tap-highlight-color:transparent}
+#M-fab:active{transform:scale(.92)}
+html.mob .dp.open{display:block}
+html.mob .dc{width:100%!important;left:0!important;right:0!important;top:auto!important;bottom:calc(72px + env(safe-area-inset-bottom,0px))!important;height:90dvh!important;border-radius:22px 22px 0 0;border-left:none!important;animation:MobSlideUp .32s cubic-bezier(.32,.72,0,1);box-shadow:0 -8px 40px rgba(0,0,0,.15)}
+@keyframes MobSlideUp{from{transform:translateY(80px);opacity:0}to{transform:none;opacity:1}}
+html.mob .dby{padding:14px 16px 120px}
+html.mob .ovl{padding:0!important;align-items:flex-end!important}
+html.mob .modal,html.mob .pmod,html.mob .cabm,html.mob .prm,html.mob .topup-sheet{width:100%!important;max-width:100%!important;border-radius:22px 22px 0 0!important;max-height:94dvh!important}
+html.mob .tst{bottom:calc(72px + env(safe-area-inset-bottom,0px) + 16px);border-radius:14px}
+html.mob #M-list-wrap{display:flex}
+@media(min-width:769px){#M-bar,#M-list-wrap,#M-tabs,#M-fab{display:none!important}}
 </style>
 </head>
 <body>
@@ -2862,46 +2638,44 @@ tryAutoLogin();
 
 
 
-<!-- ═════════════ MOBILE UI ═════════════ -->
+<!-- ═══════════════ NESAY MOBILE UI ═══════════════ -->
 
 <!-- TOP BAR -->
-<div id="M-bar" dir="ltr">
-  <div class="M-row">
-    <div class="M-search">
-      <span style="font-size:16px;color:var(--ink3)">🔍</span>
+<div id="M-bar">
+  <div class="M-toprow">
+    <div class="M-search-box">
+      <span class="M-search-ico">🔍</span>
       <input id="M-q" type="text" placeholder="Город, район, улица..."
              oninput="M.search(this.value)">
     </div>
-    <div class="M-lang lsw">
+    <div class="M-lang-sw lsw">
       <button class="lb" onclick="M.lang('he')">עב</button>
       <button class="lb on" onclick="M.lang('ru')">РУ</button>
       <button class="lb" onclick="M.lang('en')">EN</button>
     </div>
-    <div class="M-avatar" id="M-av" onclick="M.avatarClick()">👤</div>
+    <div class="M-av-btn" id="M-av" onclick="M.avatarTap()">👤</div>
   </div>
-  <div class="M-row">
-    <div class="M-pills" id="M-pills">
-      <button class="M-pill all" id="Mp-all"  onclick="M.setType('all',this)">🏠 Все</button>
-      <button class="M-pill"     id="Mp-rent" onclick="M.setType('rent',this)">🔵 Аренда</button>
-      <button class="M-pill"     id="Mp-sale" onclick="M.setType('sale',this)">🟠 Продажа</button>
-    </div>
+  <div class="M-pill-row" id="M-pills">
+    <button class="M-pill p-all" id="Mp-all"  onclick="M.type('all',this)">🏠 Все</button>
+    <button class="M-pill"       id="Mp-rent" onclick="M.type('rent',this)">🔵 Аренда</button>
+    <button class="M-pill"       id="Mp-sale" onclick="M.type('sale',this)">🟠 Продажа</button>
   </div>
 </div>
 
 <!-- LIST WRAP -->
-<div id="M-list-wrap" dir="ltr">
+<div id="M-list-wrap">
   <div class="M-list-head">
-    <span class="M-list-cnt" id="M-cnt">0 объектов</span>
-    <span class="M-list-sort" onclick="M.cycleSort()">
+    <span class="M-cnt-lbl" id="M-cnt">Загрузка...</span>
+    <span class="M-sort-btn" onclick="M.cycleSort()">
       <span id="M-sort-ico">🎯</span>
-      <span id="M-sort-lbl">Релевантность</span> ▾
+      <span id="M-sort-txt">Релевантность</span> ▾
     </span>
   </div>
   <div id="M-cards"></div>
 </div>
 
 <!-- TAB BAR -->
-<div id="M-tabs" dir="ltr">
+<div id="M-tabs">
   <button class="M-tab" id="Mt-map"  onclick="M.tab('map')">
     <span class="M-tab-ico">🗺</span>
     <span class="M-tab-lbl">Карта</span>
@@ -2913,7 +2687,7 @@ tryAutoLogin();
   <button class="M-tab" id="Mt-fav"  onclick="M.tab('fav')">
     <span class="M-tab-ico">❤️</span>
     <span class="M-tab-lbl">Избранные</span>
-    <span class="M-tab-badge" id="M-fav-badge"></span>
+    <span class="M-tab-dot" id="M-fav-dot"></span>
   </button>
   <button class="M-tab" id="Mt-me"   onclick="M.tab('me')">
     <span class="M-tab-ico" id="Mt-me-ico">👤</span>
@@ -2925,22 +2699,21 @@ tryAutoLogin();
 <button id="M-fab" onclick="M.fab()">✏️</button>
 
 <script>
-
-// ═══════════════════════════════════════════
-//  MOBILE — чистая реализация
-// ═══════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
+//  NESAY.IL — MOBILE ENGINE
+//  Premium Mobile Experience
+// ═══════════════════════════════════════════════════════
 (function(){
 
 const IS_MOB = Math.min(window.screen.width, window.screen.height) <= 768
             || window.innerWidth <= 768;
 
 if (IS_MOB) document.documentElement.classList.add('mob');
+if (!IS_MOB) return;
 
-if (!IS_MOB) return; // вся логика только для мобилки
-
-// ── STATE ──
+// ── STATE ──────────────────────────────────────────
 let favIds   = new Set();
-let curTab   = 'map';
+let curTab   = 'list';
 let sortIdx  = 0;
 let favOnly  = false;
 
@@ -2951,8 +2724,8 @@ const SORTS = [
   { key:'new',        ico:'🆕', ru:'Новые',          en:'Newest',     he:'חדשים'    },
 ];
 
-// ── RENDER CARDS ──
-function renderMob() {
+// ── RENDER CARDS ───────────────────────────────────
+function renderCards() {
   const container = document.getElementById('M-cards');
   if (!container) return;
 
@@ -2960,9 +2733,16 @@ function renderMob() {
     ? filteredListings.filter(d => favIds.has(String(d.id)))
     : filteredListings;
 
-  // count
+  // Update count
   const cntEl = document.getElementById('M-cnt');
   if (cntEl) cntEl.textContent = data.length + ' ' + t('count_obj');
+
+  // Fav badge
+  const dot = document.getElementById('M-fav-dot');
+  if (dot) {
+    dot.style.display = favIds.size > 0 ? 'flex' : 'none';
+    dot.textContent = favIds.size;
+  }
 
   if (!data.length) {
     container.innerHTML =
@@ -2985,19 +2765,16 @@ function renderMob() {
     const isFav = favIds.has(String(d.id));
 
     const div = document.createElement('div');
-    div.className = 'Mc' + (d.promoted ? ' promo' : '');
-    div.setAttribute('dir','ltr');
-
-    let img = ph
-      ? '<div class="Mc-bg" style="background:url(\'' + ph + '\') center/cover"></div>'
-      : '<div class="Mc-bg" style="background:' + d.thumb + '"></div>'
-        + '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:28px">' + d.icon + '</div>';
+    div.className = 'Mc';
 
     div.innerHTML =
       '<div class="Mc-stripe ' + (isR ? 'r' : 's') + '"></div>'
       + '<div class="Mc-img">'
-        + img
-        ''
+        + (ph
+          ? '<div class="Mc-bg" style="background:url(\'' + ph + '\') center/cover"></div>'
+          : '<div class="Mc-bg" style="background:' + d.thumb + '"></div>'
+            + '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:32px">' + d.icon + '</div>')
+        + (d.promoted ? '<div class="Mc-top-badge">⚡ ТОП</div>' : '')
       + '</div>'
       + '<div class="Mc-body">'
         + '<div class="Mc-top">'
@@ -3005,7 +2782,7 @@ function renderMob() {
             + '<span class="Mc-badge ' + (isR ? 'r' : 's') + '">' + (isR ? t('deal.rent') : t('deal.sale')) + '</span>'
             + '<div class="Mc-price">' + pStr + '</div>'
           + '</div>'
-          + '<button class="Mc-fav" onclick="event.stopPropagation();M.toggleFav(this,' + idx + ')">'
+          + '<button class="Mc-fav' + (isFav ? ' on' : '') + '" onclick="event.stopPropagation();M.fav(this,' + idx + ')">'
             + (isFav ? '❤️' : '🤍') + '</button>'
         + '</div>'
         + '<div class="Mc-specs">'
@@ -3015,7 +2792,7 @@ function renderMob() {
         + '</div>'
         + '<div class="Mc-addr">📍 ' + d.addr[lang] + '</div>'
         + '<div class="Mc-foot">'
-          + '<span class="Mc-agent">' + d.agent.name + (d.agent.verified ? ' <span style="color:var(--green)">✓</span>' : '') + '</span>'
+          + '<span class="Mc-agent">' + d.agent.name + (d.agent.verified ? ' <span style="color:#34C759">✓</span>' : '') + '</span>'
           + ((d.views || 0) > 0 ? '<span class="Mc-views">👁 ' + d.views + '</span>' : '')
         + '</div>'
       + '</div>';
@@ -3025,161 +2802,131 @@ function renderMob() {
   });
 }
 
-// ── FAV BADGE ──
-function updateFavBadge() {
-  const badge = document.getElementById('M-fav-badge');
-  if (!badge) return;
-  if (favIds.size > 0) {
-    badge.style.display = 'flex';
-    badge.textContent = favIds.size;
+// ── FAV ────────────────────────────────────────────
+function toggleFav(btn, idx) {
+  const d = listings[idx]; if (!d) return;
+  const id = String(d.id);
+  if (favIds.has(id)) {
+    favIds.delete(id);
+    btn.textContent = '🤍';
+    btn.classList.remove('on');
   } else {
-    badge.style.display = 'none';
+    favIds.add(id);
+    btn.textContent = '❤️';
+    btn.classList.add('on');
+  }
+  // Update badge
+  const dot = document.getElementById('M-fav-dot');
+  if (dot) {
+    dot.style.display = favIds.size > 0 ? 'flex' : 'none';
+    dot.textContent = favIds.size;
+  }
+  // API call
+  window.toggleFav && window.toggleFav(btn, idx);
+  if (favOnly) renderCards();
+}
+
+// ── TABS ───────────────────────────────────────────
+function tab(name) {
+  curTab = name;
+  document.querySelectorAll('.M-tab').forEach(function(b) { b.classList.remove('on'); });
+  var el = document.getElementById('Mt-' + name);
+  if (el) el.classList.add('on');
+
+  var lw = document.getElementById('M-list-wrap');
+  var ma = document.querySelector('.ma');
+
+  if (name === 'map') {
+    favOnly = false;
+    if (lw) lw.style.display = 'none';
+    if (ma) { ma.style.height = '100%'; ma.style.position = 'fixed'; ma.style.inset = '0'; ma.style.zIndex='50'; }
+    if (window.map) setTimeout(function(){ map.resize(); }, 200);
+  } else if (name === 'list') {
+    favOnly = false;
+    if (lw) lw.style.display = 'flex';
+    if (ma) { ma.style.height = ''; ma.style.position = ''; ma.style.inset = ''; ma.style.zIndex=''; }
+    if (window.map) setTimeout(function(){ map.resize(); }, 200);
+    renderCards();
+  } else if (name === 'fav') {
+    favOnly = true;
+    if (lw) lw.style.display = 'flex';
+    if (ma) { ma.style.height = ''; ma.style.position = ''; ma.style.inset = ''; ma.style.zIndex=''; }
+    renderCards();
+  } else if (name === 'me') {
+    setTimeout(function(){
+      if (window.loggedIn) openCab(); else openAuth('login');
+    }, 50);
   }
 }
 
-// ── PUBLIC API ──
-window.M = {
+// ── SORT ───────────────────────────────────────────
+function cycleSort() {
+  sortIdx = (sortIdx + 1) % SORTS.length;
+  const s = SORTS[sortIdx];
+  currentSort = s.key;
+  var ico = document.getElementById('M-sort-ico');
+  var txt = document.getElementById('M-sort-txt');
+  if (ico) ico.textContent = s.ico;
+  if (txt) txt.textContent = s[lang] || s.ru;
+  applyFilter();
+}
 
-  search: function(q) {
-    const si = document.getElementById('searchInput');
-    if (si) { si.value = q; applyFilter(); }
-  },
+// ── SEARCH ─────────────────────────────────────────
+function search(q) {
+  var si = document.getElementById('searchInput');
+  if (si) { si.value = q; applyFilter(); }
+}
 
-  lang: function(l) {
-    setLang(l);
-    // sync mob lang buttons
-    document.querySelectorAll('.M-lang .lb').forEach(function(b) {
-      const txt = b.textContent.trim();
-      b.classList.toggle('on',
-        (l==='he'&&txt==='עב')||(l==='ru'&&txt==='РУ')||(l==='en'&&txt==='EN'));
-    });
-    // sync pills text
-    var pills = { all: t('filter.all'), rent: t('filter.rent'), sale: t('filter.sale') };
-    Object.keys(pills).forEach(function(k) {
-      var el = document.getElementById('Mp-' + k);
-      if (el) el.textContent = pills[k];
-    });
-    renderMob();
-  },
+// ── TYPE ───────────────────────────────────────────
+function setType(type, btn) {
+  favOnly = false;
+  activeType = type; activeCat = type;
+  document.querySelectorAll('.M-pill').forEach(function(p) {
+    p.classList.remove('p-all', 'p-rent', 'p-sale');
+  });
+  btn.classList.add('p-' + type);
+  applyFilter();
+}
 
-  setType: function(type, btn) {
-    favOnly = false;
-    activeType = type; activeCat = type;
-    document.querySelectorAll('.M-pill').forEach(function(p) {
-      p.classList.remove('all','rent','sale');
-    });
-    btn.classList.add(type === 'all' ? 'all' : type);
-    applyFilter();
-  },
+// ── LANG ───────────────────────────────────────────
+function setLangMob(l) {
+  setLang(l);
+  // sync pill texts
+  var pills = { all: t('filter.all'), rent: t('filter.rent'), sale: t('filter.sale') };
+  Object.keys(pills).forEach(function(k) {
+    var el = document.getElementById('Mp-' + k);
+    if (el) el.textContent = pills[k];
+  });
+  renderCards();
+}
 
-  cycleSort: function() {
-    sortIdx = (sortIdx + 1) % SORTS.length;
-    const s = SORTS[sortIdx];
-    currentSort = s.key;
-    var icoEl = document.getElementById('M-sort-ico');
-    var lblEl = document.getElementById('M-sort-lbl');
-    if (icoEl) icoEl.textContent = s.ico;
-    if (lblEl) lblEl.textContent = s[lang] || s.ru;
-    applyFilter();
-  },
+// ── FAB ────────────────────────────────────────────
+function fab() {
+  if (window.loggedIn) openPub(); else openAuth('login');
+}
 
-  tab: function(name) {
-    curTab = name;
-    document.querySelectorAll('.M-tab').forEach(function(b) { b.classList.remove('on'); });
-    var el = document.getElementById('Mt-' + name);
-    if (el) el.classList.add('on');
+// ── AVATAR ─────────────────────────────────────────
+function avatarTap() {
+  if (window.loggedIn) openCab(); else openAuth('login');
+}
 
-    // Show/hide map vs list
-    var ma = document.querySelector('.ma');
-    var lw = document.getElementById('M-list-wrap');
+// ── AUTH CALLBACK ──────────────────────────────────
+function onAuth(user) {
+  var nm = (user.name || '').slice(0,2).toUpperCase() || '👤';
+  var av = document.getElementById('M-av');
+  var ico = document.getElementById('Mt-me-ico');
+  var lbl = document.getElementById('Mt-me-lbl');
+  if (av)  { av.textContent = nm; av.classList.add('authed'); }
+  if (ico) ico.textContent = nm;
+  if (lbl) lbl.textContent = t('cab.profile');
+}
 
-    if (name === 'map') {
-      favOnly = false;
-      if (ma) { ma.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:64px;height:auto'; }
-      if (lw) lw.style.display = 'none';
-      if (window.map) setTimeout(function(){map.resize();},200);
-    } else if (name === 'list') {
-      favOnly = false;
-      if (ma) { ma.style.cssText = 'height:45vh;flex-shrink:0'; }
-      if (lw) { lw.style.display = 'flex'; lw.style.flex = '1'; }
-      if (window.map) setTimeout(function(){map.resize();},200);
-      renderMob();
-    } else if (name === 'fav') {
-      favOnly = true;
-      if (ma) { ma.style.cssText = 'height:45vh;flex-shrink:0'; }
-      if (lw) { lw.style.display = 'flex'; lw.style.flex = '1'; }
-      renderMob();
-    } else if (name === 'me') {
-      if (window.loggedIn) openCab();
-      else openAuth('login');
-    }
-  },
-
-  avatarClick: function() {
-    if (window.loggedIn) openCab(); else openAuth('login');
-  },
-
-  fab: function() {
-    if (window.loggedIn) openPub(); else openAuth('login');
-  },
-
-  toggleFav: function(btn, idx) {
-    const d = listings[idx];
-    if (!d) return;
-    const id = String(d.id);
-    if (favIds.has(id)) {
-      favIds.delete(id);
-      btn.textContent = '🤍';
-    } else {
-      favIds.add(id);
-      btn.textContent = '❤️';
-    }
-    updateFavBadge();
-    // Call main toggleFav for API
-    toggleFav(btn, idx);
-    if (favOnly) renderMob();
-  },
-
-  onAuthDone: function(user) {
-    const nm = (user.name || '').slice(0,2).toUpperCase() || '👤';
-    const av = document.getElementById('M-av');
-    const ico = document.getElementById('Mt-me-ico');
-    const lbl = document.getElementById('Mt-me-lbl');
-    if (av)  { av.textContent = nm; av.classList.add('auth'); }
-    if (ico) ico.textContent = nm;
-    if (lbl) lbl.textContent = t('cab.profile');
-  },
-
-  afterRender: function(data) {
-    renderMob();
-    const cntEl = document.getElementById('M-cnt');
-    if (cntEl) cntEl.textContent = (data||filteredListings).length + ' ' + t('count_obj');
-  }
-};
-
-// ── HOOK renderCards ──
-var _origRC = window.renderCards;
-window.renderCards = function(data) {
-  _origRC(data);
-  setTimeout(function() { M.afterRender(data); }, 0);
-};
-
-// ── HOOK finishAuth ──
-var _origFA = window.finishAuth;
-window.finishAuth = function(user) {
-  _origFA(user);
-  var u = typeof user === 'object' ? user : { name:'' };
-  M.onAuthDone(u);
-};
-
-// ── INIT ──
+// ── INIT ───────────────────────────────────────────
 function init() {
-  // Стартовое состояние — список объявлений
-  M.tab('list');
-  renderMob();
-  // sync lang
-  document.querySelectorAll('.M-lang .lb').forEach(function(b) {
-    const txt = b.textContent.trim();
+  tab('list');
+  // sync lang buttons
+  document.querySelectorAll('.M-lang-sw .lb').forEach(function(b) {
+    var txt = b.textContent.trim();
     b.classList.toggle('on',
       (lang==='he'&&txt==='עב')||(lang==='ru'&&txt==='РУ')||(lang==='en'&&txt==='EN'));
   });
@@ -3188,15 +2935,44 @@ function init() {
   if (cntEl) cntEl.textContent = filteredListings.length + ' ' + t('count_obj');
 }
 
+// ── EXPOSE ─────────────────────────────────────────
+window.M = {
+  tab:        tab,
+  type:       setType,
+  search:     search,
+  cycleSort:  cycleSort,
+  lang:       setLangMob,
+  fab:        fab,
+  avatarTap:  avatarTap,
+  fav:        toggleFav,
+  renderCards:renderCards,
+  onAuth:     onAuth,
+};
+
+// ── HOOKS ──────────────────────────────────────────
+// Hook renderCards global
+var _origRC = window.renderCards;
+window.renderCards = function(data) {
+  _origRC(data);
+  setTimeout(renderCards, 0);
+};
+
+// Hook finishAuth
+var _origFA = window.finishAuth;
+window.finishAuth = function(user) {
+  _origFA(user);
+  onAuth(typeof user === 'object' ? user : { name: '' });
+};
+
+// ── START ──────────────────────────────────────────
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', init);
+  document.addEventListener('DOMContentLoaded', function(){ setTimeout(init, 200); });
 } else {
-  setTimeout(init, 100);
-setTimeout(()=>{if(window.map)window.map.resize();},500);
+  setTimeout(init, 200);
 }
 
 })();
-
 </script>
+
 </body>
 </html>
