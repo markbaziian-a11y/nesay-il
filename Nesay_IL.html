@@ -3159,6 +3159,7 @@ if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', init);
 } else {
   setTimeout(init, 100);
+setTimeout(()=>{if(window.map)window.map.resize();},500);
 }
 
 })();
