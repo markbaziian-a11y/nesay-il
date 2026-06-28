@@ -1053,12 +1053,12 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
 <nav>
   <a href="#" class="logo">Nesay<em>.</em>il</a>
   <div class="cats">
-    <button class="ctab rt on" onclick="selCat(this,'all')"><span class="ctab-ico">🏠</span>Все</button>
-    <button class="ctab rt" onclick="selCat(this,'rent')"><span class="ctab-ico">🔵</span>Аренда</button>
-    <button class="ctab st" onclick="selCat(this,'sale')"><span class="ctab-ico">🟠</span>Продажа</button>
+    <button class="ctab rt on" onclick="selCat(this,'all')"><span class="ctab-ico">🏠</span data-i18n="nav.all">Все</button>
+    <button class="ctab rt" onclick="selCat(this,'rent')"><span class="ctab-ico">🔵</span data-i18n="nav.rent">Аренда</button>
+    <button class="ctab st" onclick="selCat(this,'sale')"><span class="ctab-ico">🟠</span data-i18n="nav.sale">Продажа</button>
     <div class="sep"></div>
-    <button class="ctab rt" onclick="selCat(this,'rent-apt')"><span class="ctab-ico">🏢</span>Аренда квартир</button>
-    <button class="ctab rt" onclick="selCat(this,'rent-villa')"><span class="ctab-ico">🏡</span>Аренда домов</button>
+    <button class="ctab rt" onclick="selCat(this,'rent-apt')"><span class="ctab-ico">🏢</span data-i18n="nav.rent_apt">Аренда квартир</button>
+    <button class="ctab rt" onclick="selCat(this,'rent-villa')"><span class="ctab-ico">🏡</span data-i18n="nav.rent_villa">Аренда домов</button>
     <button class="ctab st" onclick="selCat(this,'buy-apt')"><span class="ctab-ico">🔑</span>Покупка квартир</button>
     <button class="ctab st" onclick="selCat(this,'buy-villa')"><span class="ctab-ico">🌿</span>Покупка домов</button>
   </div>
@@ -1069,8 +1069,8 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
       <button class="lb" onclick="setLang('en')">EN</button>
     </div>
     <div id="navGuest" style="display:flex;gap:8px">
-      <button class="bn bg" onclick="openAuth('login')">Войти</button>
-      <button class="bn bm" onclick="reqAuth()">+ Разместить</button>
+      <button class="bn bg" onclick="openAuth('login')" data-i18n="nav.signin">Войти</button>
+      <button class="bn bm" onclick="reqAuth()" data-i18n="nav.publish">+ Разместить</button>
     </div>
     <div id="navUser" style="display:none;align-items:center;gap:8px">
       <span class="cp" id="navCr" onclick="refreshCredits()" style="cursor:pointer" title="Нажми чтобы обновить">₪0 баланс</span>
@@ -1108,8 +1108,8 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
       <button class="mcb" id="satBtn" onclick="toggleSat()">🛰</button>
     </div>
     <div class="mleg">
-      <div class="mlr"><div class="mld r"></div>🔵 Аренда</div>
-      <div class="mlr"><div class="mld s"></div>🟠 Продажа</div>
+      <div class="mlr"><div class="mld r"></div data-i18n="nav.rent">🔵 Аренда</div>
+      <div class="mlr"><div class="mld s"></div data-i18n="nav.sale">🟠 Продажа</div>
     </div>
     <div id="mapPop" class="mpop" style="display:none"></div>
   </div>
@@ -1123,7 +1123,7 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
       </div>
       <!-- Type toggle -->
       <div class="type-toggle">
-        <button class="tt-btn on-rent" id="ttAll" onclick="ttSwitch('all',this)">🏠 Все</button>
+        <button class="tt-btn on-rent" id="ttAll" onclick="ttSwitch('all',this)" data-i18n="nav.all">🏠 Все</button>
         <button class="tt-btn" id="ttRent" onclick="ttSwitch('rent',this)">🔵 Аренда</button>
         <button class="tt-btn" id="ttSale" onclick="ttSwitch('sale',this)">🟠 Продажа</button>
       </div>
