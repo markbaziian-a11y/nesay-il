@@ -2206,7 +2206,11 @@ const I18N={
 function t(k){return (I18N[lang]||I18N.ru)[k]||k;}
 
 // ═══ API — подключение к серверу ═══
-const API='http://10.100.102.101:4000/api';
+const API=(function(){
+  var h=window.location.hostname;
+  if(h==='localhost'||h==='127.0.0.1'||h==='10.100.102.101')return 'http://10.100.102.101:4000/api';
+  return window.location.origin+'/api';
+})();
 
 async function doAuth(){
   const email=document.getElementById('authEmail')?.value?.trim();
