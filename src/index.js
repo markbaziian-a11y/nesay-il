@@ -30,6 +30,7 @@ app.get('/api/cities', async (req, res) => {
   }
 });
 
+app.get('/', (req,res)=>res.sendFile(path.join(__dirname,'..','Nesay_IL.html')));
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 
 const PORT = process.env.PORT || 4000;
