@@ -1059,8 +1059,8 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
     <div class="sep"></div>
     <button class="ctab rt" onclick="selCat(this,'rent-apt')"><span class="ctab-ico">🏢</span data-i18n="nav.rent_apt">Аренда квартир</button>
     <button class="ctab rt" onclick="selCat(this,'rent-villa')"><span class="ctab-ico">🏡</span data-i18n="nav.rent_villa">Аренда домов</button>
-    <button class="ctab st" onclick="selCat(this,'buy-apt')"><span class="ctab-ico">🔑</span>Покупка квартир</button>
-    <button class="ctab st" onclick="selCat(this,'buy-villa')"><span class="ctab-ico">🌿</span>Покупка домов</button>
+    <button class="ctab st" onclick="selCat(this,'buy-apt')"><span class="ctab-ico">🔑</span data-i18n="nav.buy_apt">Покупка квартир</button>
+    <button class="ctab st" onclick="selCat(this,'buy-villa')"><span class="ctab-ico">🌿</span data-i18n="nav.buy_villa">Покупка домов</button>
   </div>
   <div class="nav-right">
     <div class="lsw">
@@ -1097,7 +1097,7 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
       <button onclick="flyTo(31.9896,34.7993,14,'Ришон')" data-i18n="city.rishon">🌇 Ришон</button>
       <button onclick="flyTo(32.0867,34.8786,14,'Раанана')" data-i18n="city.raanana">🏘 Раанана</button>
     </div>
-    <div class="mcnt"><strong id="mapCnt">0</strong><span>объектов</span></div>
+    <div class="mcnt"><strong id="mapCnt">0</strong><span data-i18n="count_obj">объектов</span></div>
     <div class="mcp">
       <button class="mcb" onclick="setView('2d')" title="2D">🗺</button>
       <button class="mcb" onclick="setView('3d')" title="3D">🏗</button>
@@ -1108,8 +1108,8 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
       <button class="mcb" id="satBtn" onclick="toggleSat()">🛰</button>
     </div>
     <div class="mleg">
-      <div class="mlr"><div class="mld r"></div data-i18n="nav.rent">🔵 Аренда</div>
-      <div class="mlr"><div class="mld s"></div data-i18n="nav.sale">🟠 Продажа</div>
+      <div class="mlr"><div class="mld r"></div data-i18n="nav.rent" data-i18n="map.rent">🔵 Аренда</div>
+      <div class="mlr"><div class="mld s"></div data-i18n="nav.sale" data-i18n="map.sale">🟠 Продажа</div>
     </div>
     <div id="mapPop" class="mpop" style="display:none"></div>
   </div>
@@ -1124,18 +1124,18 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
       <!-- Type toggle -->
       <div class="type-toggle">
         <button class="tt-btn on-rent" id="ttAll" onclick="ttSwitch('all',this)" data-i18n="nav.all">🏠 Все</button>
-        <button class="tt-btn" id="ttRent" onclick="ttSwitch('rent',this)">🔵 Аренда</button>
-        <button class="tt-btn" id="ttSale" onclick="ttSwitch('sale',this)">🟠 Продажа</button>
+        <button class="tt-btn" id="ttRent" onclick="ttSwitch('rent',this)" data-i18n="map.rent">🔵 Аренда</button>
+        <button class="tt-btn" id="ttSale" onclick="ttSwitch('sale',this)" data-i18n="map.sale">🟠 Продажа</button>
       </div>
       <!-- Filter pills -->
       <div class="filters-scroll" id="filterPills">
-        <button class="fpill" data-filter="rooms12" onclick="toggleFPill(this)">1–2 комн.</button>
-        <button class="fpill" data-filter="rooms34" onclick="toggleFPill(this)">3–4 комн.</button>
-        <button class="fpill" data-filter="safeRoom" onclick="toggleFPill(this)">Безоп. комн.</button>
-        <button class="fpill" data-filter="parking" onclick="toggleFPill(this)">Парковка</button>
-        <button class="fpill" data-filter="balcony" onclick="toggleFPill(this)">Балкон</button>
-        <button class="fpill" data-filter="garden" onclick="toggleFPill(this)">Сад</button>
-        <button class="fpill" data-filter="sea" onclick="toggleFPill(this)">Море 🌊</button>
+        <button class="fpill" data-filter="rooms12" onclick="toggleFPill(this)" data-i18n="filter.rooms12">1–2 комн.</button>
+        <button class="fpill" data-filter="rooms34" onclick="toggleFPill(this)" data-i18n="filter.rooms34">3–4 комн.</button>
+        <button class="fpill" data-filter="safeRoom" onclick="toggleFPill(this)" data-i18n="filter.saferoom">Безоп. комн.</button>
+        <button class="fpill" data-filter="parking" onclick="toggleFPill(this)" data-i18n="filter.parking">Парковка</button>
+        <button class="fpill" data-filter="balcony" onclick="toggleFPill(this)" data-i18n="filter.balcony">Балкон</button>
+        <button class="fpill" data-filter="garden" onclick="toggleFPill(this)" data-i18n="filter.garden">Сад</button>
+        <button class="fpill" data-filter="sea" onclick="toggleFPill(this)" data-i18n="filter.sea">Море 🌊</button>
         <button class="fpill" data-filter="new" onclick="toggleFPill(this)">Новые</button>
       </div>
     </div>
@@ -1161,7 +1161,7 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
 <!-- DETAIL -->
 <div class="dp" id="detailPop">
   <div class="dc">
-    <div class="dth r" id="dTypHdr">🔵 Аренда</div>
+    <div class="dth r" id="dTypHdr" data-i18n="map.rent">🔵 Аренда</div>
     <div class="dtm">
       <div class="dtmbg" id="dThBg"></div>
       <div class="dtme" id="dThEm">🏢</div>
@@ -1258,8 +1258,8 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
     <div id="pst1">
       <!-- Deal type toggle -->
       <div class="deal-toggle">
-        <button class="dt-btn on-r" id="dtRent" onclick="setDealType('rent')">🔵 Аренда</button>
-        <button class="dt-btn" id="dtSale" onclick="setDealType('sale')">🟠 Продажа</button>
+        <button class="dt-btn on-r" id="dtRent" onclick="setDealType('rent')" data-i18n="map.rent">🔵 Аренда</button>
+        <button class="dt-btn" id="dtSale" onclick="setDealType('sale')" data-i18n="map.sale">🟠 Продажа</button>
       </div>
       <input type="hidden" id="pubDeal" value="rent">
 
@@ -3071,8 +3071,8 @@ tryAutoLogin();
   </div>
   <div class="M-pill-row" id="M-pills">
     <button class="M-pill p-all" id="Mp-all"  onclick="M.type('all',this)">🏠 Все</button>
-    <button class="M-pill"       id="Mp-rent" onclick="M.type('rent',this)">🔵 Аренда</button>
-    <button class="M-pill"       id="Mp-sale" onclick="M.type('sale',this)">🟠 Продажа</button>
+    <button class="M-pill"       id="Mp-rent" onclick="M.type('rent',this)" data-i18n="map.rent">🔵 Аренда</button>
+    <button class="M-pill"       id="Mp-sale" onclick="M.type('sale',this)" data-i18n="map.sale">🟠 Продажа</button>
   </div>
 </div>
 
