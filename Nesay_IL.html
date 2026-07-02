@@ -1496,6 +1496,8 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
       <button class="cabt" onclick="swCab('list')" data-i18n="cab.listings">Объявления</button>
       <button class="cabt" onclick="swCab('bill')" data-i18n="cab.billing">Подписка</button>
       <button class="cabt" onclick="swCab('prof')" data-i18n="cab.profile">Профиль</button>
+<button class="cabt" onclick="swCab('ref')">🔗 Рефералы</button>
+<button class="cabt" onclick="swCab('ref')">🔗 Рефералы</button>
     </div>
   </div>
   <div class="cabp on" id="cab-dash">
@@ -1534,6 +1536,34 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
     <div style="margin-top:4px"><button class="bsub" onclick="showToast('Сохранено ✅')">Сохранить</button></div>
     <div style="text-align:center;margin-top:12px"><button onclick="logout()" style="font-family:var(--font);font-size:12px;color:var(--red);background:none;border:none;cursor:pointer;text-decoration:underline">Выйти</button></div>
   </div>
+
+<div class="cabp" id="cab-ref">
+  <div style="padding:20px;overflow-y:auto;max-height:60vh">
+    <h3 style="margin-bottom:16px">🔗 Реферальная программа</h3>
+    <div style="background:linear-gradient(135deg,#1C6EF2,#0EA5E9);color:#fff;border-radius:16px;padding:20px;margin-bottom:16px">
+      <div style="font-size:13px;opacity:.8;margin-bottom:6px">Твоя реферальная ссылка</div>
+      <div style="font-size:14px;font-weight:700;word-break:break-all" id="refLink">Загрузка...</div>
+      <button onclick="copyRefLink()" style="margin-top:10px;background:rgba(255,255,255,.2);color:#fff;border:none;padding:8px 16px;border-radius:8px;cursor:pointer;font-weight:600">📋 Скопировать</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+      <div style="background:#F0F9FF;border-radius:12px;padding:16px;text-align:center">
+        <div style="font-size:28px;font-weight:900;color:#1C6EF2" id="refTotal">0</div>
+        <div style="font-size:12px;color:#666">Приглашено</div>
+      </div>
+      <div style="background:#F0FDF4;border-radius:12px;padding:16px;text-align:center">
+        <div style="font-size:28px;font-weight:900;color:#16A34A" id="refCredits">0</div>
+        <div style="font-size:12px;color:#666">Кредитов заработано</div>
+      </div>
+    </div>
+    <div style="background:#FFF9E6;border-radius:12px;padding:14px;margin-bottom:16px;font-size:13px">
+      <b>Как это работает:</b><br>
+      🎁 Ты приглашаешь друга → он регистрируется по твоей ссылке<br>
+      ✅ Ты получаешь <b>+50 кредитов</b><br>
+      ✅ Друг получает <b>+20 кредитов</b>
+    </div>
+    <div id="refList"></div>
+  </div>
+</div>
 </div>
 </div>
 
@@ -2722,7 +2752,7 @@ async function deleteMyListing(id,btn){
   }catch(e){showToast('❌ Ошибка')}
 }
 function closeCab(){document.getElementById('cabOvl').classList.remove('open')}
-function swCab(tab){document.querySelectorAll('.cabt').forEach((b,i)=>b.classList.toggle('on',['dash','list','bill','prof'][i]===tab));document.querySelectorAll('.cabp').forEach(p=>p.classList.remove('on'));document.getElementById('cab-'+tab).classList.add('on')}
+function swCab(tab){document.querySelectorAll('.cabt').forEach((b,i)=>b.classList.toggle('on',['dash','list','bill','prof','ref'][i]===tab));document.querySelectorAll('.cabp').forEach(p=>p.classList.remove('on'));document.getElementById('cab-'+tab).classList.add('on');if(tab==='ref')loadRefStats();}
 function renderWkChart(){const data=[12,28,19,35,42,23,30];const days=t('days');const max=Math.max(...data);const ch=document.getElementById('wkChart');if(!ch)return;ch.innerHTML=data.map((v,i)=>`<div class="brc"><div class="bv">${v}</div><div class="br ${i===4?'hi':''}" style="height:${v/max*100}%"></div><div class="bdy">${days[i]}</div></div>`).join('')}
 
 // PROMO
@@ -3484,6 +3514,31 @@ function clearDrawZone(){
   if(window.mapLoaded)rebuildMarkers(filteredListings);
 }
 // ══════════ END DRAW ZONE ══════════
+
+async function loadRefStats(){
+  const token=localStorage.getItem('nesay_token');
+  if(!token)return;
+  try{
+    const r=await fetch(API+'/referrals/my',{headers:{Authorization:'Bearer '+token}});
+    const d=await r.json();
+    const link=window.location.origin+'/?ref='+(d.ref_code||'');
+    const el=document.getElementById('refLink');
+    if(el)el.textContent=link;
+    const tot=document.getElementById('refTotal');
+    if(tot)tot.textContent=d.total_referrals||0;
+    const cr=document.getElementById('refCredits');
+    if(cr)cr.textContent=(d.total_referrals||0)*50;
+    const list=document.getElementById('refList');
+    if(list&&d.referrals&&d.referrals.length){
+      list.innerHTML='<div style="font-weight:700;margin-bottom:8px">Приглашённые пользователи:</div>'+
+      d.referrals.map(r=>'<div style="padding:10px;background:#F8F8F8;border-radius:10px;margin-bottom:8px;font-size:13px">👤 '+r.name+' <span style="color:#888;float:right">'+new Date(r.created_at).toLocaleDateString()+'</span></div>').join('');
+    }
+  }catch(e){console.log('ref stats error',e);}
+}
+function copyRefLink(){
+  const el=document.getElementById('refLink');
+  if(el){navigator.clipboard.writeText(el.textContent);showToast('✅ Ссылка скопирована!');}
+}
 </script>
 </body>
 </html>
