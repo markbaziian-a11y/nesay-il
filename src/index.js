@@ -18,6 +18,7 @@ app.use(express.static(path.join(__dirname, '..')));
 
 app.use('/api/auth',     require('./routes/auth'));
 app.use('/api/listings', require('./routes/listings'));
+app.use('/api/referrals', referralsRouter);
 app.use('/api/payments', require('./routes/payments'));
 
 app.get('/api/cities', async (req, res) => {
