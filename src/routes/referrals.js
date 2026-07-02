@@ -1,27 +1,17 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../../config/db');
-const auth = require('../../middleware/auth');
+const auth = require('../middleware/auth');
 
 router.get('/my', auth, async (req, res) => {
   try {
     const user = await db.query('SELECT ref_code, credits FROM users WHERE id=$1', [req.user.id]);
-    const stats = await db.query(
-      'SELECT COUNT(*) as total FROM referrals WHERE referrer_id=$1',
-      [req.user.id]
-    );
+    const stats = await db.query('SELECT COUNT(*) as total FROM referrals WHERE referrer_id=$1', [req.user.id]);
     const referred = await db.query(
-      `SELECT u.name, r.created_at, r.bonus_credited 
-       FROM referrals r JOIN users u ON u.id=r.referred_id 
-       WHERE r.referrer_id=$1 ORDER BY r.created_at DESC LIMIT 20`,
+      `SELECT u.name, r.created_at, r.bonus_credited FROM referrals r JOIN users u ON u.id=r.referred_id WHERE r.referrer_id=$1 ORDER BY r.created_at DESC LIMIT 20`,
       [req.user.id]
     );
-    res.json({
-      ref_code: user.rows[0]?.ref_code,
-      credits: user.rows[0]?.credits || 0,
-      total_referrals: parseInt(stats.rows[0]?.total) || 0,
-      referrals: referred.rows
-    });
+    res.json({ ref_code: user.rows[0]?.ref_code, credits: user.rows[0]?.credits||0, total_referrals: parseInt(stats.rows[0]?.total)||0, referrals: referred.rows });
   } catch(e) { res.status(500).json({ error: e.message }); }
 });
 
