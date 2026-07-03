@@ -79,24 +79,7 @@ router.post('/login', [
 
     delete user.password_hash;
     console.log('LOGIN: user credits from DB:', user.credits, 'email:', user.email);
-    // Generate referral code
-const refCode = 'NSY' + Math.random().toString(36).substr(2,6).toUpperCase();
-await db.query('UPDATE users SET ref_code=$1 WHERE id=$2', [refCode, user.id]);
-user.ref_code = refCode;
-// Apply referral if came from ref link
-const refFrom = req.body.ref_code;
-if(refFrom){
-  try{
-    const referrer=await db.query('SELECT id FROM users WHERE ref_code=$1',[refFrom]);
-    if(referrer.rows.length && referrer.rows[0].id!==user.id){
-      await db.query('INSERT INTO referrals (referrer_id,referred_id,ref_code) VALUES ($1,$2,$3)',[referrer.rows[0].id,user.id,refFrom]);
-      await db.query('UPDATE users SET credits=credits+50 WHERE id=$1',[referrer.rows[0].id]);
-      await db.query('UPDATE users SET credits=credits+20,referred_by=$1 WHERE id=$2',[referrer.rows[0].id,user.id]);
-      await db.query('UPDATE referrals SET bonus_credited=true WHERE referred_id=$1',[user.id]);
-    }
-  }catch(e){console.log('ref error',e.message);}
-}
-res.json({ token: makeToken(user), user });
+    res.json({ token: makeToken(user), user });
 
   } catch (err) {
     res.status(500).json({ error: 'Ошибка сервера' });
