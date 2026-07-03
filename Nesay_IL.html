@@ -1047,6 +1047,74 @@ html.mob .tst {
 }
 html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom,0px) + 70px);right:80px }
 
+
+/* ══ ISRAEL LOADER ══ */
+#nesay-loader {
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  background:rgba(255,255,255,0.85);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  gap:20px;
+}
+#nesay-loader.show { display:flex }
+
+#nesay-loader svg {
+  width:100px;
+  height:100px;
+  filter:drop-shadow(0 0 18px rgba(0,100,255,0.4));
+}
+
+#nesay-loader .star-path {
+  fill:none;
+  stroke:#003399;
+  stroke-width:3;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  stroke-dasharray:400;
+  stroke-dashoffset:400;
+  animation:drawStar 1.4s ease forwards;
+}
+
+@keyframes drawStar {
+  to { stroke-dashoffset:0 }
+}
+
+#nesay-loader .loader-text {
+  font-family:var(--font);
+  font-size:15px;
+  font-weight:700;
+  color:#003399;
+  letter-spacing:2px;
+  opacity:0;
+  animation:fadeInText 0.5s ease 1s forwards;
+}
+
+@keyframes fadeInText {
+  to { opacity:1 }
+}
+
+#nesay-loader .loader-dots span {
+  display:inline-block;
+  width:6px;height:6px;
+  border-radius:50%;
+  background:#003399;
+  margin:0 3px;
+  animation:dotBounce 1s ease infinite;
+}
+#nesay-loader .loader-dots span:nth-child(2){animation-delay:.2s}
+#nesay-loader .loader-dots span:nth-child(3){animation-delay:.4s}
+
+@keyframes dotBounce {
+  0%,100%{transform:translateY(0);opacity:.4}
+  50%{transform:translateY(-8px);opacity:1}
+}
+
 </style>
 </head>
 <body>
@@ -2663,7 +2731,7 @@ async function doAuth(){
   if(!email){showToast(t('err.email'));return}
   if(!pass||pass.length<8){showToast(t('err.pass'));return}
   const btn=document.getElementById('authBtn');
-  btn.textContent='...';btn.disabled=true;
+  btn.textContent='...';btn.disabled=true;showLoader();
   try{
     const url=authMode==='register'?`${API}/auth/register`:`${API}/auth/login`;
     const body=authMode==='register'
@@ -2685,6 +2753,7 @@ function tfin(inp,idx){if(inp.value.length===1&&idx<5)document.querySelectorAll(
 function tfkey(e,idx){if(e.key==='Backspace'&&idx>0&&!e.target.value)document.querySelectorAll('#tfd input')[idx-1].focus()}
 function verify2FA(){const code=Array.from(document.querySelectorAll('#tfd input')).map(i=>i.value).join('');if(code.length===6)finishAuth('agent@nesay.il');else showToast('Введите все 6 цифр')}
 function finishAuth(user){
+  hideLoader();
   const u=typeof user==='object'?user:{email:user,name:'Пользователь',role:selectedRole||'buyer',credits:0};
   loggedIn=true;
   const isAgent=u.role==='agent'||u.role==='owner';
@@ -3548,5 +3617,24 @@ function copyRefLink(){
   if(el){navigator.clipboard.writeText(el.textContent);showToast('✅ Ссылка скопирована!');}
 }
 </script>
+
+<!-- ISRAEL LOADER -->
+<div id="nesay-loader">
+  <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <!-- Star of David -->
+    <path class="star-path" d="
+      M50 10 L61 30 L83 30 L67 45 L74 67 L50 54 L26 67 L33 45 L17 30 L39 30 Z
+      M50 10 L39 30 L17 30 L33 45 L26 67 L50 54 L74 67 L67 45 L83 30 L61 30 Z
+    "/>
+    <!-- Inner hexagon -->
+    <path class="star-path" style="animation-delay:0.4s;stroke:#0057b8;stroke-width:1.5"
+      d="M50 30 L62 40 L62 60 L50 70 L38 60 L38 40 Z"/>
+  </svg>
+  <div class="loader-text">NESAY.IL</div>
+  <div class="loader-dots">
+    <span></span><span></span><span></span>
+  </div>
+</div>
+
 </body>
 </html>
