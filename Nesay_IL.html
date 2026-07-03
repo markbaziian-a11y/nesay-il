@@ -1497,7 +1497,7 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
       <button class="cabt" onclick="swCab('bill')" data-i18n="cab.billing">Подписка</button>
       <button class="cabt" onclick="swCab('prof')" data-i18n="cab.profile">Профиль</button>
 <button class="cabt" onclick="swCab('ref')">🔗 Рефералы</button>
-<button class="cabt" onclick="swCab('ref')">🔗 Рефералы</button>
+
     </div>
   </div>
   <div class="cabp on" id="cab-dash">
@@ -2668,7 +2668,7 @@ async function doAuth(){
     const url=authMode==='register'?`${API}/auth/register`:`${API}/auth/login`;
     const body=authMode==='register'
       ?{email,password:pass,name:name||'Пользователь',role:selectedRole==='owner'?'owner':(selectedRole==='agent'?'agent':'buyer')}
-      :{email,password:pass};
+      :{email,password:pass,ref_code:new URLSearchParams(window.location.search).get('ref')||localStorage.getItem('nesay_ref')||undefined};
     const res=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
     const data=await res.json();
     if(!res.ok){showToast('❌ '+(data.error||'Ошибка'));return}
@@ -3414,6 +3414,10 @@ window.finishAuth = function(user) {
 };
 
 // ── START ──────────────────────────────────────────
+// Save ref code from URL
+const _ref=new URLSearchParams(window.location.search).get('ref');
+if(_ref)localStorage.setItem('nesay_ref',_ref);
+
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', function(){ setTimeout(init, 200); });
 } else {
