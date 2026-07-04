@@ -2783,7 +2783,7 @@ async function doAuth(){
   if(!email){showToast(t('err.email'));return}
   if(!pass||pass.length<8){showToast(t('err.pass'));return}
   const btn=document.getElementById('authBtn');
-  btn.textContent='...';btn.disabled=true;showLoader();
+  btn.textContent='...';btn.disabled=true;
   try{
     const url=authMode==='register'?`${API}/auth/register`:`${API}/auth/login`;
     const body=authMode==='register'
