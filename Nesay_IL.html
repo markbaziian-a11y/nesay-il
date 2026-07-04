@@ -2805,7 +2805,7 @@ async function doAuth(){
   if(!email){showToast(t('err.email'));return}
   if(!pass||pass.length<8){showToast(t('err.pass'));return}
   const btn=document.getElementById('authBtn');
-  btn.textContent='...';btn.disabled=true;
+  btn.textContent='...';btn.disabled=true;showLoader();
   try{
     const url=authMode==='register'?`${API}/auth/register`:`${API}/auth/login`;
     const body=authMode==='register'
@@ -2850,8 +2850,8 @@ function showLoader(){
         l.style.opacity='';
         l.style.transition='';
       },300);
-    },900);
-      },7500);
+    },1000);
+      },2200);
 }
 function hideLoader(){
   var l=document.getElementById('nesay-loader');
@@ -2866,7 +2866,6 @@ function hideLoader(){
   }
 }
 function finishAuth(user){
-  hideLoader();
   const u=typeof user==='object'?user:{email:user,name:'Пользователь',role:selectedRole||'buyer',credits:0};
   loggedIn=true;
   const isAgent=u.role==='agent'||u.role==='owner';
