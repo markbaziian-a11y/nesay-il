@@ -2731,7 +2731,7 @@ async function doAuth(){
   if(!email){showToast(t('err.email'));return}
   if(!pass||pass.length<8){showToast(t('err.pass'));return}
   const btn=document.getElementById('authBtn');
-  btn.textContent='...';btn.disabled=true;
+  btn.textContent='...';btn.disabled=true;showLoader();
   try{
     const url=authMode==='register'?`${API}/auth/register`:`${API}/auth/login`;
     const body=authMode==='register'
@@ -2752,6 +2752,21 @@ async function doAuth(){
 function tfin(inp,idx){if(inp.value.length===1&&idx<5)document.querySelectorAll('#tfd input')[idx+1].focus()}
 function tfkey(e,idx){if(e.key==='Backspace'&&idx>0&&!e.target.value)document.querySelectorAll('#tfd input')[idx-1].focus()}
 function verify2FA(){const code=Array.from(document.querySelectorAll('#tfd input')).map(i=>i.value).join('');if(code.length===6)finishAuth('agent@nesay.il');else showToast('Введите все 6 цифр')}
+
+function showLoader(){
+  var l=document.getElementById('nesay-loader');
+  if(!l)return;
+  l.querySelectorAll('.star-path').forEach(function(p){
+    p.style.animation='none';
+    void p.offsetHeight;
+    p.style.animation='';
+  });
+  l.classList.add('show');
+}
+function hideLoader(){
+  var l=document.getElementById('nesay-loader');
+  if(l)setTimeout(function(){l.classList.remove('show');},300);
+}
 function finishAuth(user){
   hideLoader();
   const u=typeof user==='object'?user:{email:user,name:'Пользователь',role:selectedRole||'buyer',credits:0};
@@ -2949,7 +2964,7 @@ async function doTopup(){
         closeTopup();showToast('✅ Баланс пополнен на ₪'+topupAmount+'!');
       }else{showToast('❌ Ошибка оплаты')}
     }catch(e){userCredits+=topupAmount;document.getElementById('navCr').textContent='₪'+userCredits+' баланс';const cabCr=document.getElementById('cabCr');if(cabCr)cabCr.textContent='₪'+userCredits;closeTopup();showToast('✅ Баланс пополнен на ₪'+topupAmount+'!')}
-    btn.textContent='Пополнить на ₪'+topupAmount.toLocaleString();btn.disabled=false;
+    btn.textContent='Пополнить на ₪'+topupAmount.toLocaleString();hideLoader();btn.disabled=false;
   },2000);
 }
 
