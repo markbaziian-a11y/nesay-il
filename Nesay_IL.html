@@ -1167,6 +1167,27 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
   to { opacity:1 }
 }
 
+.balance-popup{
+  position:fixed;top:90px;right:24px;z-index:99999;
+  background:#fff;border-radius:16px;padding:16px 24px;
+  box-shadow:0 12px 40px rgba(0,0,0,.18);
+  display:flex;align-items:center;gap:10px;
+  opacity:0;transform:translateY(-20px) scale(.9);
+  animation:bpShow 3s ease forwards;
+  pointer-events:none;
+}
+.balance-popup.neg{}
+.balance-popup .bp-icon{font-size:24px}
+.balance-popup .bp-amount{font-size:22px;font-weight:800;letter-spacing:-.3px}
+.balance-popup.pos .bp-amount{color:#22c55e}
+.balance-popup.neg .bp-amount{color:#ef4444}
+.balance-popup .bp-label{font-size:12px;color:#86868b;font-weight:600}
+@keyframes bpShow{
+  0%{opacity:0;transform:translateY(-20px) scale(.9)}
+  10%{opacity:1;transform:translateY(0) scale(1)}
+  85%{opacity:1;transform:translateY(0) scale(1)}
+  100%{opacity:0;transform:translateY(-10px) scale(.95)}
+}
 </style>
 </head>
 <body>
@@ -3002,6 +3023,15 @@ async function toggleFav(btn,idx){
 }
 function updateMapLang(l){if(!window.map)return;try{var ml=l==='he'?'he':l==='en'?'en':'ru';window.map.getStyle().layers.forEach(function(layer){if(layer.type==='symbol'){try{window.map.setLayoutProperty(layer.id,'text-field',['coalesce',['get','name_'+ml],['get','name']]);}catch(e){}}});}catch(e){}}
 let _tt;
+function showBalancePopup(amount,isPositive){
+  const p=document.createElement('div');
+  p.className='balance-popup '+(isPositive?'pos':'neg');
+  const sign=isPositive?'+':'-';
+  const icon=isPositive?'💰':'📉';
+  p.innerHTML=`<span class="bp-icon">${icon}</span><div><div class="bp-amount">${sign}₪${Math.abs(amount).toLocaleString()}</div><div class="bp-label">${isPositive?'Баланс пополнен':'Списано с баланса'}</div></div>`;
+  document.body.appendChild(p);
+  setTimeout(()=>p.remove(),3000);
+}
 function showToast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>el.classList.remove('show'),2800)}
 document.addEventListener('click',e=>{
   if(!e.target.closest('.sdd'))document.getElementById('smn')?.classList.remove('open');
@@ -3038,9 +3068,9 @@ async function doTopup(){
         const tb=document.getElementById('topupBal');if(tb)tb.textContent='₪'+userCredits;
         const hist=document.getElementById('txHistory');
         if(hist){if(hist.textContent.includes('Пока нет'))hist.innerHTML='';const row=document.createElement('div');row.style.cssText='display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line);font-size:12px';row.innerHTML=`<span style="color:var(--ink2)">Пополнение</span><span style="color:var(--green);font-weight:700">+₪${topupAmount}</span>`;hist.insertBefore(row,hist.firstChild)}
-        closeTopup();showToast('✅ Баланс пополнен на ₪'+topupAmount+'!');
+        closeTopup();showBalancePopup(topupAmount,true);
       }else{showToast('❌ Ошибка оплаты')}
-    }catch(e){userCredits+=topupAmount;document.getElementById('navCr').textContent='₪'+userCredits+' баланс';const cabCr=document.getElementById('cabCr');if(cabCr)cabCr.textContent='₪'+userCredits;closeTopup();showToast('✅ Баланс пополнен на ₪'+topupAmount+'!')}
+    }catch(e){userCredits+=topupAmount;document.getElementById('navCr').textContent='₪'+userCredits+' баланс';const cabCr=document.getElementById('cabCr');if(cabCr)cabCr.textContent='₪'+userCredits;closeTopup();showBalancePopup(topupAmount,true)}
     btn.textContent='Пополнить на ₪'+topupAmount.toLocaleString();hideLoader();btn.disabled=false;
   },2000);
 }
