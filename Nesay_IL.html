@@ -1341,12 +1341,12 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
 <!-- AUTH -->
 <div class="ovl" id="authOvl" onclick="if(event.target===this)closeAuth()">
 <div class="modal" onclick="event.stopPropagation()" style="direction:ltr">
-  <div class="mhd"><div class="mtl" id="authTtl">Вход в Nesay.il</div><button class="mx" onclick="closeAuth()">✕</button></div>
+  <div class="mhd"><div class="mtl" id="authTtl" data-i18n="auth.title_login">Вход в Nesay.il</div><button class="mx" onclick="closeAuth()">✕</button></div>
   <div class="mbd">
     <div id="authS1">
       <div class="at">
-        <button class="atb on" onclick="switchTab('login')" id="tabLg">Войти</button>
-        <button class="atb" onclick="switchTab('register')" id="tabRg">Регистрация</button>
+        <button class="atb on" onclick="switchTab('login')" id="tabLg" data-i18n="auth.login">Войти</button>
+        <button class="atb" onclick="switchTab('register')" id="tabRg" data-i18n="auth.register">Регистрация</button>
       </div>
       <div id="roleWrap" style="display:none">
         <div class="rp" style="grid-template-columns:1fr 1fr 1fr">
@@ -1358,20 +1358,20 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
       </div>
       <div class="fgrp">
         <input class="finput" type="email" id="authEmail" placeholder=" ">
-        <label class="flabel">Email <span class="rq">*</span></label>
+        <label class="flabel"><span data-i18n="auth.email">Email</span> <span class="rq">*</span></label>
       </div>
       <div class="fgrp">
         <input class="finput" type="password" id="authPass" placeholder=" ">
-        <label class="flabel">Пароль <span class="rq">*</span></label>
+        <label class="flabel"><span data-i18n="auth.password">Пароль</span> <span class="rq">*</span></label>
       </div>
       <div class="fgrp" id="nameWrap" style="display:none">
         <input class="finput" type="text" id="authName" placeholder=" ">
-        <label class="flabel">Имя <span class="rq">*</span></label>
+        <label class="flabel"><span data-i18n="auth.name">Имя</span> <span class="rq">*</span></label>
       </div>
       <div id="authError" style="display:none;color:#e53e3e;background:#fee;border:1px solid #fcc;border-radius:8px;padding:10px 12px;font-size:13px;font-weight:600;margin-bottom:12px;text-align:center"></div>
-      <button class="bsub" id="authBtn" onclick="doAuth()">Войти</button>
-      <div class="dv">или</div>
-      <button class="ob" onclick="doOAuth()"><svg width="16" height="16" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.703-1.567 2.684-3.875 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 009 18z"/><path fill="#FBBC05" d="M3.964 10.707A5.41 5.41 0 013.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 000 9c0 1.452.348 2.827.957 4.039l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 00.957 4.961L3.964 6.293C4.672 4.166 6.656 3.58 9 3.58z"/></svg> Войти через Google</button>
+      <button class="bsub" id="authBtn" onclick="doAuth()" data-i18n="auth.btn_login">Войти</button>
+      <div class="dv" data-i18n="auth.or">или</div>
+      <button class="ob" onclick="doOAuth()"><svg width="16" height="16" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.703-1.567 2.684-3.875 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 009 18z"/><path fill="#FBBC05" d="M3.964 10.707A5.41 5.41 0 013.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 000 9c0 1.452.348 2.827.957 4.039l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 00.957 4.961L3.964 6.293C4.672 4.166 6.656 3.58 9 3.58z"/></svg><span data-i18n="auth.google">Войти через Google</span></button>
     </div>
     <div id="authS2" style="display:none">
       <div style="text-align:center;padding:10px 0">
@@ -2481,7 +2481,7 @@ function renderDz(){const l=document.getElementById('dzList');if(!l)return;l.inn
 // AUTH
 function openAuth(mode){authMode=mode;document.getElementById('authOvl').classList.add('open');document.getElementById('authS1').style.display='';document.getElementById('authS2').style.display='none';switchTab(mode)}
 function closeAuth(){document.getElementById('authOvl').classList.remove('open')}
-function switchTab(tab){authMode=tab;const isR=tab==='register';document.getElementById('tabLg').classList.toggle('on',!isR);document.getElementById('tabRg').classList.toggle('on',isR);document.getElementById('roleWrap').style.display=isR?'':'none';document.getElementById('nameWrap').style.display=isR?'':'none';document.getElementById('authBtn').textContent=isR?'Зарегистрироваться':'Войти';document.getElementById('authTtl').textContent=(isR?'Регистрация':'Вход')+' — Nesay.il';const ae=document.getElementById('authError');if(ae)ae.style.display='none'}
+function switchTab(tab){authMode=tab;const isR=tab==='register';document.getElementById('tabLg').classList.toggle('on',!isR);document.getElementById('tabRg').classList.toggle('on',isR);document.getElementById('roleWrap').style.display=isR?'':'none';document.getElementById('nameWrap').style.display=isR?'':'none';document.getElementById('authBtn').textContent=isR?t('auth.btn_register'):t('auth.btn_login');document.getElementById('authTtl').textContent=isR?t('auth.title_reg'):t('auth.title_login');const ae=document.getElementById('authError');if(ae)ae.style.display='none'}
 function pickRole(card,role){document.querySelectorAll('.rc').forEach(c=>c.classList.remove('on'));card.classList.add('on');selectedRole=role;}
 // ═══ I18N — полный словарь ═══
 const I18N={
