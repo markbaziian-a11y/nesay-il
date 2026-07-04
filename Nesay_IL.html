@@ -2327,6 +2327,7 @@ function goStep(n){
 function useCredit(){_publish()}
 function submitPay(){_publish()}
 async function _publish(){
+  showLoader();
   const cityName=document.getElementById('addrCityName')?.value||'';
   const street=document.getElementById('addrInp')?.value||'';
   const house=document.getElementById('addrHouse')?.value||'';
@@ -2343,9 +2344,9 @@ async function _publish(){
   const firstPhoto=dzFiles.length>0?dzFiles[0].url:null;
   const agName=document.getElementById('navNm')?.textContent||'Agent';
 
-  if(!price){showToast(t('err.price'));return}
-  if(!street){showToast(t('err.street'));return}
-  if(!cityName){showToast(t('err.city'));return}
+  if(!price){hideLoader();showToast(t('err.price'));return}
+  if(!street){hideLoader();showToast(t('err.street'));return}
+  if(!cityName){hideLoader();showToast(t('err.city'));return}
 
   // Пробуем сохранить на сервер
   const token=localStorage.getItem('nesay_token');
@@ -2427,6 +2428,7 @@ async function _publish(){
   document.getElementById('newAdr').textContent=addr.slice(0,32)+(addr.length>32?'…':'');
   document.getElementById('newExp').textContent=exp.toLocaleDateString('ru-RU')+' (30 дней)';
   document.getElementById('crLeft').textContent=userCredits;
+  hideLoader();
   goStep('success');
   if(!savedToDb)showToast('✅ Объявление добавлено на карту!');
 }
@@ -3055,7 +3057,7 @@ async function doTopup(){
   if(!card||card.length<16){showToast('❌ Введите номер карты');return}
   if(!exp||exp.length<5){showToast('❌ Введите срок действия');return}
   if(!cvv||cvv.length<3){showToast('❌ Введите CVV');return}
-  const btn=document.getElementById('topupBtn');btn.textContent='Обрабатываем...';btn.disabled=true;
+  const btn=document.getElementById('topupBtn');btn.textContent='Обрабатываем...';btn.disabled=true;showLoader();
   setTimeout(async()=>{
     try{
       const token=localStorage.getItem('nesay_token');
