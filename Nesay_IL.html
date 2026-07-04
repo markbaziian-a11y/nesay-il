@@ -1054,12 +1054,13 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
   position:fixed;
   inset:0;
   z-index:9999;
-  background:rgba(10,15,40,0.92);
-  backdrop-filter:blur(16px);
-  -webkit-backdrop-filter:blur(16px);
+  background:rgba(8,12,35,0.95);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
   align-items:center;
   justify-content:center;
   flex-direction:column;
+  gap:28px;
 }
 #nesay-loader.show { display:flex }
 
@@ -1067,62 +1068,75 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap:24px;
+  gap:28px;
 }
 
-/* Triangle 1 - up */
+#loader-star {
+  overflow:visible;
+  transform-origin:60px 60px;
+}
+
+/* Triangle 1 pointing UP - blue */
 .star-t1 {
   fill:none;
   stroke:#4A90E2;
-  stroke-width:3;
+  stroke-width:3.5;
   stroke-linecap:round;
   stroke-linejoin:round;
-  stroke-dasharray:500;
-  stroke-dashoffset:500;
-  animation:drawT1 3s ease-in-out 0.5s forwards;
+  stroke-dasharray:600;
+  stroke-dashoffset:600;
+  animation:drawT1 3.5s ease-in-out 0.5s forwards;
 }
 
-/* Triangle 2 - down */
+/* Triangle 2 pointing DOWN - white */
 .star-t2 {
   fill:none;
   stroke:#ffffff;
-  stroke-width:3;
+  stroke-width:3.5;
   stroke-linecap:round;
   stroke-linejoin:round;
-  stroke-dasharray:500;
-  stroke-dashoffset:500;
-  animation:drawT2 3s ease-in-out 2.5s forwards;
+  stroke-dasharray:600;
+  stroke-dashoffset:600;
+  animation:drawT2 3.5s ease-in-out 3.5s forwards;
 }
 
 @keyframes drawT1 {
-  0%   { stroke-dashoffset:320; opacity:0.2 }
-  20%  { opacity:1 }
-  100% { stroke-dashoffset:0 }
+  0%   { stroke-dashoffset:600; opacity:0 }
+  5%   { opacity:1 }
+  100% { stroke-dashoffset:0; opacity:1 }
 }
 
 @keyframes drawT2 {
-  0%   { stroke-dashoffset:320; opacity:0.2 }
-  20%  { opacity:1 }
-  100% { stroke-dashoffset:0 }
+  0%   { stroke-dashoffset:600; opacity:0 }
+  5%   { opacity:1 }
+  100% { stroke-dashoffset:0; opacity:1 }
 }
 
+/* After both drawn - star glows */
+@keyframes starGlow {
+  0%,100% { filter:drop-shadow(0 0 8px rgba(74,144,226,0.6)) }
+  50%      { filter:drop-shadow(0 0 24px rgba(74,144,226,1)) drop-shadow(0 0 40px rgba(255,255,255,0.4)) }
+}
+
+/* Spin and fly into camera */
 @keyframes starSpin3D {
-  0%   { transform:perspective(400px) rotateY(0deg) scale(1) }
-  60%  { transform:perspective(400px) rotateY(360deg) scale(1.1) }
-  100% { transform:perspective(400px) rotateY(360deg) scale(8); opacity:0 }
+  0%   { transform:perspective(500px) rotateY(0deg) scale(1); opacity:1 }
+  40%  { transform:perspective(500px) rotateY(360deg) scale(1.2); opacity:1 }
+  100% { transform:perspective(500px) rotateY(360deg) scale(12); opacity:0 }
 }
 
 #loader-star.spin {
-  animation:starSpin3D 1.2s cubic-bezier(0.4,0,0.2,1) forwards !important;
+  animation:starSpin3D 1.4s cubic-bezier(0.4,0,0.2,1) forwards !important;
 }
+
 #nesay-loader .loader-text {
   font-family:var(--font);
-  font-size:22px;
+  font-size:20px;
   font-weight:900;
   color:#ffffff;
-  letter-spacing:6px;
+  letter-spacing:8px;
   opacity:0;
-  animation:fadeInText 0.6s ease 1.8s forwards;
+  animation:fadeInText 0.8s ease 6.5s forwards;
 }
 #nesay-loader .loader-text span { color:#4A90E2 }
 
@@ -1130,6 +1144,10 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
   to { opacity:1 }
 }
 
+#nesay-loader .loader-dots {
+  display:flex;
+  align-items:center;
+}
 #nesay-loader .loader-dots span {
   display:inline-block;
   width:7px; height:7px;
@@ -1139,9 +1157,9 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
   opacity:0;
   animation:dotFade 0.4s ease forwards;
 }
-#nesay-loader .loader-dots span:nth-child(1){animation-delay:2.2s}
-#nesay-loader .loader-dots span:nth-child(2){animation-delay:2.4s}
-#nesay-loader .loader-dots span:nth-child(3){animation-delay:2.6s}
+#nesay-loader .loader-dots span:nth-child(1){animation-delay:7s}
+#nesay-loader .loader-dots span:nth-child(2){animation-delay:7.2s}
+#nesay-loader .loader-dots span:nth-child(3){animation-delay:7.4s}
 
 @keyframes dotFade {
   to { opacity:1 }
@@ -2809,7 +2827,7 @@ function showLoader(){
         l.style.transition='';
       },300);
     },900);
-      },7000);
+      },8500);
 }
 function hideLoader(){
   var l=document.getElementById('nesay-loader');
@@ -3692,19 +3710,23 @@ function copyRefLink(){
 <!-- ISRAEL LOADER -->
 <div id="nesay-loader">
   <div class="loader-wrap">
-    <svg id="loader-star" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" width="140" height="140">
+    <svg id="loader-star" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" width="160" height="160">
       <defs>
-        <filter id="glow">
-          <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-          <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        <filter id="glow-blue" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="4" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="glow-white" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="4" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
         </filter>
       </defs>
-      <!-- Triangle 1 - pointing up -->
-      <path class="star-t1" filter="url(#glow)"
-        d="M60 8 L104 80 L16 80 Z"/>
-      <!-- Triangle 2 - pointing down -->
-      <path class="star-t2" filter="url(#glow)"
-        d="M60 112 L16 40 L104 40 Z"/>
+      <!-- Triangle 1 - pointing UP (blue) -->
+      <path class="star-t1" filter="url(#glow-blue)"
+        d="M60 5 L108 85 L12 85 Z"/>
+      <!-- Triangle 2 - pointing DOWN (white) -->
+      <path class="star-t2" filter="url(#glow-white)"
+        d="M60 115 L12 35 L108 35 Z"/>
     </svg>
     <div class="loader-text">NESAY<span>.IL</span></div>
     <div class="loader-dots"><span></span><span></span><span></span></div>
