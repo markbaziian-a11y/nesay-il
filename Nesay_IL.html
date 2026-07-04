@@ -2791,7 +2791,7 @@ async function doAuth(){
       :{email,password:pass};
     const res=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
     const data=await res.json();
-    if(!res.ok){showToast('❌ '+(data.error||'Ошибка'));return}
+    if(!res.ok){hideLoader();showToast('❌ '+(data.error||'Ошибка'));return}
     localStorage.setItem('nesay_token',data.token);
     // Получаем свежие данные из БД (включая актуальные кредиты)
     const meRes=await fetch(`${API}/auth/me`,{headers:{Authorization:'Bearer '+data.token}});
