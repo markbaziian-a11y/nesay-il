@@ -1420,16 +1420,16 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
       <div class="fgrp-row" style="margin-bottom:16px">
         <div class="fgrp">
           <select class="fselect" id="pubObjType">
-            <option>Квартира</option><option>Дом / Вилла</option><option>Пентхаус</option><option>Студия</option><option>Коммерческая</option>
+            <option data-i18n="pub.prop.apt">Квартира</option><option data-i18n="pub.prop.villa">Дом / Вилла</option><option data-i18n="pub.prop.penthouse">Пентхаус</option><option data-i18n="pub.prop.studio">Студия</option><option data-i18n="pub.prop.comm">Коммерческая</option>
           </select>
-          <label class="flabel">Тип объекта</label>
+          <label class="flabel" data-i18n="pub.obj_type">Тип объекта</label>
           <span class="fselect-arrow">▾</span>
         </div>
         <div class="fgrp">
           <select class="fselect" id="pubRooms">
             <option>1</option><option>1.5</option><option>2</option><option>2.5</option><option>3</option><option>3.5</option><option>4</option><option>4.5</option><option>5+</option>
           </select>
-          <label class="flabel">Комнат</label>
+          <label class="flabel" data-i18n="pub.rooms_label">Комнат</label>
           <span class="fselect-arrow">▾</span>
         </div>
       </div>
@@ -2525,7 +2525,7 @@ const I18N={
     'role.owner_title':'Собственник','role.owner_sub':'Сдаю или продаю без %',
     'pub.title':'Новое объявление','pub.step1':'Объект','pub.step2':'Фото','pub.step3':'Тариф','pub.step4':'Оплата',
     'pub.deal_rent':'🔵 Аренда','pub.deal_sale':'🟠 Продажа',
-    'pub.city':'Город','pub.street':'Улица','pub.house':'Дом №',
+    'pub.city':'Город','pub.street':'Улица','pub.house':'Дом №','pub.obj_type':'Тип объекта',
     'pub.price':'Цена (₪)','pub.sqm':'Площадь (м²)','pub.floor':'Этаж','pub.reno':'Ремонт',
     'pub.desc':'Расскажите об объекте — это увеличивает число откликов...',
     'pub.ai':'✨ AI описание','pub.next':'Далее','pub.back':'← Назад',
@@ -2542,7 +2542,7 @@ const I18N={
     'pub.balance_left':'Остаток баланса','pub.close':'Закрыть',
     'pub.price_warn':'⚠️ Цена ниже рыночной — потребуется модерация.',
     'pub.reno.new':'Новый','pub.reno.fresh':'Свежий ремонт','pub.reno.cosm':'Косметический','pub.reno.needs':'Требует ремонта',
-    'pub.prop.apt':'Квартира','pub.prop.villa':'Дом/Вилла','pub.prop.studio':'Студия','pub.prop.comm':'Коммерческая',
+    'pub.prop.apt':'Квартира','pub.prop.villa':'Дом/Вилла','pub.prop.studio':'Студия','pub.prop.comm':'Коммерческая','pub.prop.penthouse':'Пентхаус',
     'pub.rooms_label':'Комнат',
     'cab.dash':'Дашборд','cab.listings':'Объявления','cab.billing':'Подписка','cab.profile':'Профиль',
     'cab.views_today':'Просмотров сегодня','cab.messages':'Новых сообщений','cab.rating':'Рейтинг',
@@ -2632,7 +2632,7 @@ const I18N={
     'role.owner_title':'Owner','role.owner_sub':'Renting or selling directly',
     'pub.title':'New Listing','pub.step1':'Property','pub.step2':'Photos','pub.step3':'Plan','pub.step4':'Payment',
     'pub.deal_rent':'🔵 Rent','pub.deal_sale':'🟠 Sale',
-    'pub.city':'City','pub.street':'Street','pub.house':'House №',
+    'pub.city':'City','pub.street':'Street','pub.house':'House №','pub.obj_type':'Property type',
     'pub.price':'Price (₪)','pub.sqm':'Area (m²)','pub.floor':'Floor','pub.reno':'Condition',
     'pub.desc':'Tell about the property — this increases responses...',
     'pub.ai':'✨ AI description','pub.next':'Next','pub.back':'← Back',
@@ -2649,7 +2649,7 @@ const I18N={
     'pub.balance_left':'Balance left','pub.close':'Close',
     'pub.price_warn':'⚠️ Price is below market — moderation required.',
     'pub.reno.new':'New','pub.reno.fresh':'Recently renovated','pub.reno.cosm':'Cosmetic','pub.reno.needs':'Needs renovation',
-    'pub.prop.apt':'Apartment','pub.prop.villa':'House/Villa','pub.prop.studio':'Studio','pub.prop.comm':'Commercial',
+    'pub.prop.apt':'Apartment','pub.prop.villa':'House/Villa','pub.prop.studio':'Studio','pub.prop.comm':'Commercial','pub.prop.penthouse':'Penthouse',
     'pub.rooms_label':'Rooms',
     'cab.dash':'Dashboard','cab.listings':'Listings','cab.billing':'Billing','cab.profile':'Profile',
     'cab.views_today':'Views today','cab.messages':'New messages','cab.rating':'Rating',
@@ -2737,7 +2737,7 @@ const I18N={
     'role.owner_title':'בעל נכס','role.owner_sub':'משכיר או מוכר ישירות',
     'pub.title':'מודעה חדשה','pub.step1':'נכס','pub.step2':'תמונות','pub.step3':'תעריף','pub.step4':'תשלום',
     'pub.deal_rent':'🔵 שכירות','pub.deal_sale':'🟠 מכירה',
-    'pub.city':'עיר','pub.street':'רחוב','pub.house':'מס\' בית',
+    'pub.city':'עיר','pub.street':'רחוב','pub.house':'מס\' בית','pub.obj_type':'סוג נכס',
     'pub.price':'מחיר (₪)','pub.sqm':'שטח (מ"ר)','pub.floor':'קומה','pub.reno':'מצב',
     'pub.desc':'ספר על הנכס — זה מגדיל את מספר הפניות...',
     'pub.ai':'✨ תיאור AI','pub.next':'הבא','pub.back':'← חזור',
@@ -2754,7 +2754,7 @@ const I18N={
     'pub.balance_left':'יתרה נותרת','pub.close':'סגור',
     'pub.price_warn':'⚠️ מחיר נמוך מהשוק — נדרש בדיקת מנהל.',
     'pub.reno.new':'חדש','pub.reno.fresh':'שיפוץ טרי','pub.reno.cosm':'קוסמטי','pub.reno.needs':'דרוש שיפוץ',
-    'pub.prop.apt':'דירה','pub.prop.villa':'בית/וילה','pub.prop.studio':'סטודיו','pub.prop.comm':'מסחרי',
+    'pub.prop.apt':'דירה','pub.prop.villa':'בית/וילה','pub.prop.studio':'סטודיו','pub.prop.comm':'מסחרי','pub.prop.penthouse':'פנטהאוז',
     'pub.rooms_label':'חדרים',
     'cab.dash':'לוח בקרה','cab.listings':'מודעות','cab.billing':'חיוב','cab.profile':'פרופיל',
     'cab.views_today':'צפיות היום','cab.messages':'הודעות חדשות','cab.rating':'דירוג',
