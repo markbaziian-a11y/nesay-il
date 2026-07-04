@@ -1054,46 +1054,68 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
   position:fixed;
   inset:0;
   z-index:9999;
-  background:rgba(255,255,255,0.85);
-  backdrop-filter:blur(12px);
-  -webkit-backdrop-filter:blur(12px);
+  background:rgba(10,15,40,0.92);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
   align-items:center;
   justify-content:center;
   flex-direction:column;
-  gap:20px;
 }
 #nesay-loader.show { display:flex }
 
-#nesay-loader svg {
-  width:100px;
-  height:100px;
-  filter:drop-shadow(0 0 18px rgba(0,100,255,0.4));
+.loader-wrap {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:24px;
 }
 
-#nesay-loader .star-path {
+/* Triangle 1 - up */
+.star-t1 {
   fill:none;
-  stroke:#003399;
+  stroke:#4A90E2;
   stroke-width:3;
   stroke-linecap:round;
   stroke-linejoin:round;
-  stroke-dasharray:400;
-  stroke-dashoffset:400;
-  animation:drawStar 1.4s ease forwards;
+  stroke-dasharray:320;
+  stroke-dashoffset:320;
+  animation:drawT1 1.2s cubic-bezier(0.4,0,0.2,1) 0.2s forwards;
 }
 
-@keyframes drawStar {
-  to { stroke-dashoffset:0 }
+/* Triangle 2 - down */
+.star-t2 {
+  fill:none;
+  stroke:#ffffff;
+  stroke-width:3;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  stroke-dasharray:320;
+  stroke-dashoffset:320;
+  animation:drawT2 1.2s cubic-bezier(0.4,0,0.2,1) 0.8s forwards;
+}
+
+@keyframes drawT1 {
+  0%   { stroke-dashoffset:320; stroke:#4A90E2; opacity:0.3 }
+  30%  { opacity:1 }
+  100% { stroke-dashoffset:0; stroke:#4A90E2 }
+}
+
+@keyframes drawT2 {
+  0%   { stroke-dashoffset:320; stroke:#ffffff; opacity:0.3 }
+  30%  { opacity:1 }
+  100% { stroke-dashoffset:0; stroke:#ffffff }
 }
 
 #nesay-loader .loader-text {
   font-family:var(--font);
-  font-size:15px;
-  font-weight:700;
-  color:#003399;
-  letter-spacing:2px;
+  font-size:22px;
+  font-weight:900;
+  color:#ffffff;
+  letter-spacing:6px;
   opacity:0;
-  animation:fadeInText 0.5s ease 1s forwards;
+  animation:fadeInText 0.6s ease 1.8s forwards;
 }
+#nesay-loader .loader-text span { color:#4A90E2 }
 
 @keyframes fadeInText {
   to { opacity:1 }
@@ -1101,18 +1123,19 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
 
 #nesay-loader .loader-dots span {
   display:inline-block;
-  width:6px;height:6px;
+  width:7px; height:7px;
   border-radius:50%;
-  background:#003399;
-  margin:0 3px;
-  animation:dotBounce 1s ease infinite;
+  background:#4A90E2;
+  margin:0 4px;
+  opacity:0;
+  animation:dotFade 0.4s ease forwards;
 }
-#nesay-loader .loader-dots span:nth-child(2){animation-delay:.2s}
-#nesay-loader .loader-dots span:nth-child(3){animation-delay:.4s}
+#nesay-loader .loader-dots span:nth-child(1){animation-delay:2.2s}
+#nesay-loader .loader-dots span:nth-child(2){animation-delay:2.4s}
+#nesay-loader .loader-dots span:nth-child(3){animation-delay:2.6s}
 
-@keyframes dotBounce {
-  0%,100%{transform:translateY(0);opacity:.4}
-  50%{transform:translateY(-8px);opacity:1}
+@keyframes dotFade {
+  to { opacity:1 }
 }
 
 </style>
@@ -3635,19 +3658,23 @@ function copyRefLink(){
 
 <!-- ISRAEL LOADER -->
 <div id="nesay-loader">
-  <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-    <!-- Star of David -->
-    <path class="star-path" d="
-      M50 10 L61 30 L83 30 L67 45 L74 67 L50 54 L26 67 L33 45 L17 30 L39 30 Z
-      M50 10 L39 30 L17 30 L33 45 L26 67 L50 54 L74 67 L67 45 L83 30 L61 30 Z
-    "/>
-    <!-- Inner hexagon -->
-    <path class="star-path" style="animation-delay:0.4s;stroke:#0057b8;stroke-width:1.5"
-      d="M50 30 L62 40 L62 60 L50 70 L38 60 L38 40 Z"/>
-  </svg>
-  <div class="loader-text">NESAY.IL</div>
-  <div class="loader-dots">
-    <span></span><span></span><span></span>
+  <div class="loader-wrap">
+    <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" width="140" height="140">
+      <defs>
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+          <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+      <!-- Triangle 1 - pointing up -->
+      <path class="star-t1" filter="url(#glow)"
+        d="M60 8 L104 80 L16 80 Z"/>
+      <!-- Triangle 2 - pointing down -->
+      <path class="star-t2" filter="url(#glow)"
+        d="M60 112 L16 40 L104 40 Z"/>
+    </svg>
+    <div class="loader-text">NESAY<span>.IL</span></div>
+    <div class="loader-dots"><span></span><span></span><span></span></div>
   </div>
 </div>
 
