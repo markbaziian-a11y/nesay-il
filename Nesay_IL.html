@@ -805,6 +805,7 @@ html.mob .mcs  { background:rgba(0,0,0,.08); margin:2px 0 }
 /* ── Карточка ── */
 .Mc {
   display:flex;
+  position:relative;
   border-radius:18px;
   overflow:hidden;
   background:#fff;
@@ -814,6 +815,19 @@ html.mob .mcs  { background:rgba(0,0,0,.08); margin:2px 0 }
   border:1px solid rgba(0,0,0,.04);
   transition:transform .12s, box-shadow .12s;
   -webkit-tap-highlight-color:transparent;
+}
+.Mc-pricecircle {
+  position:absolute; top:50%; left:89px; transform:translateY(-50%);
+  width:40px; height:40px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  color:#fff; font-size:11px; font-weight:800; line-height:1;
+  border:3px solid #fff; z-index:2; text-align:center;
+}
+.Mc-pricecircle.r { background:#2563EB }
+.Mc-pricecircle.s { background:#EA580C }
+.Mc-fullprice {
+  font-size:12px; font-weight:700; color:var(--ink);
+  margin-top:1px;
 }
 .Mc:active {
   transform:scale(.98);
@@ -3386,6 +3400,11 @@ const SORTS = [
 ];
 
 // ── RENDER CARDS ───────────────────────────────────
+function abbrevPrice(n) {
+  if (n >= 1000000) return (n/1000000).toFixed(1).replace(/\.0$/,'') + 'M';
+  if (n >= 1000) return (n/1000).toFixed(1).replace(/\.0$/,'') + 'K';
+  return String(n);
+}
 function renderCards() {
   const container = document.getElementById('M-cards');
   if (!container) return;
@@ -3437,12 +3456,10 @@ function renderCards() {
             + '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:32px">' + d.icon + '</div>')
         + (d.promoted ? '<div class="Mc-top-badge">⚡ ТОП</div>' : '')
       + '</div>'
+      + '<div class="Mc-pricecircle ' + (isR ? 'r' : 's') + '">₪' + abbrevPrice(d.priceNum) + '</div>'
       + '<div class="Mc-body">'
         + '<div class="Mc-top">'
-          + '<div>'
-            + '<span class="Mc-badge ' + (isR ? 'r' : 's') + '">' + (isR ? t('deal.rent') : t('deal.sale')) + '</span>'
-            + '<div class="Mc-price">' + pStr + '</div>'
-          + '</div>'
+          + '<span class="Mc-badge ' + (isR ? 'r' : 's') + '">' + (isR ? t('deal.rent') : t('deal.sale')) + '</span>'
           + '<button class="Mc-fav' + (isFav ? ' on' : '') + '" onclick="event.stopPropagation();M.fav(this,' + idx + ')">'
             + (isFav ? '❤️' : '🤍') + '</button>'
         + '</div>'
@@ -3452,6 +3469,7 @@ function renderCards() {
           + '<span>🏢 ' + d.floor + ' ' + t('card.floor') + '</span>'
         + '</div>'
         + '<div class="Mc-addr">📍 ' + d.addr[lang] + '</div>'
+        + '<div class="Mc-fullprice">' + pStr + '</div>'
         + '<div class="Mc-foot">'
           + '<span class="Mc-agent">' + d.agent.name + (d.agent.verified ? ' <span style="color:#34C759">✓</span>' : '') + '</span>'
           + ((d.views || 0) > 0 ? '<span class="Mc-views">👁 ' + d.views + '</span>' : '')
