@@ -1079,7 +1079,7 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
   stroke-linejoin:round;
   stroke-dasharray:320;
   stroke-dashoffset:320;
-  animation:drawT1 1.2s cubic-bezier(0.4,0,0.2,1) 0.2s forwards;
+  animation:drawT1 1.8s cubic-bezier(0.4,0,0.2,1) 0.3s forwards;
 }
 
 /* Triangle 2 - down */
@@ -1091,21 +1091,30 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
   stroke-linejoin:round;
   stroke-dasharray:320;
   stroke-dashoffset:320;
-  animation:drawT2 1.2s cubic-bezier(0.4,0,0.2,1) 0.8s forwards;
+  animation:drawT2 1.8s cubic-bezier(0.4,0,0.2,1) 1.2s forwards;
 }
 
 @keyframes drawT1 {
-  0%   { stroke-dashoffset:320; stroke:#4A90E2; opacity:0.3 }
-  30%  { opacity:1 }
-  100% { stroke-dashoffset:0; stroke:#4A90E2 }
+  0%   { stroke-dashoffset:320; opacity:0.2 }
+  20%  { opacity:1 }
+  100% { stroke-dashoffset:0 }
 }
 
 @keyframes drawT2 {
-  0%   { stroke-dashoffset:320; stroke:#ffffff; opacity:0.3 }
-  30%  { opacity:1 }
-  100% { stroke-dashoffset:0; stroke:#ffffff }
+  0%   { stroke-dashoffset:320; opacity:0.2 }
+  20%  { opacity:1 }
+  100% { stroke-dashoffset:0 }
 }
 
+@keyframes starSpin3D {
+  0%   { transform:perspective(400px) rotateY(0deg) scale(1) }
+  60%  { transform:perspective(400px) rotateY(360deg) scale(1.1) }
+  100% { transform:perspective(400px) rotateY(360deg) scale(8); opacity:0 }
+}
+
+#loader-star.spin {
+  animation:starSpin3D 1.2s cubic-bezier(0.4,0,0.2,1) forwards !important;
+}
 #nesay-loader .loader-text {
   font-family:var(--font);
   font-size:22px;
@@ -2779,16 +2788,40 @@ function verify2FA(){const code=Array.from(document.querySelectorAll('#tfd input
 function showLoader(){
   var l=document.getElementById('nesay-loader');
   if(!l)return;
-  l.querySelectorAll('.star-path').forEach(function(p){
-    p.style.animation='none';
-    void p.offsetHeight;
-    p.style.animation='';
+  var star=document.getElementById('loader-star');
+  // Reset animations
+  ['.star-t1','.star-t2'].forEach(function(sel){
+    var p=l.querySelector(sel);
+    if(p){p.style.animation='none';void p.offsetHeight;p.style.animation='';}
   });
+  if(star){star.classList.remove('spin');void star.offsetHeight;}
+  l.style.opacity='1';
   l.classList.add('show');
+  // After draw completes - spin and zoom into screen
+  setTimeout(function(){
+    if(star) star.classList.add('spin');
+    setTimeout(function(){
+      l.style.transition='opacity 0.3s';
+      l.style.opacity='0';
+      setTimeout(function(){
+        l.classList.remove('show');
+        l.style.opacity='';
+        l.style.transition='';
+      },300);
+    },900);
+  },3200);
 }
 function hideLoader(){
   var l=document.getElementById('nesay-loader');
-  if(l)setTimeout(function(){l.classList.remove('show');},300);
+  if(l){
+    l.style.transition='opacity 0.3s';
+    l.style.opacity='0';
+    setTimeout(function(){
+      l.classList.remove('show');
+      l.style.opacity='';
+      l.style.transition='';
+    },300);
+  }
 }
 function finishAuth(user){
   hideLoader();
@@ -3659,7 +3692,7 @@ function copyRefLink(){
 <!-- ISRAEL LOADER -->
 <div id="nesay-loader">
   <div class="loader-wrap">
-    <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" width="140" height="140">
+    <svg id="loader-star" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" width="140" height="140">
       <defs>
         <filter id="glow">
           <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
