@@ -1272,7 +1272,7 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
       <!-- Search -->
       <div class="search-bar">
         <span class="si">🔍</span>
-        <input type="text" id="searchInput" placeholder="Город, район, улица..." oninput="applyFilter()">
+        <input type="text" id="searchInput" placeholder="Город, район, улица..." data-i18n-placeholder="search.placeholder" oninput="applyFilter()">
       </div>
       <!-- Type toggle -->
       <div class="type-toggle">
@@ -1293,11 +1293,11 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
       </div>
     </div>
     <div class="sort-row">
-      <div class="cnt">Найдено <b id="cntNum">0</b> объектов</div>
+      <div class="cnt"><span data-i18n="count">Найдено</span> <b id="cntNum">0</b> <span data-i18n="count_obj">объектов</span></div>
       <div class="sdd">
         <button class="sbt" onclick="document.getElementById('smn').classList.toggle('open')">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 6h18M6 12h12M10 18h4"/></svg>
-          <span id="sortLbl">Релевантность</span>▾
+          <span id="sortLbl" data-i18n="sort.label">Релевантность</span>▾
         </button>
         <div class="smn" id="smn">
           <div class="smi on" data-v="rel" onclick="pickSort(this)">🎯 Релевантность</div>
@@ -3218,6 +3218,14 @@ function applyI18nStatic(){
   document.querySelectorAll('[data-i18n]').forEach(el=>{
     const k=el.getAttribute('data-i18n');
     if(k)el.textContent=t(k);
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>{
+    const k=el.getAttribute('data-i18n-placeholder');
+    if(k)el.setAttribute('placeholder',t(k));
+  });
+  document.querySelectorAll('[data-i18n-title]').forEach(el=>{
+    const k=el.getAttribute('data-i18n-title');
+    if(k)el.setAttribute('title',t(k));
   });
 }
 
