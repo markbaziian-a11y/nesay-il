@@ -1350,9 +1350,9 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
       </div>
       <div id="roleWrap" style="display:none">
         <div class="rp" style="grid-template-columns:1fr 1fr 1fr">
-          <div class="rc on" onclick="pickRole(this,'buyer')"><div class="ri">🔍</div><div class="rtt">Клиент</div><div class="rs">Аренда или покупка для себя</div></div>
-          <div class="rc" onclick="pickRole(this,'agent')"><div class="ri">🏢</div><div class="rtt">Риелтор / Агентство</div><div class="rs">Сдать или продать за комиссию</div></div>
-          <div class="rc" onclick="pickRole(this,'owner')"><div class="ri">🏠</div><div class="rtt">Собственник</div><div class="rs">Сдаю или продаю без %</div></div>
+          <div class="rc on" onclick="pickRole(this,'buyer')"><div class="ri">🔍</div><div class="rtt" data-i18n="role.buyer_title">Клиент</div><div class="rs" data-i18n="role.buyer_sub">Аренда или покупка для себя</div></div>
+          <div class="rc" onclick="pickRole(this,'agent')"><div class="ri">🏢</div><div class="rtt" data-i18n="role.agent_title">Риелтор / Агентство</div><div class="rs" data-i18n="role.agent_sub">Сдать или продать за комиссию</div></div>
+          <div class="rc" onclick="pickRole(this,'owner')"><div class="ri">🏠</div><div class="rtt" data-i18n="role.owner_title">Собственник</div><div class="rs" data-i18n="role.owner_sub">Сдаю или продаю без %</div></div>
         </div>
         <div style="margin-bottom:14px"></div>
       </div>
@@ -1376,8 +1376,8 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
     <div id="authS2" style="display:none">
       <div style="text-align:center;padding:10px 0">
         <div style="font-size:44px;margin-bottom:12px">🔐</div>
-        <div style="font-size:16px;font-weight:900;color:var(--ink);margin-bottom:6px">2FA — Подтверждение</div>
-        <div style="font-size:13px;color:var(--ink2);margin-bottom:16px">Введите 6-значный код из Google Authenticator</div>
+        <div style="font-size:16px;font-weight:900;color:var(--ink);margin-bottom:6px" data-i18n="auth.2fa">2FA — Подтверждение</div>
+        <div style="font-size:13px;color:var(--ink2);margin-bottom:16px" data-i18n="auth.2fa_sub">Введите 6-значный код из Google Authenticator</div>
         <div class="tfd" id="tfd">
           <input maxlength="1" oninput="tfin(this,0)" onkeydown="tfkey(event,0)">
           <input maxlength="1" oninput="tfin(this,1)" onkeydown="tfkey(event,1)">
@@ -1386,7 +1386,7 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
           <input maxlength="1" oninput="tfin(this,4)" onkeydown="tfkey(event,4)">
           <input maxlength="1" oninput="tfin(this,5)" onkeydown="tfkey(event,5)">
         </div>
-        <button class="bsub" onclick="verify2FA()">Подтвердить</button>
+        <button class="bsub" onclick="verify2FA()" data-i18n="auth.2fa_btn">Подтвердить</button>
       </div>
     </div>
   </div>
