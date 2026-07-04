@@ -1077,9 +1077,9 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
   stroke-width:3;
   stroke-linecap:round;
   stroke-linejoin:round;
-  stroke-dasharray:320;
-  stroke-dashoffset:320;
-  animation:drawT1 2.5s cubic-bezier(0.4,0,0.2,1) 0.3s forwards;
+  stroke-dasharray:500;
+  stroke-dashoffset:500;
+  animation:drawT1 3s ease-in-out 0.5s forwards;
 }
 
 /* Triangle 2 - down */
@@ -1089,9 +1089,9 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
   stroke-width:3;
   stroke-linecap:round;
   stroke-linejoin:round;
-  stroke-dasharray:320;
-  stroke-dashoffset:320;
-  animation:drawT2 2.5s cubic-bezier(0.4,0,0.2,1) 1.8s forwards;
+  stroke-dasharray:500;
+  stroke-dashoffset:500;
+  animation:drawT2 3s ease-in-out 2.5s forwards;
 }
 
 @keyframes drawT1 {
@@ -2809,7 +2809,7 @@ function showLoader(){
         l.style.transition='';
       },300);
     },900);
-    },5000);
+      },7000);
 }
 function hideLoader(){
   var l=document.getElementById('nesay-loader');
