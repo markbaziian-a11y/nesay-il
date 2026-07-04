@@ -1073,7 +1073,8 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
 
 #loader-star {
   overflow:visible;
-  transform-origin:60px 60px;
+  transform-origin:center center;
+  transform-box:fill-box;
 }
 
 /* Triangle 1 pointing UP - blue */
@@ -1085,7 +1086,7 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
   stroke-linejoin:round;
   stroke-dasharray:600;
   stroke-dashoffset:600;
-  animation:drawT1 1.3s ease-in-out 0.2s forwards;
+  animation:drawT1 3.5s ease-in-out 0.5s forwards;
 }
 
 /* Triangle 2 pointing DOWN - white */
@@ -1097,7 +1098,7 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
   stroke-linejoin:round;
   stroke-dasharray:600;
   stroke-dashoffset:600;
-  animation:drawT2 1.3s ease-in-out 1.5s forwards;
+  animation:drawT2 3.5s ease-in-out 4s forwards;
 }
 
 @keyframes drawT1 {
@@ -1120,13 +1121,14 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
 
 /* Spin and fly into camera */
 @keyframes starSpin3D {
-  0%   { transform:perspective(500px) rotateY(0deg) scale(1); opacity:1 }
-  40%  { transform:perspective(500px) rotateY(360deg) scale(1.2); opacity:1 }
-  100% { transform:perspective(500px) rotateY(360deg) scale(12); opacity:0 }
+  0%   { transform:scale(1) rotate(0deg); opacity:1 }
+  50%  { transform:scale(1.1) rotate(180deg); opacity:1 }
+  85%  { transform:scale(6) rotate(360deg); opacity:1 }
+  100% { transform:scale(12) rotate(360deg); opacity:0 }
 }
 
 #loader-star.spin {
-  animation:starSpin3D 1.4s cubic-bezier(0.4,0,0.2,1) forwards !important;
+  animation:starSpin3D 1.5s cubic-bezier(0.4,0,0.2,1) forwards !important;
 }
 
 #nesay-loader .loader-text {
@@ -2827,7 +2829,7 @@ function showLoader(){
         l.style.transition='';
       },300);
     },900);
-      },8500);
+      },7500);
 }
 function hideLoader(){
   var l=document.getElementById('nesay-loader');
