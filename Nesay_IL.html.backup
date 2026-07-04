@@ -1289,7 +1289,7 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
         <button class="fpill" data-filter="balcony" onclick="toggleFPill(this)" data-i18n="filter.balcony">Балкон</button>
         <button class="fpill" data-filter="garden" onclick="toggleFPill(this)" data-i18n="filter.garden">Сад</button>
         <button class="fpill" data-filter="sea" onclick="toggleFPill(this)" data-i18n="filter.sea">Море 🌊</button>
-        <button class="fpill" data-filter="new" onclick="toggleFPill(this)"><span data-i18n="filter.new">Новые</span></button>
+        <button class="fpill" data-filter="new" onclick="toggleFPill(this)">Новые</button>
       </div>
     </div>
     <div class="sort-row">
@@ -1300,10 +1300,10 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
           <span id="sortLbl" data-i18n="sort.label">Релевантность</span>▾
         </button>
         <div class="smn" id="smn">
-          <div class="smi on" data-v="rel" onclick="pickSort(this)"><span data-i18n="sort.rel">🎯 Релевантность</span></div>
-          <div class="smi" data-v="price-asc" onclick="pickSort(this)"><span data-i18n="sort.price_asc">💰 Цена ↑</span></div>
-          <div class="smi" data-v="price-desc" onclick="pickSort(this)"><span data-i18n="sort.price_desc">💰 Цена ↓</span></div>
-          <div class="smi" data-v="new" onclick="pickSort(this)"><span data-i18n="sort.new">🆕 Сначала новые</span></div>
+          <div class="smi on" data-v="rel" onclick="pickSort(this)">🎯 Релевантность</div>
+          <div class="smi" data-v="price-asc" onclick="pickSort(this)">💰 Цена ↑</div>
+          <div class="smi" data-v="price-desc" onclick="pickSort(this)">💰 Цена ↓</div>
+          <div class="smi" data-v="new" onclick="pickSort(this)">🆕 Сначала новые</div>
         </div>
       </div>
     </div>
@@ -1330,10 +1330,10 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
       <div class="dag" id="dAgt"></div>
       <div id="dRtg" style="display:flex;align-items:center;gap:5px;margin-top:5px"></div>
       <div class="dac">
-        <button class="bwa" onclick="showToast('WhatsApp...')" id="detWa"><span data-i18n="detail.wa">💬 WhatsApp</span></button>
-        <button class="bca" onclick="showToast('📞 054-1234567')" id="detCall"><span data-i18n="detail.call">📞 Позвонить</span></button>
+        <button class="bwa" onclick="showToast('WhatsApp...')" id="detWa">💬 WhatsApp</button>
+        <button class="bca" onclick="showToast('📞 054-1234567')" id="detCall">📞 Позвонить</button>
       </div>
-      <button class="bco" onclick="openChat()" id="detChat"><span data-i18n="detail.chat">💬 Написать в чат</span></button>
+      <button class="bco" onclick="openChat()" id="detChat">💬 Написать в чат</button>
     </div>
   </div>
 </div>
@@ -1396,15 +1396,15 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
 <!-- PUBLISH MODAL -->
 <div class="ovl" id="pubOvl" onclick="if(event.target===this)closePub()">
 <div class="pmod" onclick="event.stopPropagation()" style="direction:ltr">
-  <div class="phd"><div class="ptt" id="pubTtl"><span data-i18n="pub.title">Новое объявление</span></div><button class="mx" onclick="closePub()">✕</button></div>
+  <div class="phd"><div class="ptt" id="pubTtl">Новое объявление</div><button class="mx" onclick="closePub()">✕</button></div>
   <div class="pbd">
     <!-- Stepper -->
     <div class="pstp">
       <div class="psteps">
         <div class="pstep on" id="pn1"><div class="pstep-num">1</div><div class="pstep-lbl">Объект</div></div>
-        <div class="pstep" id="pn2"><div class="pstep-num">2</div><div class="pstep-lbl"><span data-i18n="pub.step2">Фото</span></div></div>
-        <div class="pstep" id="pn3"><div class="pstep-num">3</div><div class="pstep-lbl"><span data-i18n="pub.step3">Тариф</span></div></div>
-        <div class="pstep" id="pn4"><div class="pstep-num">4</div><div class="pstep-lbl"><span data-i18n="pub.step4">Оплата</span></div></div>
+        <div class="pstep" id="pn2"><div class="pstep-num">2</div><div class="pstep-lbl">Фото</div></div>
+        <div class="pstep" id="pn3"><div class="pstep-num">3</div><div class="pstep-lbl">Тариф</div></div>
+        <div class="pstep" id="pn4"><div class="pstep-num">4</div><div class="pstep-lbl">Оплата</div></div>
       </div>
     </div>
 
@@ -1475,7 +1475,7 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
         </div>
         <div class="fgrp" style="flex:1">
           <input class="finput" id="addrHouse" type="text" placeholder=" " disabled style="opacity:.5">
-          <label class="flabel"><span data-i18n="pub.house">Дом №</span></label>
+          <label class="flabel">Дом №</label>
         </div>
       </div>
       <input type="hidden" id="addrLat">
@@ -1489,30 +1489,30 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
         </div>
         <div class="fgrp">
           <input class="finput" type="number" id="pubSqm" placeholder=" ">
-          <label class="flabel"><span data-i18n="pub.sqm">Площадь (м²)</span></label>
+          <label class="flabel">Площадь (м²)</label>
         </div>
       </div>
 
       <div class="fgrp-row" style="margin-bottom:16px">
         <div class="fgrp">
           <input class="finput" type="text" id="pubFloor" placeholder=" ">
-          <label class="flabel"><span data-i18n="pub.floor">Этаж</span></label>
+          <label class="flabel">Этаж</label>
         </div>
         <div class="fgrp">
           <select class="fselect" id="pubReno">
-            <option value="">— Ремонт —</option><option><span data-i18n="pub.reno.new">Новый</span></option><option><span data-i18n="pub.reno.fresh">Свежий ремонт</span></option><option><span data-i18n="pub.reno.cosm">Косметический</span></option><option><span data-i18n="pub.reno.needs">Требует ремонта</span></option>
+            <option value="">— Ремонт —</option><option>Новый</option><option>Свежий ремонт</option><option>Косметический</option><option>Требует ремонта</option>
           </select>
-          <label class="flabel"><span data-i18n="pub.reno">Ремонт</span></label>
+          <label class="flabel">Ремонт</label>
           <span class="fselect-arrow">▾</span>
         </div>
       </div>
 
-      <div class="pw" id="priceWarn"><span data-i18n="pub.price_warn">⚠️ Цена ниже рыночной — потребуется модерация.</span></div>
+      <div class="pw" id="priceWarn">⚠️ Цена ниже рыночной — потребуется модерация.</div>
 
       <div class="fgrp" style="margin-bottom:8px">
         <textarea class="ftextarea" id="pubDesc" placeholder="Расскажите об объекте — это увеличивает число откликов..."></textarea>
       </div>
-      <button onclick="genAI()" style="margin-bottom:16px;font-family:var(--font);font-size:12px;font-weight:700;color:var(--c);background:var(--cl);border:1px solid rgba(28,110,242,.2);padding:7px 14px;border-radius:8px;cursor:pointer"><span data-i18n="pub.ai">✨ AI описание</span></button>
+      <button onclick="genAI()" style="margin-bottom:16px;font-family:var(--font);font-size:12px;font-weight:700;color:var(--c);background:var(--cl);border:1px solid rgba(28,110,242,.2);padding:7px 14px;border-radius:8px;cursor:pointer">✨ AI описание</button>
 
       <div style="display:flex;justify-content:flex-end">
         <button class="bsub" style="width:auto;padding:13px 28px" onclick="goStep(2)">Далее: Фото →</button>
@@ -1522,15 +1522,15 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
     <!-- STEP 2 -->
     <div id="pst2" style="display:none">
       <div style="margin-bottom:16px">
-        <div style="font-size:15px;font-weight:800;color:var(--ink);margin-bottom:4px"><span data-i18n="pub.photo_title">Загрузите фото объекта</span></div>
-        <div style="font-size:13px;color:var(--ink3)"><span data-i18n="pub.photo_sub">Хорошие фото увеличивают отклики в 3–5 раз</span></div>
+        <div style="font-size:15px;font-weight:800;color:var(--ink);margin-bottom:4px">Загрузите фото объекта</div>
+        <div style="font-size:13px;color:var(--ink3)">Хорошие фото увеличивают отклики в 3–5 раз</div>
       </div>
       <div class="dz" id="dropzone" ondragover="event.preventDefault();this.classList.add('ov')" ondragleave="this.classList.remove('ov')" ondrop="dzDrop(event)">
         <div class="dzi">📸</div>
-        <div class="dzt"><span data-i18n="pub.drop">Перетащите фото или нажмите для выбора</span></div>
-        <div class="dzs"><span data-i18n="pub.drop_sub">До 15 файлов · JPG/PNG · макс. 10 МБ</span></div>
+        <div class="dzt">Перетащите фото или нажмите для выбора</div>
+        <div class="dzs">До 15 файлов · JPG/PNG · макс. 10 МБ</div>
         <input type="file" id="dzInp" multiple accept="image/jpeg,image/png,image/webp" style="display:none" onchange="dzAdd(this.files)">
-        <button type="button" onclick="document.getElementById('dzInp').click()" style="margin-top:12px;font-family:var(--font);font-size:13px;font-weight:700;color:var(--c);background:var(--cl);border:1.5px solid rgba(28,110,242,.25);padding:9px 20px;border-radius:10px;cursor:pointer"><span data-i18n="pub.choose">Выбрать файлы</span></button>
+        <button type="button" onclick="document.getElementById('dzInp').click()" style="margin-top:12px;font-family:var(--font);font-size:13px;font-weight:700;color:var(--c);background:var(--cl);border:1.5px solid rgba(28,110,242,.25);padding:9px 20px;border-radius:10px;cursor:pointer">Выбрать файлы</button>
       </div>
       <div class="dzl" id="dzList"></div>
       <div id="dzCnt" style="font-size:12px;color:var(--ink3);margin-top:8px;text-align:center"></div>
@@ -1544,7 +1544,7 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
     <div id="pst3" style="display:none">
       <div style="background:var(--greenbg);border-radius:14px;padding:14px 16px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;border:1px solid rgba(26,125,78,.15)">
         <div><div style="font-size:13px;color:var(--green);font-weight:700">💎 Баланс: <b id="crBal">₪0</b></div><div style="font-size:12px;color:var(--ink2);margin-top:2px">₪100 = 1 объявление на 30 дней</div></div>
-        <button style="padding:8px 16px;border-radius:10px;border:none;background:var(--green);color:#fff;font-family:var(--font);font-size:12px;font-weight:800;cursor:pointer" onclick="showToast('...')"><span data-i18n="pub.buy_more">Купить ещё</span></button>
+        <button style="padding:8px 16px;border-radius:10px;border:none;background:var(--green);color:#fff;font-family:var(--font);font-size:12px;font-weight:800;cursor:pointer" onclick="showToast('...')">Купить ещё</button>
       </div>
       <div class="tg">
         <div class="tc" onclick="selTier(this,100,1)"><div class="tn">Старт</div><div class="tp">₪100</div><div class="td2">1 объявление</div><div class="tsv">₪100/шт</div></div>
@@ -1552,7 +1552,7 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
         <div class="tc" onclick="selTier(this,1700,20)"><div class="tn">Профи</div><div class="tp">₪1,700</div><div class="td2">20 объявлений</div><div class="tsv">₪85/шт · −15%</div></div>
         <div class="tc" onclick="selTier(this,4000,50)"><div class="tn">Агентство</div><div class="tp">₪4,000</div><div class="td2">50 объявлений</div><div class="tsv">₪80/шт · −20%</div></div>
       </div>
-      <button class="bsub" style="background:var(--green);margin-bottom:12px;box-shadow:0 4px 14px rgba(26,125,78,.3)" onclick="useCredit()"><span data-i18n="pub.use_credit">✅ Использовать кредит из баланса</span></button>
+      <button class="bsub" style="background:var(--green);margin-bottom:12px;box-shadow:0 4px 14px rgba(26,125,78,.3)" onclick="useCredit()">✅ Использовать кредит из баланса</button>
       <div style="display:flex;justify-content:space-between">
         <button class="bbk" onclick="goStep(2)">← Назад</button>
         <button class="bsub" style="width:auto;padding:13px 28px" onclick="goStep(4)">Далее: Оплата →</button>
@@ -1562,7 +1562,7 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
     <!-- STEP 4 -->
     <div id="pst4" style="display:none">
       <div class="pyb">
-        <div style="font-size:14px;font-weight:700;margin-bottom:12px;color:var(--ink)"><span data-i18n="pub.pay_card">💳 Банковская карта</span></div>
+        <div style="font-size:14px;font-weight:700;margin-bottom:12px;color:var(--ink)">💳 Банковская карта</div>
         <div style="display:flex;gap:6px;margin-bottom:16px"><div class="ci">VISA</div><div class="ci">MC</div><div class="ci" style="font-size:9px">AMEX</div><div class="ci" style="font-size:9px">ISRACARD</div></div>
         <div class="fgrp">
           <input class="finput" type="text" id="ccNum" placeholder=" " maxlength="19" oninput="var v=this.value.replace(/\D/g,'').slice(0,16);this.value=v.replace(/(.{4})/g,'$1 ').trim()">
@@ -1584,7 +1584,7 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
         </div>
       </div>
       <div class="ttlb">
-        <div><div style="font-size:12px;color:rgba(255,255,255,.6)"><span data-i18n="topup.summary">К оплате</span></div><div style="font-size:12px;color:rgba(255,255,255,.4);margin-top:2px" id="pubPln">Базовый · 10 объявлений</div></div>
+        <div><div style="font-size:12px;color:rgba(255,255,255,.6)">К оплате</div><div style="font-size:12px;color:rgba(255,255,255,.4);margin-top:2px" id="pubPln">Базовый · 10 объявлений</div></div>
         <div style="font-size:26px;font-weight:900" id="totPrc">₪950</div>
       </div>
       <div style="font-size:12px;color:var(--ink3);margin-bottom:16px;text-align:center">🔒 Защищённая оплата через Tranzila · данные карты не хранятся</div>
@@ -1600,8 +1600,8 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
         <p style="font-size:14px;color:var(--ink2);line-height:1.6">Объект уже отображается на карте и в ленте поиска.</p>
         <div class="sri">
           <div class="sr2"><span class="sk2">Номер</span><span class="sv2" id="newId">#IL-00000</span></div>
-          <div class="sr2"><span class="sk2"><span data-i18n="pub.address">Адрес</span></span><span class="sv2" id="newAdr">—</span></div>
-          <div class="sr2"><span class="sk2"><span data-i18n="pub.expires">Активно до</span></span><span class="sv2" id="newExp">—</span></div>
+          <div class="sr2"><span class="sk2">Адрес</span><span class="sv2" id="newAdr">—</span></div>
+          <div class="sr2"><span class="sk2">Активно до</span><span class="sv2" id="newExp">—</span></div>
           <div class="sr2"><span class="sk2">Кредитов осталось</span><span class="sv2" id="crLeft">6</span></div>
         </div>
         <button class="bsub" onclick="closePub()">Закрыть и посмотреть на карте</button>
@@ -1656,16 +1656,16 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
   </div>
   <div class="cabp on" id="cab-dash">
     <div class="sg">
-      <div class="sc3"><div class="sv3">23</div><div class="sl"><span data-i18n="cab.views_today">Просмотров сегодня</span></div><div style="font-size:11px;color:var(--green);font-weight:700;margin-top:4px">↑ 18%</div></div>
-      <div class="sc3"><div class="sv3">5</div><div class="sl"><span data-i18n="cab.messages">Новых сообщений</span></div></div>
-      <div class="sc3"><div class="sv3">4.8</div><div class="sl"><span data-i18n="cab.rating">Рейтинг</span></div></div>
+      <div class="sc3"><div class="sv3">23</div><div class="sl">Просмотров сегодня</div><div style="font-size:11px;color:var(--green);font-weight:700;margin-top:4px">↑ 18%</div></div>
+      <div class="sc3"><div class="sv3">5</div><div class="sl">Новых сообщений</div></div>
+      <div class="sc3"><div class="sv3">4.8</div><div class="sl">Рейтинг</div></div>
     </div>
-    <div style="margin-bottom:18px"><div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:10px"><span data-i18n="cab.week_chart">Просмотры за неделю</span></div><div class="cb2" id="wkChart"></div></div>
-    <div class="vfb"><div style="font-size:28px">✅</div><div><div style="font-size:13px;font-weight:800;color:var(--green)"><span data-i18n="cab.verified">Верифицированный агент</span></div><div style="font-size:12px;color:var(--ink2)"><span data-i18n="cab.verified_sub">Документы проверены</span></div></div></div>
+    <div style="margin-bottom:18px"><div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:10px">Просмотры за неделю</div><div class="cb2" id="wkChart"></div></div>
+    <div class="vfb"><div style="font-size:28px">✅</div><div><div style="font-size:13px;font-weight:800;color:var(--green)">Верифицированный агент</div><div style="font-size:12px;color:var(--ink2)">Документы проверены</div></div></div>
   </div>
   <div class="cabp" id="cab-list">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><div style="font-size:14px;font-weight:800"><span data-i18n="cab.my_listings">Мои объявления</span></div><button class="bm bn" style="font-size:12px;padding:7px 14px" onclick="closeCab();openPub()">+</button></div>
-    <table class="mt"><thead><tr><th>Объект</th><th><span data-i18n="cab.col_status">Статус</span></th><th><span data-i18n="cab.col_views">Просм.</span></th><th><span data-i18n="cab.col_actions">Действия</span></th></tr></thead><tbody id="cabListTbl">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><div style="font-size:14px;font-weight:800">Мои объявления</div><button class="bm bn" style="font-size:12px;padding:7px 14px" onclick="closeCab();openPub()">+</button></div>
+    <table class="mt"><thead><tr><th>Объект</th><th>Статус</th><th>Просм.</th><th>Действия</th></tr></thead><tbody id="cabListTbl">
     </tbody></table>
   </div>
   <div class="cabp" id="cab-bill">
@@ -1675,20 +1675,20 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
         <div class="crv" id="cabCr">₪0</div>
         <div style="font-size:11px;color:var(--ink3);margin-top:4px">₪100 = 1 объявление на 30 дней</div>
       </div>
-      <button style="padding:10px 20px;border-radius:10px;border:none;background:var(--c);color:#fff;font-family:var(--font);font-size:13px;font-weight:800;cursor:pointer" onclick="openTopup()"><span data-i18n="cab.topup">Пополнить</span></button>
+      <button style="padding:10px 20px;border-radius:10px;border:none;background:var(--c);color:#fff;font-family:var(--font);font-size:13px;font-weight:800;cursor:pointer" onclick="openTopup()">Пополнить</button>
     </div>
     <div style="margin-top:16px">
-      <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:10px"><span data-i18n="cab.tx_title">История транзакций</span></div>
-      <div id="txHistory" style="font-size:12px;color:var(--ink3);text-align:center;padding:20px"><span data-i18n="cab.no_tx">Пока нет транзакций</span></div>
+      <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:10px">История транзакций</div>
+      <div id="txHistory" style="font-size:12px;color:var(--ink3);text-align:center;padding:20px">Пока нет транзакций</div>
     </div>
   </div>
   <div class="cabp" id="cab-prof">
     <div class="fgrp-row" style="margin-bottom:16px">
       <div class="fgrp"><input class="finput" type="text" id="profName" value="" placeholder=" "><label class="flabel has-val">Имя</label></div>
-      <div class="fgrp"><input class="finput" type="tel" value="+972-54-123-4567" placeholder=" "><label class="flabel has-val"><span data-i18n="cab.phone">Телефон</span></label></div>
+      <div class="fgrp"><input class="finput" type="tel" value="+972-54-123-4567" placeholder=" "><label class="flabel has-val">Телефон</label></div>
     </div>
     <div style="margin-top:4px"><button class="bsub" onclick="showToast('Сохранено ✅')">Сохранить</button></div>
-    <div style="text-align:center;margin-top:12px"><button onclick="logout()" style="font-family:var(--font);font-size:12px;color:var(--red);background:none;border:none;cursor:pointer;text-decoration:underline"><span data-i18n="cab.logout">Выйти</span></button></div>
+    <div style="text-align:center;margin-top:12px"><button onclick="logout()" style="font-family:var(--font);font-size:12px;color:var(--red);background:none;border:none;cursor:pointer;text-decoration:underline">Выйти</button></div>
   </div>
 
 <div class="cabp" id="cab-ref">
@@ -1823,7 +1823,7 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
     <div class="csl" id="cs1"><span style="font-size:18px;opacity:.3">+</span></div>
     <div class="csl" id="cs2"><span style="font-size:18px;opacity:.3">+</span></div>
   </div>
-  <button class="bcmp" id="doCmp" disabled onclick="openCmpT()"><span data-i18n="card.compare">Сравнить</span></button>
+  <button class="bcmp" id="doCmp" disabled onclick="openCmpT()">Сравнить</button>
   <button style="padding:8px 14px;border-radius:10px;border:1.5px solid var(--line);background:none;font-family:var(--font);font-size:12px;color:var(--ink3);cursor:pointer" onclick="clearCmp()">✕</button>
 </div>
 <div class="ovl" id="cmpOvl" onclick="if(event.target===this)closeCmpT()">
@@ -2000,7 +2000,7 @@ async function addrSearch(q){
   const sg=document.getElementById('addrSugg');
   if(!selectedCityData){sg.classList.add('hid');return}
   if(!q||q.length<2){sg.classList.add('hid');return}
-  sg.innerHTML='<div class="ald"><span data-i18n="addr.searching">🔍 Поиск...</span></div>';
+  sg.innerHTML='<div class="ald">🔍 Поиск...</div>';
   sg.classList.remove('hid');
 
   addrTimer=setTimeout(async()=>{
@@ -2023,7 +2023,7 @@ async function addrSearch(q){
         // Fallback — показываем подсказку ввести вручную
         sg.innerHTML=`<div class="ald" style="color:var(--ink3);padding:10px 14px">
           Улица не найдена автоматически.<br>
-          <span style="font-size:11px"><span data-i18n="addr.manual_prompt">Введите адрес вручную и нажмите «Далее»</span></span>
+          <span style="font-size:11px">Введите адрес вручную и нажмите «Далее»</span>
         </div>
         <div class="asi" onclick="selAddrManual()" tabindex="0">
           <span class="asi-ico">✏️</span>
@@ -2056,10 +2056,10 @@ async function addrSearch(q){
       sg.classList.remove('hid');
     }catch(e){
       sg.innerHTML=`<div class="ald">
-        <div style="color:var(--ink3);margin-bottom:6px"><span data-i18n="addr.unavail">Поиск недоступен</span></div>
+        <div style="color:var(--ink3);margin-bottom:6px">Поиск недоступен</div>
         <div class="asi" onclick="selAddrManual()" tabindex="0" style="border-radius:8px;background:var(--cl)">
           <span class="asi-ico">✏️</span>
-          <div><div class="asi-main"><span data-i18n="addr.enter_manual">Ввести адрес вручную</span></div></div>
+          <div><div class="asi-main">Ввести адрес вручную</div></div>
         </div>
       </div>`;
     }
@@ -2432,7 +2432,7 @@ async function _publish(){
 
   const tbl=document.getElementById('cabListTbl');
   if(tbl){const tr=document.createElement('tr');const newIdx=listings.indexOf(newL);
-    tr.innerHTML=`<td><b>${addr.split(',')[0]}</b><br><span style="font-size:11px;color:var(--ink3)">₪${price.toLocaleString()}${isR?'/мес':''} · ${rooms} комн.</span></td><td><span class="sd sa"></span><span data-i18n="cab.active">Активно</span></td><td>0</td><td style="display:flex;gap:5px;flex-wrap:wrap"><button class="mb2" onclick="openPromoFromCab(${newIdx})" style="color:var(--orange);border-color:var(--orange)">⚡ Продвинуть</button><button class="mb2 dn">Снять</button></td>`;
+    tr.innerHTML=`<td><b>${addr.split(',')[0]}</b><br><span style="font-size:11px;color:var(--ink3)">₪${price.toLocaleString()}${isR?'/мес':''} · ${rooms} комн.</span></td><td><span class="sd sa"></span>Активно</td><td>0</td><td style="display:flex;gap:5px;flex-wrap:wrap"><button class="mb2" onclick="openPromoFromCab(${newIdx})" style="color:var(--orange);border-color:var(--orange)">⚡ Продвинуть</button><button class="mb2 dn">Снять</button></td>`;
     tbl.insertBefore(tr,tbl.firstChild)}
 
   const exp=new Date(Date.now()+30*24*3600*1000);
@@ -2923,9 +2923,9 @@ async function loadMyListings(){
   tbl.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--ink3);padding:20px">Загрузка...</td></tr>';
   try{
     const res=await fetch(`${API}/listings/my/all`,{headers:{Authorization:'Bearer '+token}});
-    if(!res.ok){tbl.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--ink3);padding:20px"><span data-i18n="err.load">Ошибка загрузки</span></td></tr>';return}
+    if(!res.ok){tbl.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--ink3);padding:20px">Ошибка загрузки</td></tr>';return}
     const data=await res.json();
-    if(!data.length){tbl.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--ink3);padding:20px"><span data-i18n="no_listings">Объявлений пока нет</span></td></tr>';return}
+    if(!data.length){tbl.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--ink3);padding:20px">Объявлений пока нет</td></tr>';return}
     tbl.innerHTML=data.map((d,i)=>{
       const cn=d.city_name||{};const city=cn.ru||cn.en||'';
       const addr=(d.street||'')+(d.house_number?' '+d.house_number:'')+(city?', '+city:'');
@@ -2941,7 +2941,7 @@ async function loadMyListings(){
         </td>
       </tr>`;
     }).join('');
-  }catch(e){tbl.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--ink3);padding:20px"><span data-i18n="server.down">Сервер недоступен</span></td></tr>'}
+  }catch(e){tbl.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--ink3);padding:20px">Сервер недоступен</td></tr>'}
 }
 async function deleteMyListing(id,btn){
   if(!confirm(t('confirm.remove')))return;
@@ -3081,7 +3081,7 @@ async function doTopup(){
         const cabCr=document.getElementById('cabCr');if(cabCr)cabCr.textContent='₪'+userCredits;
         const tb=document.getElementById('topupBal');if(tb)tb.textContent='₪'+userCredits;
         const hist=document.getElementById('txHistory');
-        if(hist){if(hist.textContent.includes('Пока нет'))hist.innerHTML='';const row=document.createElement('div');row.style.cssText='display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line);font-size:12px';row.innerHTML=`<span style="color:var(--ink2)"><span data-i18n="cab.topup_entry">Пополнение</span></span><span style="color:var(--green);font-weight:700">+₪${topupAmount}</span>`;hist.insertBefore(row,hist.firstChild)}
+        if(hist){if(hist.textContent.includes('Пока нет'))hist.innerHTML='';const row=document.createElement('div');row.style.cssText='display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line);font-size:12px';row.innerHTML=`<span style="color:var(--ink2)">Пополнение</span><span style="color:var(--green);font-weight:700">+₪${topupAmount}</span>`;hist.insertBefore(row,hist.firstChild)}
         closeTopup();showBalancePopup(topupAmount,true);
       }else{showToast('❌ Ошибка оплаты')}
     }catch(e){userCredits+=topupAmount;document.getElementById('navCr').textContent='₪'+userCredits+' баланс';const cabCr=document.getElementById('cabCr');if(cabCr)cabCr.textContent='₪'+userCredits;closeTopup();showBalancePopup(topupAmount,true)}
