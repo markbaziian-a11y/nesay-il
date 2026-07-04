@@ -1206,14 +1206,14 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
 <nav>
   <a href="#" class="logo">Nesay<em>.</em>il</a>
   <div class="cats">
-    <button class="ctab rt on" onclick="selCat(this,'all')"><span class="ctab-ico">🏠</span data-i18n="nav.all">Все</button>
-    <button class="ctab rt" onclick="selCat(this,'rent')"><span class="ctab-ico">🔵</span data-i18n="nav.rent">Аренда</button>
-    <button class="ctab st" onclick="selCat(this,'sale')"><span class="ctab-ico">🟠</span data-i18n="nav.sale">Продажа</button>
+    <button class="ctab rt on" onclick="selCat(this,'all')"><span class="ctab-ico">🏠</span><span data-i18n="nav.all">Все</span></button>
+    <button class="ctab rt" onclick="selCat(this,'rent')"><span class="ctab-ico">🔵</span><span data-i18n="nav.rent">Аренда</span></button>
+    <button class="ctab st" onclick="selCat(this,'sale')"><span class="ctab-ico">🟠</span><span data-i18n="nav.sale">Продажа</span></button>
     <div class="sep"></div>
-    <button class="ctab rt" onclick="selCat(this,'rent-apt')"><span class="ctab-ico">🏢</span data-i18n="nav.rent_apt">Аренда квартир</button>
-    <button class="ctab rt" onclick="selCat(this,'rent-villa')"><span class="ctab-ico">🏡</span data-i18n="nav.rent_villa">Аренда домов</button>
-    <button class="ctab st" onclick="selCat(this,'buy-apt')"><span class="ctab-ico">🔑</span data-i18n="nav.buy_apt">Покупка квартир</button>
-    <button class="ctab st" onclick="selCat(this,'buy-villa')"><span class="ctab-ico">🌿</span data-i18n="nav.buy_villa">Покупка домов</button>
+    <button class="ctab rt" onclick="selCat(this,'rent-apt')"><span class="ctab-ico">🏢</span><span data-i18n="nav.rent_apt">Аренда квартир</span></button>
+    <button class="ctab rt" onclick="selCat(this,'rent-villa')"><span class="ctab-ico">🏡</span><span data-i18n="nav.rent_villa">Аренда домов</span></button>
+    <button class="ctab st" onclick="selCat(this,'buy-apt')"><span class="ctab-ico">🔑</span><span data-i18n="nav.buy_apt">Покупка квартир</span></button>
+    <button class="ctab st" onclick="selCat(this,'buy-villa')"><span class="ctab-ico">🌿</span><span data-i18n="nav.buy_villa">Покупка домов</span></button>
   </div>
   <div class="nav-right">
     <div class="lsw">
@@ -1227,7 +1227,7 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
     </div>
     <div id="navUser" style="display:none;align-items:center;gap:8px">
       <span class="cp" id="navCr" onclick="refreshCredits()" style="cursor:pointer" title="Нажми чтобы обновить">₪0 баланс</span>
-      <button class="bn" style="background:linear-gradient(90deg,#F59E0B,#EF4444);color:#fff;font-size:12px;padding:7px 12px;box-shadow:0 2px 8px rgba(245,158,11,.35)" onclick="openCab();setTimeout(()=>swCab('list'),150)" title="Продвинуть объявление">⚡ Продвижение</button>
+      <button class="bn" style="background:linear-gradient(90deg,#F59E0B,#EF4444);color:#fff;font-size:12px;padding:7px 12px;box-shadow:0 2px 8px rgba(245,158,11,.35)" onclick="openCab();setTimeout(()=>swCab('list'),150)" title="Продвинуть объявление" data-i18n="nav.boost">⚡ Продвижение</button>
       <div class="ub" onclick="openCab()">
         <div class="ua" id="navAv">АК</div>
         <div>
@@ -1235,7 +1235,7 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
           <div style="font-size:10px;color:var(--ink3)" id="navRl">Агент</div>
         </div>
       </div>
-      <button class="bn bm" onclick="openPub()">+ Разместить</button>
+      <button class="bn bm" onclick="openPub()" data-i18n="nav.publish">+ Разместить</button>
     </div>
   </div>
 </nav>
@@ -2489,7 +2489,7 @@ const I18N={
     'nav.all':'Все','nav.rent':'Аренда','nav.sale':'Продажа',
     'nav.rent_apt':'Аренда квартир','nav.rent_villa':'Аренда домов',
     'nav.buy_apt':'Покупка квартир','nav.buy_villa':'Покупка домов',
-    'nav.signin':'Войти','nav.publish':'+ Разместить','nav.balance':'баланс',
+    'nav.signin':'Войти','nav.publish':'+ Разместить','nav.balance':'баланс','nav.boost':'⚡ Продвижение',
     'nav.promote':'⚡ Продвижение',
     'role.agent':'Агент','role.owner':'Собственник','role.buyer':'Покупатель',
     'search.placeholder':'Город, район, улица...',
@@ -2596,7 +2596,7 @@ const I18N={
     'nav.all':'All','nav.rent':'Rent','nav.sale':'Sale',
     'nav.rent_apt':'Rent Apartments','nav.rent_villa':'Rent Houses',
     'nav.buy_apt':'Buy Apartments','nav.buy_villa':'Buy Houses',
-    'nav.signin':'Sign In','nav.publish':'+ List Property','nav.balance':'balance',
+    'nav.signin':'Sign In','nav.publish':'+ List Property','nav.balance':'balance','nav.boost':'⚡ Boost',
     'nav.promote':'⚡ Promote',
     'role.agent':'Agent','role.owner':'Owner','role.buyer':'Buyer',
     'search.placeholder':'City, area, street...',
@@ -2701,7 +2701,7 @@ const I18N={
     'nav.all':'הכל','nav.rent':'שכירות','nav.sale':'מכירה',
     'nav.rent_apt':'השכרת דירות','nav.rent_villa':'השכרת בתים',
     'nav.buy_apt':'קניית דירות','nav.buy_villa':'קניית בתים',
-    'nav.signin':'כניסה','nav.publish':'+ פרסם מודעה','nav.balance':'יתרה',
+    'nav.signin':'כניסה','nav.publish':'+ פרסם מודעה','nav.balance':'יתרה','nav.boost':'⚡ קידום',
     'nav.promote':'⚡ קידום',
     'role.agent':'סוכן','role.owner':'בעל נכס','role.buyer':'קונה',
     'search.placeholder':'עיר, שכונה, רחוב...',
