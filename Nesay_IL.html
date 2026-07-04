@@ -1724,13 +1724,13 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
 <!-- PROMO -->
 <div class="ovl" id="promoOvl" onclick="if(event.target===this)closePromo()">
 <div class="prm" onclick="event.stopPropagation()">
-  <div class="prh"><div class="phi">⚡</div><div class="pht">Поднять в ТОП</div><div class="phs">24 часа в топе ленты</div></div>
+  <div class="prh"><div class="phi">⚡</div><div class="pht" data-i18n="promo.title">Поднять в ТОП</div><div class="phs" data-i18n="promo.sub">24 часа в топе ленты</div></div>
   <div class="prb">
-    <div class="pfi"><div class="pfc">👁</div>В 5–8 раз больше просмотров</div>
-    <div class="pfi"><div class="pfc">📌</div>Закрепляется выше всех</div>
-    <div class="ppb"><div><div style="font-size:12px;color:var(--ink3)">Стоимость</div><div style="font-size:11px;color:var(--ink3)">24 ч</div></div><div style="font-size:24px;font-weight:900;color:var(--ink)">₪50</div></div>
-    <button class="bpp" id="promoPayBtn" onclick="payPromo()">⚡ Оплатить ₪50</button>
-    <div style="text-align:center;margin-top:12px"><button onclick="closePromo()" style="font-family:var(--font);font-size:12px;color:var(--ink3);background:none;border:none;cursor:pointer">Отмена</button></div>
+    <div class="pfi"><div class="pfc">👁</div><span data-i18n="promo.views">В 5–8 раз больше просмотров</span></div>
+    <div class="pfi"><div class="pfc">📌</div><span data-i18n="promo.pin">Закрепляется выше всех</span></div>
+    <div class="ppb"><div><div style="font-size:12px;color:var(--ink3)" data-i18n="promo.cost">Стоимость</div><div style="font-size:11px;color:var(--ink3)">24 ч</div></div><div style="font-size:24px;font-weight:900;color:var(--ink)">₪50</div></div>
+    <button class="bpp" id="promoPayBtn" onclick="payPromo()" data-i18n="promo.pay">⚡ Оплатить ₪50</button>
+    <div style="text-align:center;margin-top:12px"><button onclick="closePromo()" style="font-family:var(--font);font-size:12px;color:var(--ink3);background:none;border:none;cursor:pointer" data-i18n="promo.cancel">Отмена</button></div>
   </div>
 </div>
 </div>
