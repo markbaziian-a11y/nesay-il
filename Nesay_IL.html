@@ -1741,8 +1741,8 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
   <!-- Header -->
   <div class="topup-header">
     <div>
-      <div class="topup-title">Пополнение баланса</div>
-      <div class="topup-subtitle">Текущий баланс: <span id="topupBal">₪0</span></div>
+      <div class="topup-title" data-i18n="topup.title">Пополнение баланса</div>
+      <div class="topup-subtitle"><span data-i18n="topup.current">Текущий баланс:</span> <span id="topupBal">₪0</span></div>
     </div>
     <button class="topup-close" onclick="closeTopup()">✕</button>
   </div>
@@ -1750,25 +1750,25 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
   <!-- Plans -->
   <div class="topup-plans">
     <div class="tplan" onclick="selTopup(this,100,1)" id="tp100">
-      <div class="tplan-name">Старт</div>
+      <div class="tplan-name" data-i18n="topup.plan1">Старт</div>
       <div class="tplan-price">₪100</div>
       <div class="tplan-desc">1 объявление</div>
     </div>
     <div class="tplan tplan-active" onclick="selTopup(this,500,5)" id="tp500">
-      <div class="tplan-badge">Популярный</div>
-      <div class="tplan-name">Базовый</div>
+      <div class="tplan-badge" data-i18n="topup.popular">Популярный</div>
+      <div class="tplan-name" data-i18n="topup.plan2">Базовый</div>
       <div class="tplan-price">₪500</div>
       <div class="tplan-desc">5 объявлений</div>
       <div class="tplan-save">₪100/шт</div>
     </div>
     <div class="tplan" onclick="selTopup(this,1000,12)" id="tp1000">
-      <div class="tplan-name">Профи</div>
+      <div class="tplan-name" data-i18n="topup.plan3">Профи</div>
       <div class="tplan-price">₪1,000</div>
       <div class="tplan-desc">12 объявлений</div>
       <div class="tplan-save" style="color:var(--green)">−17%</div>
     </div>
     <div class="tplan" onclick="selTopup(this,2000,30)" id="tp2000">
-      <div class="tplan-name">Агентство</div>
+      <div class="tplan-name" data-i18n="topup.plan4">Агентство</div>
       <div class="tplan-price">₪2,000</div>
       <div class="tplan-desc">30 объявлений</div>
       <div class="tplan-save" style="color:var(--green)">−33%</div>
@@ -1778,7 +1778,7 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
   <!-- Card -->
   <div class="topup-card-section">
     <div class="topup-card-label">
-      <span>Способ оплаты</span>
+      <span data-i18n="topup.pay_method">Способ оплаты</span>
       <div class="topup-card-icons">
         <span class="card-icon">VISA</span>
         <span class="card-icon">MC</span>
@@ -1787,14 +1787,14 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
     </div>
     <div class="topup-inputs">
       <div class="topup-input-wrap">
-        <input class="topup-input" type="text" id="topupCard" placeholder="Номер карты" maxlength="19"
+        <input class="topup-input" type="text" id="topupCard" placeholder="Номер карты" data-i18n-placeholder="topup.card_num" maxlength="19"
           oninput="var v=this.value.replace(/\D/g,'').slice(0,16);this.value=v.replace(/(.{4})/g,'$1 ').trim()" style="direction:ltr;text-align:left">
         <span class="topup-input-icon">💳</span>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-        <input class="topup-input" type="text" id="topupExp" placeholder="ММ / ГГ" maxlength="5"
+        <input class="topup-input" type="text" id="topupExp" placeholder="ММ / ГГ" data-i18n-placeholder="topup.card_exp" maxlength="5"
           oninput="var vv=this.value.replace(/\D/g,'');if(vv.length>2)vv=vv.slice(0,2)+'/'+vv.slice(2,4);this.value=vv" style="direction:ltr;text-align:left">
-        <input class="topup-input" type="text" id="topupCvv" placeholder="CVV" maxlength="4" style="direction:ltr;text-align:left">
+        <input class="topup-input" type="text" id="topupCvv" placeholder="CVV" maxlength="4" data-i18n-placeholder="topup.card_cvv" style="direction:ltr;text-align:left">
       </div>
     </div>
   </div>
@@ -1802,7 +1802,7 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
   <!-- Summary -->
   <div class="topup-summary">
     <div class="topup-summary-row">
-      <span>Сумма пополнения</span>
+      <span data-i18n="topup.amount_label">Сумма пополнения</span>
       <span id="topupTotal" style="font-weight:700">₪500</span>
     </div>
     <div class="topup-summary-row" style="font-size:11px;color:var(--ink3)">
@@ -1811,7 +1811,7 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
     </div>
   </div>
 
-  <button class="topup-pay-btn" id="topupBtn" onclick="doTopup()">Пополнить на ₪500</button>
+  <button class="topup-pay-btn" id="topupBtn" onclick="doTopup()" data-i18n-dynamic="topup.topup_word">Пополнить на ₪500</button>
 </div>
 </div>
 
@@ -2558,7 +2558,7 @@ const I18N={
     'cab.phone':'Телефон','cab.name':'Имя',
     'topup.title':'Пополнение баланса','topup.current':'Текущий баланс:',
     'topup.card_num':'Номер карты','topup.card_exp':'ММ/ГГ','topup.card_cvv':'CVV',
-    'topup.summary':'К оплате','topup.btn':'Пополнить на',
+    'topup.summary':'К оплате','topup.btn':'Пополнить на','topup.amount_label':'Сумма пополнения',
     'topup.plan1':'Старт','topup.plan2':'Базовый','topup.plan3':'Профи','topup.plan4':'Агентство',
     'topup.popular':'Популярный',
     'promo.title':'Поднять в ТОП','promo.sub':'24 часа в топе ленты',
@@ -2665,7 +2665,7 @@ const I18N={
     'cab.phone':'Phone','cab.name':'Name',
     'topup.title':'Top Up Balance','topup.current':'Current balance:',
     'topup.card_num':'Card number','topup.card_exp':'MM/YY','topup.card_cvv':'CVV',
-    'topup.summary':'Total','topup.btn':'Pay',
+    'topup.summary':'Total','topup.btn':'Pay','topup.amount_label':'Top-up amount',
     'topup.plan1':'Starter','topup.plan2':'Basic','topup.plan3':'Pro','topup.plan4':'Agency',
     'topup.popular':'Popular',
     'promo.title':'Boost to TOP','promo.sub':'24 hours at top of feed',
@@ -2770,7 +2770,7 @@ const I18N={
     'cab.phone':'טלפון','cab.name':'שם',
     'topup.title':'טעינת יתרה','topup.current':'יתרה נוכחית:',
     'topup.card_num':'מספר כרטיס','topup.card_exp':'MM/YY','topup.card_cvv':'CVV',
-    'topup.summary':'סה"כ לתשלום','topup.btn':'שלם',
+    'topup.summary':'סה"כ לתשלום','topup.btn':'שלם','topup.amount_label':'סכום הטעינה',
     'topup.plan1':'סטארט','topup.plan2':'בסיסי','topup.plan3':'פרו','topup.plan4':'משרד',
     'topup.popular':'פופולרי',
     'promo.title':'קדם לTOP','promo.sub':'24 שעות בראש הפיד',
@@ -3059,9 +3059,9 @@ document.addEventListener('keydown',e=>{
 
 // TOPUP — пополнение баланса
 let topupAmount=500,topupCredits=5;
-function openTopup(){document.getElementById('topupOvl').classList.add('open');document.getElementById('topupBal').textContent='₪'+userCredits}
+function openTopup(){document.getElementById('topupOvl').classList.add('open');document.getElementById('topupBal').textContent='₪'+userCredits;document.getElementById('topupBtn').textContent=t('topup.topup_word')+' ₪'+topupAmount.toLocaleString()}
 function closeTopup(){document.getElementById('topupOvl').classList.remove('open')}
-function selTopup(card,amount,credits){document.querySelectorAll('#topupOvl .tc').forEach(c=>c.classList.remove('on'));card.classList.add('on');topupAmount=amount;topupCredits=amount;/* shekels = amount */document.getElementById('topupTotal').textContent='₪'+amount.toLocaleString();document.getElementById('topupBtn').textContent='Пополнить на ₪'+amount.toLocaleString()}
+function selTopup(card,amount,credits){document.querySelectorAll('#topupOvl .tc').forEach(c=>c.classList.remove('on'));card.classList.add('on');topupAmount=amount;topupCredits=amount;/* shekels = amount */document.getElementById('topupTotal').textContent='₪'+amount.toLocaleString();document.getElementById('topupBtn').textContent=t('topup.topup_word')+' ₪'+amount.toLocaleString()}
 async function doTopup(){
   const card=document.getElementById('topupCard')?.value?.replace(/\s/g,'');
   const exp=document.getElementById('topupExp')?.value;
@@ -3069,7 +3069,7 @@ async function doTopup(){
   if(!card||card.length<16){showToast('❌ Введите номер карты');return}
   if(!exp||exp.length<5){showToast('❌ Введите срок действия');return}
   if(!cvv||cvv.length<3){showToast('❌ Введите CVV');return}
-  const btn=document.getElementById('topupBtn');btn.textContent='Обрабатываем...';btn.disabled=true;showLoader();
+  const btn=document.getElementById('topupBtn');btn.textContent=t('topup.processing');btn.disabled=true;showLoader();
   setTimeout(async()=>{
     try{
       const token=localStorage.getItem('nesay_token');
@@ -3085,7 +3085,7 @@ async function doTopup(){
         closeTopup();showBalancePopup(topupAmount,true);
       }else{showToast('❌ Ошибка оплаты')}
     }catch(e){userCredits+=topupAmount;document.getElementById('navCr').textContent='₪'+userCredits+' баланс';const cabCr=document.getElementById('cabCr');if(cabCr)cabCr.textContent='₪'+userCredits;closeTopup();showBalancePopup(topupAmount,true)}
-    btn.textContent='Пополнить на ₪'+topupAmount.toLocaleString();hideLoader();btn.disabled=false;
+    btn.textContent=t('topup.topup_word')+' ₪'+topupAmount.toLocaleString();hideLoader();btn.disabled=false;
   },2000);
 }
 
