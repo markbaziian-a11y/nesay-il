@@ -2415,6 +2415,7 @@ async function _publish(){
   document.getElementById('navCr').textContent='₪'+userCredits+' '+t('nav.balance');
   const cabCr=document.getElementById('cabCr');if(cabCr)cabCr.textContent='₪'+userCredits;
   const crBal=document.getElementById('crBal');if(crBal)crBal.textContent='₪'+userCredits;
+  showBalancePopup(1,false);
 
   const tbl=document.getElementById('cabListTbl');
   if(tbl){const tr=document.createElement('tr');const newIdx=listings.indexOf(newL);
@@ -2943,7 +2944,7 @@ function renderWkChart(){const data=[12,28,19,35,42,23,30];const days=t('days');
 // PROMO
 function openPromoModal(idx){promoTargetIdx=idx;document.getElementById('promoOvl').classList.add('open')}
 function closePromo(){document.getElementById('promoOvl').classList.remove('open')}
-function payPromo(){const btn=document.getElementById('promoPayBtn');btn.textContent='...';btn.disabled=true;setTimeout(()=>{if(promoTargetIdx>=0){listings[promoTargetIdx].promoted=true;listings[promoTargetIdx]._promoMins=1440}closePromo();applyFilter();showToast('⚡ TOP 24h активирован!')},900)}
+function payPromo(){const btn=document.getElementById('promoPayBtn');btn.textContent='...';btn.disabled=true;setTimeout(()=>{if(promoTargetIdx>=0){listings[promoTargetIdx].promoted=true;listings[promoTargetIdx]._promoMins=1440}closePromo();applyFilter();userCredits=Math.max(0,userCredits-50);document.getElementById('navCr').textContent='₪'+userCredits+' '+t('nav.balance');const cabCr=document.getElementById('cabCr');if(cabCr)cabCr.textContent='₪'+userCredits;const crBal=document.getElementById('crBal');if(crBal)crBal.textContent='₪'+userCredits;showBalancePopup(50,false)},900)}
 setInterval(()=>{let ch=false;listings.forEach(d=>{if(d.promoted&&d._promoMins>0){d._promoMins=Math.max(0,d._promoMins-1/60);if(d._promoMins<=0)d.promoted=false;ch=true}});if(ch)renderCards(filteredListings)},1000);
 
 // COMPARE
