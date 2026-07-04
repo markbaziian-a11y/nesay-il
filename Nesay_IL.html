@@ -1437,7 +1437,7 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
       <!-- Город -->
       <div class="fgrp" style="margin-bottom:16px">
         <select class="fselect" id="pubCity" onchange="onCityChange()">
-          <option value="">— Выберите город —</option>
+          <option value="" data-i18n="pub.select_city">— Выберите город —</option>
           <option value="Tel Aviv|32.0853|34.7818">Тель-Авив</option>
           <option value="Jerusalem|31.7683|35.2137">Иерусалим</option>
           <option value="Haifa|32.7940|34.9896">Хайфа</option>
@@ -1459,7 +1459,7 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
           <option value="Kfar Saba|32.1750|34.9070">Кфар-Саба</option>
           <option value="Nazareth|32.7021|35.2978">Назарет</option>
         </select>
-        <label class="flabel">Город <span class="rq">*</span></label>
+        <label class="flabel"><span data-i18n="pub.city">Город</span> <span class="rq">*</span></label>
         <span class="fselect-arrow">▾</span>
       </div>
 
@@ -1470,7 +1470,7 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
             disabled style="opacity:.5"
             oninput="addrSearch(this.value)"
             onfocus="if(this.value.length>1)document.getElementById('addrSugg').classList.remove('hid')">
-          <label class="flabel">Улица <span class="rq">*</span></label>
+          <label class="flabel"><span data-i18n="pub.street">Улица</span> <span class="rq">*</span></label>
           <div class="asg hid" id="addrSugg"></div>
         </div>
         <div class="fgrp" style="flex:1">
@@ -1485,7 +1485,7 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
       <div class="fgrp-row" style="margin-bottom:16px">
         <div class="fgrp">
           <input class="finput" type="number" id="pubPrice" placeholder=" " oninput="chkPrice(this.value)">
-          <label class="flabel">Цена (₪) <span class="rq">*</span></label>
+          <label class="flabel"><span data-i18n="pub.price">Цена (₪)</span> <span class="rq">*</span></label>
         </div>
         <div class="fgrp">
           <input class="finput" type="number" id="pubSqm" placeholder=" ">
@@ -1500,7 +1500,7 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
         </div>
         <div class="fgrp">
           <select class="fselect" id="pubReno">
-            <option value="">— Ремонт —</option><option><span data-i18n="pub.reno.new">Новый</span></option><option><span data-i18n="pub.reno.fresh">Свежий ремонт</span></option><option><span data-i18n="pub.reno.cosm">Косметический</span></option><option><span data-i18n="pub.reno.needs">Требует ремонта</span></option>
+            <option value="" data-i18n="pub.select_reno">— Ремонт —</option><option><span data-i18n="pub.reno.new">Новый</span></option><option><span data-i18n="pub.reno.fresh">Свежий ремонт</span></option><option><span data-i18n="pub.reno.cosm">Косметический</span></option><option><span data-i18n="pub.reno.needs">Требует ремонта</span></option>
           </select>
           <label class="flabel"><span data-i18n="pub.reno">Ремонт</span></label>
           <span class="fselect-arrow">▾</span>
@@ -1510,7 +1510,7 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
       <div class="pw" id="priceWarn"><span data-i18n="pub.price_warn">⚠️ Цена ниже рыночной — потребуется модерация.</span></div>
 
       <div class="fgrp" style="margin-bottom:8px">
-        <textarea class="ftextarea" id="pubDesc" placeholder="Расскажите об объекте — это увеличивает число откликов..."></textarea>
+        <textarea class="ftextarea" id="pubDesc" placeholder="Расскажите об объекте — это увеличивает число откликов..." data-i18n-placeholder="pub.desc"></textarea>
       </div>
       <button onclick="genAI()" style="margin-bottom:16px;font-family:var(--font);font-size:12px;font-weight:700;color:var(--c);background:var(--cl);border:1px solid rgba(28,110,242,.2);padding:7px 14px;border-radius:8px;cursor:pointer"><span data-i18n="pub.ai">✨ AI описание</span></button>
 
@@ -2525,7 +2525,7 @@ const I18N={
     'role.owner_title':'Собственник','role.owner_sub':'Сдаю или продаю без %',
     'pub.title':'Новое объявление','pub.step1':'Объект','pub.step2':'Фото','pub.step3':'Тариф','pub.step4':'Оплата',
     'pub.deal_rent':'🔵 Аренда','pub.deal_sale':'🟠 Продажа',
-    'pub.city':'Город','pub.street':'Улица','pub.house':'Дом №','pub.obj_type':'Тип объекта',
+    'pub.city':'Город','pub.street':'Улица','pub.house':'Дом №','pub.obj_type':'Тип объекта','pub.select_city':'— Выберите город —','pub.select_reno':'— Ремонт —',
     'pub.price':'Цена (₪)','pub.sqm':'Площадь (м²)','pub.floor':'Этаж','pub.reno':'Ремонт',
     'pub.desc':'Расскажите об объекте — это увеличивает число откликов...',
     'pub.ai':'✨ AI описание','pub.next':'Далее','pub.back':'← Назад',
@@ -2632,7 +2632,7 @@ const I18N={
     'role.owner_title':'Owner','role.owner_sub':'Renting or selling directly',
     'pub.title':'New Listing','pub.step1':'Property','pub.step2':'Photos','pub.step3':'Plan','pub.step4':'Payment',
     'pub.deal_rent':'🔵 Rent','pub.deal_sale':'🟠 Sale',
-    'pub.city':'City','pub.street':'Street','pub.house':'House №','pub.obj_type':'Property type',
+    'pub.city':'City','pub.street':'Street','pub.house':'House №','pub.obj_type':'Property type','pub.select_city':'— Select city —','pub.select_reno':'— Condition —',
     'pub.price':'Price (₪)','pub.sqm':'Area (m²)','pub.floor':'Floor','pub.reno':'Condition',
     'pub.desc':'Tell about the property — this increases responses...',
     'pub.ai':'✨ AI description','pub.next':'Next','pub.back':'← Back',
@@ -2737,7 +2737,7 @@ const I18N={
     'role.owner_title':'בעל נכס','role.owner_sub':'משכיר או מוכר ישירות',
     'pub.title':'מודעה חדשה','pub.step1':'נכס','pub.step2':'תמונות','pub.step3':'תעריף','pub.step4':'תשלום',
     'pub.deal_rent':'🔵 שכירות','pub.deal_sale':'🟠 מכירה',
-    'pub.city':'עיר','pub.street':'רחוב','pub.house':'מס\' בית','pub.obj_type':'סוג נכס',
+    'pub.city':'עיר','pub.street':'רחוב','pub.house':'מס\' בית','pub.obj_type':'סוג נכס','pub.select_city':'— בחר עיר —','pub.select_reno':'— מצב —',
     'pub.price':'מחיר (₪)','pub.sqm':'שטח (מ"ר)','pub.floor':'קומה','pub.reno':'מצב',
     'pub.desc':'ספר על הנכס — זה מגדיל את מספר הפניות...',
     'pub.ai':'✨ תיאור AI','pub.next':'הבא','pub.back':'← חזור',
