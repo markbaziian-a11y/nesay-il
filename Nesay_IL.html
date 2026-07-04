@@ -1650,7 +1650,7 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
       <button class="cabt" onclick="swCab('list')" data-i18n="cab.listings">Объявления</button>
       <button class="cabt" onclick="swCab('bill')" data-i18n="cab.billing">Подписка</button>
       <button class="cabt" onclick="swCab('prof')" data-i18n="cab.profile">Профиль</button>
-<button class="cabt" onclick="swCab('ref')">🔗 Рефералы</button>
+<button class="cabt" onclick="swCab('ref')" data-i18n="cab.referrals">🔗 Рефералы</button>
 
     </div>
   </div>
@@ -2000,7 +2000,7 @@ async function addrSearch(q){
   const sg=document.getElementById('addrSugg');
   if(!selectedCityData){sg.classList.add('hid');return}
   if(!q||q.length<2){sg.classList.add('hid');return}
-  sg.innerHTML='<div class="ald"><span data-i18n="addr.searching">🔍 Поиск...</span></div>';
+  sg.innerHTML='<div class="ald">'+t('addr.searching')+'</div>';
   sg.classList.remove('hid');
 
   addrTimer=setTimeout(async()=>{
@@ -2432,7 +2432,7 @@ async function _publish(){
 
   const tbl=document.getElementById('cabListTbl');
   if(tbl){const tr=document.createElement('tr');const newIdx=listings.indexOf(newL);
-    tr.innerHTML=`<td><b>${addr.split(',')[0]}</b><br><span style="font-size:11px;color:var(--ink3)">₪${price.toLocaleString()}${isR?'/мес':''} · ${rooms} комн.</span></td><td><span class="sd sa"></span><span data-i18n="cab.active">Активно</span></td><td>0</td><td style="display:flex;gap:5px;flex-wrap:wrap"><button class="mb2" onclick="openPromoFromCab(${newIdx})" style="color:var(--orange);border-color:var(--orange)">⚡ Продвинуть</button><button class="mb2 dn">Снять</button></td>`;
+    tr.innerHTML=`<td><b>${addr.split(',')[0]}</b><br><span style="font-size:11px;color:var(--ink3)">₪${price.toLocaleString()}${isR?'/мес':''} · ${rooms} комн.</span></td><td><span class="sd sa"></span>${t('cab.active')}</td><td>0</td><td style="display:flex;gap:5px;flex-wrap:wrap"><button class="mb2" onclick="openPromoFromCab(${newIdx})" style="color:var(--orange);border-color:var(--orange)">⚡ Продвинуть</button><button class="mb2 dn">Снять</button></td>`;
     tbl.insertBefore(tr,tbl.firstChild)}
 
   const exp=new Date(Date.now()+30*24*3600*1000);
@@ -2544,7 +2544,7 @@ const I18N={
     'pub.reno.new':'Новый','pub.reno.fresh':'Свежий ремонт','pub.reno.cosm':'Косметический','pub.reno.needs':'Требует ремонта',
     'pub.prop.apt':'Квартира','pub.prop.villa':'Дом/Вилла','pub.prop.studio':'Студия','pub.prop.comm':'Коммерческая','pub.prop.penthouse':'Пентхаус',
     'pub.rooms_label':'Комнат',
-    'cab.dash':'Дашборд','cab.listings':'Объявления','cab.billing':'Подписка','cab.profile':'Профиль',
+    'cab.dash':'Дашборд','cab.listings':'Объявления','cab.billing':'Подписка','cab.profile':'Профиль','cab.referrals':'🔗 Рефералы',
     'cab.views_today':'Просмотров сегодня','cab.messages':'Новых сообщений','cab.rating':'Рейтинг',
     'cab.week_chart':'Просмотры за неделю',
     'cab.verified':'Верифицированный агент','cab.verified_sub':'Документы проверены',
@@ -2651,7 +2651,7 @@ const I18N={
     'pub.reno.new':'New','pub.reno.fresh':'Recently renovated','pub.reno.cosm':'Cosmetic','pub.reno.needs':'Needs renovation',
     'pub.prop.apt':'Apartment','pub.prop.villa':'House/Villa','pub.prop.studio':'Studio','pub.prop.comm':'Commercial','pub.prop.penthouse':'Penthouse',
     'pub.rooms_label':'Rooms',
-    'cab.dash':'Dashboard','cab.listings':'Listings','cab.billing':'Billing','cab.profile':'Profile',
+    'cab.dash':'Dashboard','cab.listings':'Listings','cab.billing':'Billing','cab.profile':'Profile','cab.referrals':'🔗 Referrals',
     'cab.views_today':'Views today','cab.messages':'New messages','cab.rating':'Rating',
     'cab.week_chart':'Views this week',
     'cab.verified':'Verified agent','cab.verified_sub':'Documents checked',
@@ -2756,7 +2756,7 @@ const I18N={
     'pub.reno.new':'חדש','pub.reno.fresh':'שיפוץ טרי','pub.reno.cosm':'קוסמטי','pub.reno.needs':'דרוש שיפוץ',
     'pub.prop.apt':'דירה','pub.prop.villa':'בית/וילה','pub.prop.studio':'סטודיו','pub.prop.comm':'מסחרי','pub.prop.penthouse':'פנטהאוז',
     'pub.rooms_label':'חדרים',
-    'cab.dash':'לוח בקרה','cab.listings':'מודעות','cab.billing':'חיוב','cab.profile':'פרופיל',
+    'cab.dash':'לוח בקרה','cab.listings':'מודעות','cab.billing':'חיוב','cab.profile':'פרופיל','cab.referrals':'🔗 הפניות',
     'cab.views_today':'צפיות היום','cab.messages':'הודעות חדשות','cab.rating':'דירוג',
     'cab.week_chart':'צפיות השבוע',
     'cab.verified':'סוכן מאומת','cab.verified_sub':'מסמכים נבדקו',
@@ -2923,9 +2923,9 @@ async function loadMyListings(){
   tbl.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--ink3);padding:20px">Загрузка...</td></tr>';
   try{
     const res=await fetch(`${API}/listings/my/all`,{headers:{Authorization:'Bearer '+token}});
-    if(!res.ok){tbl.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--ink3);padding:20px"><span data-i18n="err.load">Ошибка загрузки</span></td></tr>';return}
+    if(!res.ok){tbl.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--ink3);padding:20px">'+t('err.load')+'</td></tr>';return}
     const data=await res.json();
-    if(!data.length){tbl.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--ink3);padding:20px"><span data-i18n="no_listings">Объявлений пока нет</span></td></tr>';return}
+    if(!data.length){tbl.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--ink3);padding:20px">'+t('no_listings')+'</td></tr>';return}
     tbl.innerHTML=data.map((d,i)=>{
       const cn=d.city_name||{};const city=cn.ru||cn.en||'';
       const addr=(d.street||'')+(d.house_number?' '+d.house_number:'')+(city?', '+city:'');
@@ -2941,7 +2941,7 @@ async function loadMyListings(){
         </td>
       </tr>`;
     }).join('');
-  }catch(e){tbl.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--ink3);padding:20px"><span data-i18n="server.down">Сервер недоступен</span></td></tr>'}
+  }catch(e){tbl.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--ink3);padding:20px">'+t('server.down')+'</td></tr>'}
 }
 async function deleteMyListing(id,btn){
   if(!confirm(t('confirm.remove')))return;
@@ -3081,7 +3081,7 @@ async function doTopup(){
         const cabCr=document.getElementById('cabCr');if(cabCr)cabCr.textContent='₪'+userCredits;
         const tb=document.getElementById('topupBal');if(tb)tb.textContent='₪'+userCredits;
         const hist=document.getElementById('txHistory');
-        if(hist){if(hist.textContent.includes('Пока нет'))hist.innerHTML='';const row=document.createElement('div');row.style.cssText='display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line);font-size:12px';row.innerHTML=`<span style="color:var(--ink2)"><span data-i18n="cab.topup_entry">Пополнение</span></span><span style="color:var(--green);font-weight:700">+₪${topupAmount}</span>`;hist.insertBefore(row,hist.firstChild)}
+        if(hist){if(hist.querySelector('[data-i18n="cab.no_tx"]'))hist.innerHTML='';const row=document.createElement('div');row.style.cssText='display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line);font-size:12px';row.innerHTML=`<span style="color:var(--ink2)">${t('cab.topup_entry')}</span><span style="color:var(--green);font-weight:700">+₪${topupAmount}</span>`;hist.insertBefore(row,hist.firstChild)}
         closeTopup();showBalancePopup(topupAmount,true);
       }else{showToast('❌ Ошибка оплаты')}
     }catch(e){userCredits+=topupAmount;document.getElementById('navCr').textContent='₪'+userCredits+' баланс';const cabCr=document.getElementById('cabCr');if(cabCr)cabCr.textContent='₪'+userCredits;closeTopup();showBalancePopup(topupAmount,true)}
