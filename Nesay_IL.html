@@ -739,24 +739,30 @@ html.mob .mcs  { background:rgba(0,0,0,.08); margin:2px 0 }
   flex-shrink:0;
   height:34px;
   padding:0 16px;
-  border-radius:20px;
-  border:none;
+  border-radius:100px;
+  border:1px solid rgba(0,0,0,.08);
   font-family:var(--font);
   font-size:12px; font-weight:700;
   cursor:pointer;
   white-space:nowrap;
-  background:var(--glass);
-  backdrop-filter:var(--glass-blur);
-  -webkit-backdrop-filter:var(--glass-blur);
+  background:#fff;
   color:var(--ink2);
-  box-shadow:0 2px 12px rgba(0,0,0,.12);
-  border:1px solid rgba(255,255,255,0.6);
+  display:flex; align-items:center;
   transition:all .18s;
   -webkit-tap-highlight-color:transparent;
 }
-.M-pill.p-all  { background:rgba(28,110,242,.12); color:var(--c); border-color:rgba(28,110,242,.2) }
-.M-pill.p-rent { background:var(--rentbg); color:var(--rent); border-color:rgba(28,110,242,.2) }
-.M-pill.p-sale { background:var(--salebg); color:var(--sale); border-color:rgba(255,100,0,.2) }
+.M-pill-dot {
+  width:11px; height:11px; border-radius:50%;
+  border:2px solid currentColor;
+  display:inline-block; margin-right:5px;
+  transition:background .15s;
+}
+.M-pill.on .M-pill-dot { background:currentColor }
+.M-pill.k-rent { color:var(--rent) }
+.M-pill.k-sale { color:var(--sale) }
+.M-pill.k-all.on  { background:#1D1B16; color:#F4F1EA; border-color:#1D1B16 }
+.M-pill.k-rent.on { background:var(--rentbg); border-color:transparent }
+.M-pill.k-sale.on { background:var(--salebg); border-color:transparent }
 
 /* ══════════════════════════════════════
    LIST WRAP — нижняя половина
@@ -3391,9 +3397,9 @@ tryAutoLogin();
     <div class="M-av-btn" id="M-av" onclick="M.avatarTap()">👤</div>
   </div>
   <div class="M-pill-row" id="M-pills">
-    <button class="M-pill p-all" id="Mp-all"  onclick="M.type('all',this)">🏠 Все</button>
-    <button class="M-pill"       id="Mp-rent" onclick="M.type('rent',this)" data-i18n="map.rent">🔵 Аренда</button>
-    <button class="M-pill"       id="Mp-sale" onclick="M.type('sale',this)" data-i18n="map.sale">🟠 Продажа</button>
+    <button class="M-pill k-all on" id="Mp-all"  onclick="M.type('all',this)"><span class="M-pill-txt" data-i18n="filter.all">Все</span></button>
+    <button class="M-pill k-rent"    id="Mp-rent" onclick="M.type('rent',this)"><span class="M-pill-dot"></span><span class="M-pill-txt" data-i18n="filter.rent">Аренда</span></button>
+    <button class="M-pill k-sale"    id="Mp-sale" onclick="M.type('sale',this)"><span class="M-pill-dot"></span><span class="M-pill-txt" data-i18n="filter.sale">Продажа</span></button>
   </div>
 </div>
 
@@ -3635,9 +3641,9 @@ function setType(type, btn) {
   favOnly = false;
   activeType = type; activeCat = type;
   document.querySelectorAll('.M-pill').forEach(function(p) {
-    p.classList.remove('p-all', 'p-rent', 'p-sale');
+    p.classList.remove('on');
   });
-  btn.classList.add('p-' + type);
+  btn.classList.add('on');
   applyFilter();
 }
 
@@ -3648,7 +3654,7 @@ function setLangMob(l) {
   var pills = { all: t('filter.all'), rent: t('filter.rent'), sale: t('filter.sale') };
   Object.keys(pills).forEach(function(k) {
     var el = document.getElementById('Mp-' + k);
-    if (el) el.textContent = pills[k];
+    if (el) { var txtEl = el.querySelector('.M-pill-txt'); if (txtEl) txtEl.textContent = pills[k]; }
   });
   renderCards();
 }
