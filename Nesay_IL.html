@@ -1267,6 +1267,11 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
 <div class="layout">
   <div class="ma">
     <div id="map3d"></div>
+    <div id="drawZoneOverlay">
+      <canvas id="drawZoneCanvas"></canvas>
+      <div class="drawZone-hint" id="drawZoneHint" data-i18n="draw.hint">Обведите пальцем область поиска</div>
+    </div>
+    <button id="drawZoneClear" onclick="clearDrawZone()" data-i18n="draw.clear">✕ Сбросить зону</button>
     <div class="cj">
       <button onclick="flyTo(32.7940,34.9896,13,'Хайфа')" data-i18n="city.haifa">⚓ Хайфа</button>
       <button onclick="flyTo(32.8467,35.0683,14,'К.-Ям')" data-i18n="city.kyam">🏖 К.-Ям</button>
@@ -2636,6 +2641,7 @@ const I18N={
     'confirm.remove':'Снять объявление?',
     'loading':'Загрузка...','err.load':'Ошибка загрузки','server.down':'Сервер недоступен',
     'no_listings':'Объявлений пока нет',
+    'draw.hint':'Обведите пальцем область поиска','draw.clear':'✕ Сбросить зону',
     'topup.processing':'Обрабатываем...',
     'topup.topup_word':'Пополнить на',
     'topup.success':'✅ Баланс пополнен на',
@@ -2744,6 +2750,7 @@ const I18N={
     'confirm.remove':'Remove this listing?',
     'loading':'Loading...','err.load':'Failed to load','server.down':'Server unavailable',
     'no_listings':'No listings yet',
+    'draw.hint':'Trace your finger to draw a search zone','draw.clear':'✕ Clear zone',
     'topup.processing':'Processing...','topup.topup_word':'Pay','topup.success':'✅ Balance topped up by',
     'topup.pay_method':'Payment method',
     'pub.1_listing':'1 listing','pub.per_unit':'₪100/each',
@@ -2850,6 +2857,7 @@ const I18N={
     'confirm.remove':'להסיר את המודעה?',
     'loading':'טוען...','err.load':'שגיאה בטעינה','server.down':'השרת לא זמין',
     'no_listings':'אין מודעות עדיין',
+    'draw.hint':'צייר עם האצבע אזור חיפוש','draw.clear':'✕ נקה אזור',
     'topup.processing':'מעבד...','topup.topup_word':'שלם','topup.success':'✅ היתרה הוטענה ב-',
     'topup.pay_method':'אמצעי תשלום',
     'pub.1_listing':'מודעה אחת','pub.per_unit':'₪100/יחידה',
@@ -3818,7 +3826,7 @@ function startDrawZone(){
     }
     if(overlay)overlay.classList.remove('active');
     drawZoneActive=false;
-    if(fab){fab.textContent='✏️';fab.style.background='';}
+    if(fab){fab.innerHTML='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>';fab.style.background='';}
     var clear=document.getElementById('drawZoneClear');
     if(clear)clear.style.display='block';
   }
