@@ -807,7 +807,6 @@ html.mob .mcs  { background:rgba(0,0,0,.08); margin:2px 0 }
   display:flex;
   position:relative;
   border-radius:18px;
-  overflow:hidden;
   background:#fff;
   box-shadow:var(--shadow-card);
   cursor:pointer;
@@ -816,15 +815,14 @@ html.mob .mcs  { background:rgba(0,0,0,.08); margin:2px 0 }
   transition:transform .12s, box-shadow .12s;
   -webkit-tap-highlight-color:transparent;
 }
-.Mc-pricecircle {
-  position:absolute; top:50%; left:89px; transform:translateY(-50%);
-  width:40px; height:40px; border-radius:50%;
-  display:flex; align-items:center; justify-content:center;
-  color:#fff; font-size:11px; font-weight:800; line-height:1;
-  border:3px solid #fff; z-index:2; text-align:center;
+.Mc-pricecapsule {
+  position:absolute; left:8px; bottom:-13px;
+  padding:6px 12px; border-radius:100px;
+  color:#fff; font-size:12px; font-weight:800; line-height:1;
+  border:3px solid #fff; z-index:2; white-space:nowrap;
 }
-.Mc-pricecircle.r { background:#2563EB }
-.Mc-pricecircle.s { background:#EA580C }
+.Mc-pricecapsule.r { background:#2563EB }
+.Mc-pricecapsule.s { background:#EA580C }
 .Mc-fullprice {
   font-size:12px; font-weight:700; color:var(--ink);
   margin-top:1px;
@@ -834,13 +832,14 @@ html.mob .mcs  { background:rgba(0,0,0,.08); margin:2px 0 }
   box-shadow:0 1px 6px rgba(0,0,0,.08);
 }
 
-.Mc-stripe { width:4px; flex-shrink:0 }
+.Mc-stripe { width:4px; flex-shrink:0; border-radius:18px 0 0 18px }
 .Mc-stripe.r { background:linear-gradient(180deg,#3B82F6,#60A5FA) }
 .Mc-stripe.s { background:linear-gradient(180deg,#F97316,#FB923C) }
 
 .Mc-img {
   width:105px; min-width:105px;
   position:relative; overflow:hidden; flex-shrink:0;
+  border-radius:18px 0 0 18px;
 }
 .Mc-bg {
   position:absolute; inset:0;
@@ -3471,7 +3470,7 @@ function renderCards() {
             + '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:32px">' + d.icon + '</div>')
         + (d.promoted ? '<div class="Mc-top-badge">⚡ ТОП</div>' : '')
       + '</div>'
-      + '<div class="Mc-pricecircle ' + (isR ? 'r' : 's') + '">₪' + abbrevPrice(d.priceNum) + '</div>'
+      + '<div class="Mc-pricecapsule ' + (isR ? 'r' : 's') + '">' + pStr + '</div>'
       + '<div class="Mc-body">'
         + '<div class="Mc-top">'
           + '<span class="Mc-badge ' + (isR ? 'r' : 's') + '">' + (isR ? t('deal.rent') : t('deal.sale')) + '</span>'
