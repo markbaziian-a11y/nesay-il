@@ -3385,8 +3385,18 @@ const IS_MOB = Math.min(window.screen.width, window.screen.height) <= 768
 
 if (IS_MOB) {
   document.documentElement.classList.add('mob');
-  setTimeout(function(){ if (window.map) window.map.resize(); }, 50);
-  setTimeout(function(){ if (window.map) window.map.resize(); }, 350);
+  [50, 350, 800, 1500, 2500].forEach(function(delay){
+    setTimeout(function(){ if (window.map) window.map.resize(); }, delay);
+  });
+  window.addEventListener('resize', function(){ if (window.map) window.map.resize(); });
+  window.addEventListener('orientationchange', function(){
+    setTimeout(function(){ if (window.map) window.map.resize(); }, 300);
+  });
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', function(){
+      if (window.map) window.map.resize();
+    });
+  }
 }
 if (!IS_MOB) return;
 
