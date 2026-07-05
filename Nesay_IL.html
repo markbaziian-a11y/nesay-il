@@ -1328,9 +1328,10 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
 <div class="dp" id="detailPop">
   <div class="dc">
     <div class="dth r" id="dTypHdr" data-i18n="map.rent">🔵 Аренда</div>
-    <div class="dtm">
+    <div class="dtm" id="dtmWrap">
       <div class="dtmbg" id="dThBg"></div>
       <div class="dtme" id="dThEm">🏢</div>
+      <div id="dGallery" style="position:absolute;inset:0;display:none"></div>
       <button class="dcl" onclick="closeDetail()">✕</button>
     </div>
     <div class="dby">
@@ -2314,8 +2315,31 @@ function openDetail(idx){
   document.getElementById('dTypHdr').className=`dth ${isR?'r':'s'}`;
   document.getElementById('dTypHdr').textContent=isR?t('deal.rent'):t('deal.sale');
   const bg=document.getElementById('dThBg'),em=document.getElementById('dThEm');
-  if(d.userPhoto){bg.style.backgroundImage=`url('${d.userPhoto}')`;bg.style.backgroundSize='cover';em.style.display='none'}
-  else{bg.style.background=d.thumb;bg.style.backgroundImage='';em.style.display='flex';em.textContent=d.icon}
+  const dGal=document.getElementById('dGallery');
+  const allPh=d.allPhotos||(d.userPhoto?[d.userPhoto]:[]);
+  detailSlideIdx=0;
+  if(allPh.length>1){
+    bg.style.display='none';em.style.display='none';dGal.style.display='block';
+    dGal.innerHTML=`<div class="card-slides" id="dSlides" style="transform:translateX(0%)">
+      ${allPh.map(u=>`<div class="card-slide" style="background:url('${u}') center/cover"></div>`).join('')}
+      </div>
+      <button class="slide-btn slide-prev" onclick="event.stopPropagation();slideDetailPhoto(-1)">‹</button>
+      <button class="slide-btn slide-next" onclick="event.stopPropagation();slideDetailPhoto(1)">›</button>
+      <div class="slide-dots" id="dDots">${allPh.map((_,i)=>`<div class="slide-dot${i===0?' on':''}"></div>`).join('')}</div>
+      <div style="position:absolute;bottom:8px;right:10px;background:rgba(0,0,0,.55);color:#fff;font-size:10px;font-weight:600;padding:3px 9px;border-radius:100px;z-index:2" id="dCounter">1 / ${allPh.length}</div>`;
+    let tsx=0;
+    dGal.ontouchstart=function(e){tsx=e.touches[0].clientX};
+    dGal.ontouchend=function(e){
+      const dx=e.changedTouches[0].clientX-tsx;
+      if(Math.abs(dx)>40)slideDetailPhoto(dx<0?1:-1);
+    };
+  } else if(allPh.length===1){
+    bg.style.display='';em.style.display='none';dGal.style.display='none';
+    bg.style.backgroundImage=`url('${allPh[0]}')`;bg.style.backgroundSize='cover';
+  } else {
+    bg.style.display='';em.style.display='flex';dGal.style.display='none';
+    bg.style.background=d.thumb;bg.style.backgroundImage='';em.textContent=d.icon;
+  }
   document.getElementById('dPrc').textContent=pStr;
   document.getElementById('dAdr').textContent='📍 '+d.addr[lang];
   document.getElementById('dSpc').innerHTML=`<div class="spi"><div class="sv">${d.rooms}</div><div class="sk">${t('detail.rooms')}</div></div><div class="spi"><div class="sv">${d.sqm}</div><div class="sk">${t('detail.sqm')}</div></div><div class="spi"><div class="sv">${d.floor}</div><div class="sk">${t('detail.floor')}</div></div>`;
@@ -3194,6 +3218,20 @@ async function refreshCredits(){
 
 // ═══ PHOTO SLIDER ═══
 const slideIdx={};
+let detailSlideIdx=0;
+function slideDetailPhoto(dir){
+  const d=listings[activeIdx];
+  if(!d)return;
+  const photos=d.allPhotos||(d.userPhoto?[d.userPhoto]:[]);
+  if(photos.length<2)return;
+  detailSlideIdx=(detailSlideIdx+dir+photos.length)%photos.length;
+  const sl=document.getElementById('dSlides');
+  if(sl)sl.style.transform=`translateX(-${detailSlideIdx*100}%)`;
+  const dots=document.getElementById('dDots');
+  if(dots){dots.querySelectorAll('.slide-dot').forEach((el,i)=>el.classList.toggle('on',i===detailSlideIdx))}
+  const cnt=document.getElementById('dCounter');
+  if(cnt)cnt.textContent=(detailSlideIdx+1)+' / '+photos.length;
+}
 function slidePhoto(idx,dir){
   if(!slideIdx[idx])slideIdx[idx]=0;
   const d=listings[idx];
