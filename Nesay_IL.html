@@ -3386,15 +3386,6 @@ const IS_MOB = Math.min(window.screen.width, window.screen.height) <= 768
 
 if (IS_MOB) {
   document.documentElement.classList.add('mob');
-  setTimeout(function(){
-    var ma = document.querySelector('.ma');
-    var rect = ma ? ma.getBoundingClientRect() : null;
-    var canvas = document.querySelector('#map3d canvas');
-    var dbg = document.createElement('div');
-    dbg.style.cssText = 'position:fixed;top:70px;left:10px;right:10px;background:red;color:#fff;font-size:11px;padding:8px;z-index:999999;border-radius:8px;font-family:monospace';
-    dbg.textContent = 'ma: ' + JSON.stringify(rect) + ' | canvas: ' + (canvas ? canvas.width+'x'+canvas.height : 'NONE') + ' | mapExists: ' + !!window.map;
-    document.body.appendChild(dbg);
-  }, 1000);
   [50, 350, 800, 1500, 2500].forEach(function(delay){
     setTimeout(function(){ if (window.map) window.map.resize(); }, delay);
   });
