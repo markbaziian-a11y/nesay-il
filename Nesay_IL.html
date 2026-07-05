@@ -9,6 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet">
 <script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/webfont/tabler-icons.min.css">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -2357,7 +2358,7 @@ function openDetail(idx){
   document.getElementById('dSpc').innerHTML=`<div class="spi"><div class="sv">${d.rooms}</div><div class="sk">${t('detail.rooms')}</div></div><div class="spi"><div class="sv">${d.sqm}</div><div class="sk">${t('detail.sqm')}</div></div><div class="spi"><div class="sv">${d.floor}</div><div class="sk">${t('detail.floor')}</div></div>`;
   document.getElementById('dTgs').innerHTML=d.tags[lang].map((t,i)=>`<span class="dtga ${d.hi.includes(i)?'hi':''}">${t}</span>`).join('');
   const ag=d.agent;
-  document.getElementById('dHon').innerHTML=ag.honesty>0?`<div class="hl"><span>🏅 ${t('detail.honesty')}</span><span style="font-weight:800;color:var(--ink)">${ag.honesty}/100</span></div><div class="ht"><div class="hf" style="width:${ag.honesty}%"></div></div>`:'';
+  document.getElementById('dHon').innerHTML=ag.honesty>0?renderTrustBar(ag.honesty,ag.deals):'';
   document.getElementById('dDsc').textContent=d.desc[lang]||d.desc.ru||'';
   document.getElementById('dAgt').innerHTML=`<div class="agav">${ag.initials}</div><div><div style="font-size:13px;font-weight:700;color:var(--ink)">${ag.name}${ag.verified?' <span style="color:var(--green)">✓</span>':''}</div><div style="font-size:11px;color:var(--ink3)">${t('agent.type.'+(ag.type||'agent'))}</div></div>`;
   document.getElementById('dRtg').innerHTML=ag.rating>0?`<span class="st">${'★'.repeat(Math.round(ag.rating))}${'☆'.repeat(5-Math.round(ag.rating))}</span><span style="font-size:11px;color:var(--ink3)">${ag.rating} (${ag.reviews})</span>`:'';
@@ -2540,6 +2541,7 @@ const I18N={
     'nav.rent_apt':'Аренда квартир','nav.rent_villa':'Аренда домов',
     'nav.buy_apt':'Покупка квартир','nav.buy_villa':'Покупка домов',
     'nav.signin':'Войти','nav.publish':'+ Разместить','nav.balance':'баланс','nav.boost':'⚡ Продвижение',
+    'tab.map':'Карта','tab.listings':'Объявления','tab.favorites':'Избранные',
     'nav.promote':'⚡ Продвижение',
     'role.agent':'Агент','role.owner':'Собственник','role.buyer':'Покупатель',
     'search.placeholder':'Город, район, улица...',
@@ -2560,7 +2562,7 @@ const I18N={
     'card.empty_title':'Объявлений не найдено','card.empty_sub':'Попробуйте изменить фильтры',
     'card.reset':'Сбросить фильтры',
     'detail.rooms':'комн.','detail.sqm':'м²','detail.floor':'этаж',
-    'detail.honesty':'Индекс честности',
+    'detail.honesty':'Индекс честности','detail.deals':'сделок',
     'detail.wa':'💬 WhatsApp','detail.call':'📞 Позвонить','detail.chat':'💬 Написать в чат',
     'agent.type.agent':'Агент','agent.type.owner':'Владелец','agent.type.agency':'Агентство',
     'auth.title_login':'Вход в Nesay.il','auth.title_reg':'Регистрация — Nesay.il',
@@ -2647,6 +2649,7 @@ const I18N={
     'nav.rent_apt':'Rent Apartments','nav.rent_villa':'Rent Houses',
     'nav.buy_apt':'Buy Apartments','nav.buy_villa':'Buy Houses',
     'nav.signin':'Sign In','nav.publish':'+ List Property','nav.balance':'balance','nav.boost':'⚡ Boost',
+    'tab.map':'Map','tab.listings':'Listings','tab.favorites':'Favorites',
     'nav.promote':'⚡ Promote',
     'role.agent':'Agent','role.owner':'Owner','role.buyer':'Buyer',
     'search.placeholder':'City, area, street...',
@@ -2667,7 +2670,7 @@ const I18N={
     'card.empty_title':'No listings found','card.empty_sub':'Try changing your filters',
     'card.reset':'Reset filters',
     'detail.rooms':'rooms','detail.sqm':'m²','detail.floor':'floor',
-    'detail.honesty':'Honesty index',
+    'detail.honesty':'Honesty index','detail.deals':'deals',
     'detail.wa':'💬 WhatsApp','detail.call':'📞 Call','detail.chat':'💬 Chat',
     'agent.type.agent':'Agent','agent.type.owner':'Owner','agent.type.agency':'Agency',
     'auth.title_login':'Sign In to Nesay.il','auth.title_reg':'Register — Nesay.il',
@@ -2752,6 +2755,7 @@ const I18N={
     'nav.rent_apt':'השכרת דירות','nav.rent_villa':'השכרת בתים',
     'nav.buy_apt':'קניית דירות','nav.buy_villa':'קניית בתים',
     'nav.signin':'כניסה','nav.publish':'+ פרסם מודעה','nav.balance':'יתרה','nav.boost':'⚡ קידום',
+    'tab.map':'מפה','tab.listings':'מודעות','tab.favorites':'מועדפים',
     'nav.promote':'⚡ קידום',
     'role.agent':'סוכן','role.owner':'בעל נכס','role.buyer':'קונה',
     'search.placeholder':'עיר, שכונה, רחוב...',
@@ -2772,7 +2776,7 @@ const I18N={
     'card.empty_title':'לא נמצאו מודעות','card.empty_sub':'נסה לשנות את הפילטרים',
     'card.reset':'איפוס פילטרים',
     'detail.rooms':'חד\'','detail.sqm':'מ"ר','detail.floor':'קומה',
-    'detail.honesty':'מדד אמינות',
+    'detail.honesty':'מדד אמינות','detail.deals':'עסקאות',
     'detail.wa':'💬 ווטסאפ','detail.call':'📞 התקשר','detail.chat':'💬 שלח הודעה',
     'agent.type.agent':'סוכן','agent.type.owner':'בעל נכס','agent.type.agency':'משרד תיווך',
     'auth.title_login':'כניסה ל-Nesay.il','auth.title_reg':'הרשמה — Nesay.il',
@@ -3230,6 +3234,32 @@ async function refreshCredits(){
 
 // ═══ PHOTO SLIDER ═══
 const slideIdx={};
+function renderTrustBarMini(honesty){
+  if(!honesty)return'';
+  const filled=Math.round(honesty/20);
+  const color=honesty>=70?'#639922':(honesty>=40?'#BA7517':'#E24B4A');
+  const textColor=honesty>=70?'#3B6D11':(honesty>=40?'#854F0B':'#A32D2D');
+  let bars='';
+  for(let i=0;i<5;i++){
+    bars+='<span style="width:10px;height:3px;border-radius:1.5px;background:'+(i<filled?color:'var(--line)')+';display:inline-block;margin-right:1.5px"></span>';
+  }
+  return '<div style="display:flex;align-items:center;gap:4px;margin-top:3px">'+bars+'<span style="font-size:9px;color:'+textColor+';font-weight:700">'+(honesty/20).toFixed(1)+'</span></div>';
+}
+function renderTrustBar(honesty,deals){
+  const filled=Math.round((honesty||0)/20);
+  const color=honesty>=70?'#639922':(honesty>=40?'#BA7517':'#E24B4A');
+  const textColor=honesty>=70?'#3B6D11':(honesty>=40?'#854F0B':'#A32D2D');
+  let bars='';
+  for(let i=0;i<5;i++){
+    bars+=`<span style="width:14px;height:4px;border-radius:2px;background:${i<filled?color:'var(--line)'};display:inline-block;margin-right:2px"></span>`;
+  }
+  const scoreLabel=(honesty/20).toFixed(1);
+  const dealsTxt=deals?` · ${deals} ${t('detail.deals')||'сделок'}`:'';
+  return `<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+    <div>${bars}</div>
+    <span style="font-size:11px;color:${textColor};font-weight:700">${t('detail.honesty')} ${scoreLabel}${dealsTxt}</span>
+  </div>`;
+}
 function contactAgent(kind){
   const d=listings[activeIdx];
   if(!d)return;
@@ -3418,26 +3448,26 @@ tryAutoLogin();
 <!-- TAB BAR -->
 <div id="M-tabs">
   <button class="M-tab" id="Mt-map"  onclick="M.tab('map')">
-    <span class="M-tab-ico">🗺</span>
-    <span class="M-tab-lbl">Карта</span>
+    <span class="M-tab-ico"><i class="ti ti-map-2"></i></span>
+    <span class="M-tab-lbl" data-i18n="tab.map">Карта</span>
   </button>
   <button class="M-tab on" id="Mt-list" onclick="M.tab('list')">
-    <span class="M-tab-ico">📋</span>
-    <span class="M-tab-lbl">Объявления</span>
+    <span class="M-tab-ico"><i class="ti ti-list"></i></span>
+    <span class="M-tab-lbl" data-i18n="tab.listings">Объявления</span>
   </button>
   <button class="M-tab" id="Mt-fav"  onclick="M.tab('fav')">
-    <span class="M-tab-ico">❤️</span>
-    <span class="M-tab-lbl">Избранные</span>
+    <span class="M-tab-ico"><i class="ti ti-heart"></i></span>
+    <span class="M-tab-lbl" data-i18n="tab.favorites">Избранные</span>
     <span class="M-tab-dot" id="M-fav-dot"></span>
   </button>
   <button class="M-tab" id="Mt-me"   onclick="M.tab('me')">
-    <span class="M-tab-ico" id="Mt-me-ico">👤</span>
+    <span class="M-tab-ico" id="Mt-me-ico"><i class="ti ti-user"></i></span>
     <span class="M-tab-lbl" id="Mt-me-lbl" data-i18n="nav.signin">Войти</span>
   </button>
 </div>
 
 <!-- FAB -->
-<button id="M-fab" onclick="M.fab()" title="Нарисовать зону поиска">✏️</button>
+<button id="M-fab" onclick="M.fab()" title="Нарисовать зону поиска"><i class="ti ti-pencil"></i></button>
 
 <script>
 // ═══════════════════════════════════════════════════════
@@ -3550,6 +3580,7 @@ function renderCards() {
         + '</div>'
         + '<div class="Mc-addr">📍 ' + d.addr[lang] + '</div>'
         + '<div class="Mc-fullprice">' + pStr + '</div>'
+        + renderTrustBarMini(d.agent.honesty)
         + '<div class="Mc-foot">'
           + '<span class="Mc-agent">' + d.agent.name + (d.agent.verified ? ' <span style="color:#34C759">✓</span>' : '') + '</span>'
           + ((d.views || 0) > 0 ? '<span class="Mc-views">👁 ' + d.views + '</span>' : '')
@@ -3753,7 +3784,7 @@ function startDrawZone(){
   var canvas=document.getElementById('drawZoneCanvas');
   if(overlay)overlay.classList.add('active');
   if(hint)hint.style.display='block';
-  if(fab){fab.textContent='✕';fab.style.background='#FF3B30';}
+  if(fab){fab.innerHTML='<i class="ti ti-x"></i>';fab.style.background='#FF3B30';}
   canvas.width=canvas.offsetWidth;
   canvas.height=canvas.offsetHeight;
   var ctx=canvas.getContext('2d');
@@ -3826,7 +3857,7 @@ function clearDrawZone(){
   if(canvas){var ctx=canvas.getContext('2d');ctx.clearRect(0,0,canvas.width,canvas.height);}
   var overlay=document.getElementById('drawZoneOverlay');if(overlay)overlay.classList.remove('active');
   var clear=document.getElementById('drawZoneClear');if(clear)clear.style.display='none';
-  var fab=document.getElementById('M-fab');if(fab){fab.textContent='✏️';fab.style.background='';}
+  var fab=document.getElementById('M-fab');if(fab){fab.innerHTML='<i class="ti ti-pencil"></i>';fab.style.background='';}
   filteredListings=getFiltered();
   renderCards(filteredListings);
   if(typeof M!=='undefined'&&M.renderCards)M.renderCards();
