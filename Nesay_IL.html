@@ -817,41 +817,25 @@ html.mob .mcs  { background:rgba(0,0,0,.08); margin:2px 0 }
 /* ── Карточка ── */
 .Mc {
   display:flex;
+  flex-direction:column;
   position:relative;
   border-radius:18px;
   background:#fff;
   box-shadow:var(--shadow-card);
   cursor:pointer;
-  flex-shrink:0;
   border:1px solid rgba(0,0,0,.04);
   transition:transform .12s, box-shadow .12s;
   -webkit-tap-highlight-color:transparent;
-}
-.Mc-pricecapsule {
-  position:absolute; left:8px; bottom:-13px;
-  padding:6px 12px; border-radius:100px;
-  color:#fff; font-size:12px; font-weight:800; line-height:1;
-  border:3px solid #fff; z-index:2; white-space:nowrap;
-}
-.Mc-pricecapsule.r { background:#2563EB }
-.Mc-pricecapsule.s { background:#EA580C }
-.Mc-fullprice {
-  font-size:12px; font-weight:700; color:var(--ink);
-  margin-top:1px;
 }
 .Mc:active {
   transform:scale(.98);
   box-shadow:0 1px 6px rgba(0,0,0,.08);
 }
 
-.Mc-stripe { width:4px; flex-shrink:0; border-radius:18px 0 0 18px }
-.Mc-stripe.r { background:linear-gradient(180deg,#3B82F6,#60A5FA) }
-.Mc-stripe.s { background:linear-gradient(180deg,#F97316,#FB923C) }
-
-.Mc-img {
-  width:105px; min-width:105px;
+.Mc-photo {
+  width:100%; height:150px;
   position:relative; overflow:hidden; flex-shrink:0;
-  border-radius:18px 0 0 18px;
+  border-radius:18px 18px 0 0;
 }
 .Mc-bg {
   position:absolute; inset:0;
@@ -860,9 +844,20 @@ html.mob .mcs  { background:rgba(0,0,0,.08); margin:2px 0 }
 }
 .Mc:active .Mc-bg { transform:scale(1.04) }
 
+.Mc-pricebadge {
+  position:absolute; right:12px; top:124px;
+  width:52px; height:52px; border-radius:50%;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  color:#fff; font-size:12px; font-weight:800; line-height:1.05;
+  border:3px solid #fff; z-index:2;
+}
+.Mc-pricebadge span { font-size:8px; font-weight:600; opacity:.9 }
+.Mc-pricebadge.r { background:var(--rent) }
+.Mc-pricebadge.s { background:var(--sale) }
+
 .Mc-body {
-  flex:1; padding:11px 12px;
-  display:flex; flex-direction:column; gap:4px; min-width:0;
+  flex:1; padding:16px 12px 12px;
+  display:flex; flex-direction:column; gap:5px; min-width:0;
 }
 .Mc-top {
   display:flex; align-items:flex-start;
@@ -873,13 +868,9 @@ html.mob .mcs  { background:rgba(0,0,0,.08); margin:2px 0 }
   padding:3px 8px; border-radius:6px; display:inline-block;
   letter-spacing:.2px;
 }
-.Mc-badge.r { background:#EFF6FF; color:#2563EB }
-.Mc-badge.s { background:#FFF7ED; color:#EA580C }
+.Mc-badge.r { background:var(--rentbg); color:var(--rent) }
+.Mc-badge.s { background:var(--salebg); color:var(--sale) }
 
-.Mc-price {
-  font-size:17px; font-weight:900; color:var(--ink);
-  letter-spacing:-.5px; margin-top:3px; line-height:1;
-}
 .Mc-fav {
   width:30px; height:30px; border-radius:10px;
   border:1.5px solid rgba(0,0,0,.08);
@@ -893,6 +884,10 @@ html.mob .mcs  { background:rgba(0,0,0,.08); margin:2px 0 }
 .Mc-fav:active { transform:scale(.88) }
 .Mc-fav.on { border-color:#FCA5A5; background:#FFF1F1 }
 
+.Mc-fullprice {
+  font-size:16px; font-weight:800; color:var(--ink);
+  letter-spacing:-.3px;
+}
 .Mc-specs {
   font-size:11px; color:var(--ink2);
   display:flex; gap:8px; flex-wrap:wrap;
@@ -3564,28 +3559,27 @@ function renderCards() {
     div.className = 'Mc';
 
     div.innerHTML =
-      '<div class="Mc-stripe ' + (isR ? 'r' : 's') + '"></div>'
-      + '<div class="Mc-img">'
+      '<div class="Mc-photo">'
         + (ph
           ? '<div class="Mc-bg" style="background:url(\'' + ph + '\') center/cover"></div>'
           : '<div class="Mc-bg" style="background:#DCD5C4"></div>'
-            + '<svg viewBox="0 0 105 105" style="position:absolute;inset:0;width:100%;height:100%"><circle cx="30" cy="32" r="15" fill="none" stroke="#B8AF98" stroke-width="2"/><circle cx="30" cy="32" r="9" fill="none" stroke="#B8AF98" stroke-width="1.5"/><rect x="10" y="65" width="85" height="40" fill="#CFC6AF"/></svg>')
+            + '<svg viewBox="0 0 300 150" style="position:absolute;inset:0;width:100%;height:100%"><circle cx="60" cy="55" r="20" fill="none" stroke="#B8AF98" stroke-width="2"/><circle cx="60" cy="55" r="12" fill="none" stroke="#B8AF98" stroke-width="1.5"/><rect x="20" y="105" width="260" height="45" fill="#CFC6AF"/></svg>')
         + (d.promoted ? '<div class="Mc-top-badge">⚡ ТОП</div>' : '')
       + '</div>'
-      + '<div class="Mc-pricecapsule ' + (isR ? 'r' : 's') + '">' + pStr + '</div>'
+      + '<div class="Mc-pricebadge ' + (isR ? 'r' : 's') + '">' + abbrevPrice(d.priceNum) + '</div>'
       + '<div class="Mc-body">'
         + '<div class="Mc-top">'
           + '<span class="Mc-badge ' + (isR ? 'r' : 's') + '">' + (isR ? t('deal.rent') : t('deal.sale')) + '</span>'
           + '<button class="Mc-fav' + (isFav ? ' on' : '') + '" onclick="event.stopPropagation();M.fav(this,' + idx + ')">'
             + (isFav ? '❤️' : '🤍') + '</button>'
         + '</div>'
+        + '<div class="Mc-fullprice">' + pStr + '</div>'
         + '<div class="Mc-specs">'
           + '<span>🛏 ' + d.rooms + ' ' + t('card.rooms') + '</span>'
           + '<span>📐 ' + d.sqm + ' ' + t('card.sqm') + '</span>'
           + '<span>🏢 ' + d.floor + ' ' + t('card.floor') + '</span>'
         + '</div>'
         + '<div class="Mc-addr">📍 ' + d.addr[lang] + '</div>'
-        + '<div class="Mc-fullprice">' + pStr + '</div>'
         + renderTrustBarMini(d.agent.honesty)
         + '<div class="Mc-foot">'
           + '<span class="Mc-agent">' + d.agent.name + (d.agent.verified ? ' <span style="color:#34C759">✓</span>' : '') + '</span>'
