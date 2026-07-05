@@ -1895,6 +1895,7 @@ function initMap(){
     container:'map3d',style:'mapbox://styles/mapbox/dark-v11',
     center:[34.7818,32.0853],zoom:12,pitch:55,bearing:-15,antialias:true,attributionControl:false
   });
+  window.map = map;
   map.addControl(new mapboxgl.AttributionControl({compact:true}),'bottom-right');
   map.scrollZoom.setWheelZoomRate(1/450);
   map.on('load',()=>{
