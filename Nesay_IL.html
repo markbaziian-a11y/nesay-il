@@ -9,7 +9,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet">
 <script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/webfont/tabler-icons.min.css">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -192,7 +191,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:var(--nav-h);
 .parr{position:absolute;bottom:-7px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:7px solid rgba(8,8,18,.96)}
 
 /* ════ DETAIL ════ */
-.dp{position:fixed;inset:0;z-index:200;display:none;pointer-events:none}
+.dp{position:fixed;inset:0;z-index:2000;display:none;pointer-events:none}
 .dp.open{display:block}
 .dc{position:absolute;bottom:0;right:0;width:var(--sw);height:calc(100% - var(--nav-h));top:var(--nav-h);background:var(--white);border-left:1px solid var(--line);display:flex;flex-direction:column;overflow-y:auto;animation:sIn .22s ease;pointer-events:all;direction:rtl}
 @keyframes sIn{from{transform:translateX(18px);opacity:0}to{transform:none;opacity:1}}
@@ -1030,7 +1029,6 @@ html.mob .topup-sheet {
 
 /* Toast */
 html.mob .tst {
-  bottom:calc(var(--mob-tab-h) + var(--mob-safe-bot) + 16px);
   border-radius:14px;
   font-size:13px;
   font-weight:600;
@@ -3448,26 +3446,26 @@ tryAutoLogin();
 <!-- TAB BAR -->
 <div id="M-tabs">
   <button class="M-tab" id="Mt-map"  onclick="M.tab('map')">
-    <span class="M-tab-ico"><i class="ti ti-map-2"></i></span>
+    <span class="M-tab-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4l-6 2v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14"/><path d="M15 6v14"/></svg></span>
     <span class="M-tab-lbl" data-i18n="tab.map">Карта</span>
   </button>
   <button class="M-tab on" id="Mt-list" onclick="M.tab('list')">
-    <span class="M-tab-ico"><i class="ti ti-list"></i></span>
+    <span class="M-tab-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></span>
     <span class="M-tab-lbl" data-i18n="tab.listings">Объявления</span>
   </button>
   <button class="M-tab" id="Mt-fav"  onclick="M.tab('fav')">
-    <span class="M-tab-ico"><i class="ti ti-heart"></i></span>
+    <span class="M-tab-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.5 12.572l-7.5 7.428-7.5-7.428a5 5 0 1 1 7.5-6.566 5 5 0 1 1 7.5 6.572z"/></svg></span>
     <span class="M-tab-lbl" data-i18n="tab.favorites">Избранные</span>
     <span class="M-tab-dot" id="M-fav-dot"></span>
   </button>
   <button class="M-tab" id="Mt-me"   onclick="M.tab('me')">
-    <span class="M-tab-ico" id="Mt-me-ico"><i class="ti ti-user"></i></span>
+    <span class="M-tab-ico" id="Mt-me-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg></span>
     <span class="M-tab-lbl" id="Mt-me-lbl" data-i18n="nav.signin">Войти</span>
   </button>
 </div>
 
 <!-- FAB -->
-<button id="M-fab" onclick="M.fab()" title="Нарисовать зону поиска"><i class="ti ti-pencil"></i></button>
+<button id="M-fab" onclick="M.fab()" title="Нарисовать зону поиска"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button>
 
 <script>
 // ═══════════════════════════════════════════════════════
@@ -3784,7 +3782,7 @@ function startDrawZone(){
   var canvas=document.getElementById('drawZoneCanvas');
   if(overlay)overlay.classList.add('active');
   if(hint)hint.style.display='block';
-  if(fab){fab.innerHTML='<i class="ti ti-x"></i>';fab.style.background='#FF3B30';}
+  if(fab){fab.innerHTML='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';fab.style.background='#FF3B30';}
   canvas.width=canvas.offsetWidth;
   canvas.height=canvas.offsetHeight;
   var ctx=canvas.getContext('2d');
@@ -3857,7 +3855,7 @@ function clearDrawZone(){
   if(canvas){var ctx=canvas.getContext('2d');ctx.clearRect(0,0,canvas.width,canvas.height);}
   var overlay=document.getElementById('drawZoneOverlay');if(overlay)overlay.classList.remove('active');
   var clear=document.getElementById('drawZoneClear');if(clear)clear.style.display='none';
-  var fab=document.getElementById('M-fab');if(fab){fab.innerHTML='<i class="ti ti-pencil"></i>';fab.style.background='';}
+  var fab=document.getElementById('M-fab');if(fab){fab.innerHTML='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>';fab.style.background='';}
   filteredListings=getFiltered();
   renderCards(filteredListings);
   if(typeof M!=='undefined'&&M.renderCards)M.renderCards();
