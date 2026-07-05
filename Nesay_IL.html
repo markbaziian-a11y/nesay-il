@@ -1344,8 +1344,8 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
       <div class="dag" id="dAgt"></div>
       <div id="dRtg" style="display:flex;align-items:center;gap:5px;margin-top:5px"></div>
       <div class="dac">
-        <button class="bwa" onclick="showToast('WhatsApp...')" id="detWa"><span data-i18n="detail.wa">💬 WhatsApp</span></button>
-        <button class="bca" onclick="showToast('📞 054-1234567')" id="detCall"><span data-i18n="detail.call">📞 Позвонить</span></button>
+        <button class="bwa" onclick="contactAgent('wa')" id="detWa"><span data-i18n="detail.wa">💬 WhatsApp</span></button>
+        <button class="bca" onclick="contactAgent('call')" id="detCall"><span data-i18n="detail.call">📞 Позвонить</span></button>
       </div>
       <button class="bco" onclick="openChat()" id="detChat"><span data-i18n="detail.chat">💬 Написать в чат</span></button>
     </div>
@@ -3218,6 +3218,22 @@ async function refreshCredits(){
 
 // ═══ PHOTO SLIDER ═══
 const slideIdx={};
+function contactAgent(kind){
+  const d=listings[activeIdx];
+  if(!d)return;
+  const phone=d.agent&&d.agent.phone;
+  if(!phone){
+    showToast(kind==='wa'?'Номер не указан':'Номер не указан');
+    return;
+  }
+  const clean=String(phone).replace(/[^0-9+]/g,'');
+  if(kind==='call'){
+    window.location.href='tel:'+clean;
+  } else {
+    const waNum=clean.replace(/^\+/,'').replace(/^0/,'972');
+    window.open('https://wa.me/'+waNum,'_blank');
+  }
+}
 let detailSlideIdx=0;
 function slideDetailPhoto(dir){
   const d=listings[activeIdx];
