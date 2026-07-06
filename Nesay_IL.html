@@ -2003,21 +2003,17 @@ function highlightListingBuildings(data){
     const seen=new Set();
     (data||[]).forEach(d=>{
       const pt=map.project([d.lng,d.lat]);
-      const bbox=[[pt.x-15,pt.y-15],[pt.x+15,pt.y+15]];
+      const bbox=[[pt.x-40,pt.y-40],[pt.x+40,pt.y+40]];
       const found=map.queryRenderedFeatures(bbox,{layers:['3d-buildings']});
-      if(found&&found.length){
-        let best=found[0],bestArea=_polyBBoxArea(found[0].geometry);
-        for(let i=1;i<found.length;i++){
-          const a=_polyBBoxArea(found[i].geometry);
-          if(a>bestArea){best=found[i];bestArea=a;}
-        }
-        const f=best;
+      (found||[]).forEach(f=>{
+        const area=_polyBBoxArea(f.geometry);
+        if(area<=3e-8)return;
         const coords=f.geometry.coordinates&&f.geometry.coordinates[0]?f.geometry.coordinates[0][0]:null;
         const key=coords?coords.join(','):JSON.stringify(f.geometry);
         if(seen.has(key))return;
         seen.add(key);
         feats.push({type:'Feature',geometry:f.geometry,properties:{height:(f.properties&&f.properties.height)||0,min_height:(f.properties&&f.properties.min_height)||0}});
-      }
+      });
     });
     src.setData({type:'FeatureCollection',features:feats});
   }catch(e){console.warn('highlightListingBuildings:',e)}
