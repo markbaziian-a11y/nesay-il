@@ -1983,6 +1983,17 @@ function makePinEl(d,idx){
   return el;
 }
 
+function _polyBBoxArea(geom){
+  try{
+    let ring=null;
+    if(geom.type==='Polygon')ring=geom.coordinates[0];
+    else if(geom.type==='MultiPolygon')ring=geom.coordinates[0][0];
+    if(!ring||!ring.length)return 0;
+    let minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity;
+    ring.forEach(c=>{if(c[0]<minX)minX=c[0];if(c[0]>maxX)maxX=c[0];if(c[1]<minY)minY=c[1];if(c[1]>maxY)maxY=c[1];});
+    return (maxX-minX)*(maxY-minY);
+  }catch(e){return 0}
+}
 function highlightListingBuildings(data){
   if(!map||!mapLoaded)return;
   try{
@@ -1990,14 +2001,17 @@ function highlightListingBuildings(data){
     if(!src)return;
     const feats=[];
     const seen=new Set();
-    let _logged=false;
     (data||[]).forEach(d=>{
       const pt=map.project([d.lng,d.lat]);
-      const bbox=[[pt.x-25,pt.y-25],[pt.x+25,pt.y+25]];
+      const bbox=[[pt.x-15,pt.y-15],[pt.x+15,pt.y+15]];
       const found=map.queryRenderedFeatures(bbox,{layers:['3d-buildings']});
-      if(found&&found[0]&&found[0].geometry){
-        const f=found[0];
-        if(!_logged){console.log('[HL] sample feature properties:',JSON.stringify(f.properties));_logged=true;}
+      if(found&&found.length){
+        let best=found[0],bestArea=_polyBBoxArea(found[0].geometry);
+        for(let i=1;i<found.length;i++){
+          const a=_polyBBoxArea(found[i].geometry);
+          if(a>bestArea){best=found[i];bestArea=a;}
+        }
+        const f=best;
         const coords=f.geometry.coordinates&&f.geometry.coordinates[0]?f.geometry.coordinates[0][0]:null;
         const key=coords?coords.join(','):JSON.stringify(f.geometry);
         if(seen.has(key))return;
