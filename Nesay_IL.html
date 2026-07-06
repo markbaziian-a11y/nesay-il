@@ -1941,10 +1941,10 @@ function initMap(){
       }
       if(!map.getLayer('highlighted-buildings-layer')){
         map.addLayer({id:'highlighted-buildings-layer',source:'highlighted-buildings-src',type:'fill-extrusion',paint:{
-          'fill-extrusion-color':'#E8A33D',
-          'fill-extrusion-height':['get','height'],
-          'fill-extrusion-base':['get','min_height'],
-          'fill-extrusion-opacity':0.95
+          'fill-extrusion-color':'#EF9F27',
+          'fill-extrusion-height':80,
+          'fill-extrusion-base':0,
+          'fill-extrusion-opacity':0.5
         }});
       }
     }catch(e){}
@@ -2000,20 +2000,19 @@ function highlightListingBuildings(data){
     const src=map.getSource('highlighted-buildings-src');
     if(!src)return;
     const feats=[];
-    const seen=new Set();
     (data||[]).forEach(d=>{
-      const pt=map.project([d.lng,d.lat]);
-      const bbox=[[pt.x-40,pt.y-40],[pt.x+40,pt.y+40]];
-      const found=map.queryRenderedFeatures(bbox,{layers:['3d-buildings']});
-      (found||[]).forEach(f=>{
-        const area=_polyBBoxArea(f.geometry);
-        if(area<=3e-8)return;
-        const coords=f.geometry.coordinates&&f.geometry.coordinates[0]?f.geometry.coordinates[0][0]:null;
-        const key=coords?coords.join(','):JSON.stringify(f.geometry);
-        if(seen.has(key))return;
-        seen.add(key);
-        feats.push({type:'Feature',geometry:f.geometry,properties:{height:(f.properties&&f.properties.height)||0,min_height:(f.properties&&f.properties.min_height)||0}});
-      });
+      const lat=d.lat,lng=d.lng;
+      const halfW=0.00004; // ~4 метра по долготе (с поправкой на широту ниже)
+      const halfH=0.00003; // ~3 метра по широте
+      const lngHalf=halfW/Math.cos(lat*Math.PI/180);
+      const ring=[
+        [lng-lngHalf,lat-halfH],
+        [lng+lngHalf,lat-halfH],
+        [lng+lngHalf,lat+halfH],
+        [lng-lngHalf,lat+halfH],
+        [lng-lngHalf,lat-halfH]
+      ];
+      feats.push({type:'Feature',geometry:{type:'Polygon',coordinates:[ring]},properties:{}});
     });
     src.setData({type:'FeatureCollection',features:feats});
   }catch(e){console.warn('highlightListingBuildings:',e)}
@@ -2054,7 +2053,7 @@ function toggleSat(){
   satelliteOn=!satelliteOn;document.getElementById('satBtn').classList.toggle('on',satelliteOn);
   if(!map)return;
   map.setStyle(satelliteOn?'mapbox://styles/mapbox/satellite-streets-v12':'mapbox://styles/mapbox/dark-v11');
-  map.once('style.load',()=>{mapLoaded=true;try{map.addLayer({id:'3d-buildings',source:'composite','source-layer':'building',filter:['==','extrude','true'],type:'fill-extrusion',minzoom:14,paint:{'fill-extrusion-color':'#1a2050','fill-extrusion-height':['get','height'],'fill-extrusion-base':['get','min_height'],'fill-extrusion-opacity':0.88}})}catch(e){}try{if(!map.getSource('highlighted-buildings-src')){map.addSource('highlighted-buildings-src',{type:'geojson',data:{type:'FeatureCollection',features:[]}});}if(!map.getLayer('highlighted-buildings-layer')){map.addLayer({id:'highlighted-buildings-layer',source:'highlighted-buildings-src',type:'fill-extrusion',paint:{'fill-extrusion-color':'#E8A33D','fill-extrusion-height':['get','height'],'fill-extrusion-base':['get','min_height'],'fill-extrusion-opacity':0.95}});}}catch(e){}rebuildMarkers(filteredListings)});
+  map.once('style.load',()=>{mapLoaded=true;try{map.addLayer({id:'3d-buildings',source:'composite','source-layer':'building',filter:['==','extrude','true'],type:'fill-extrusion',minzoom:14,paint:{'fill-extrusion-color':'#1a2050','fill-extrusion-height':['get','height'],'fill-extrusion-base':['get','min_height'],'fill-extrusion-opacity':0.88}})}catch(e){}try{if(!map.getSource('highlighted-buildings-src')){map.addSource('highlighted-buildings-src',{type:'geojson',data:{type:'FeatureCollection',features:[]}});}if(!map.getLayer('highlighted-buildings-layer')){map.addLayer({id:'highlighted-buildings-layer',source:'highlighted-buildings-src',type:'fill-extrusion',paint:{'fill-extrusion-color':'#EF9F27','fill-extrusion-height':80,'fill-extrusion-base':0,'fill-extrusion-opacity':0.5}});}}catch(e){}rebuildMarkers(filteredListings)});
 }
 function flyTo(lat,lng,zoom,name){if(map)map.flyTo({center:[lng,lat],zoom,pitch:55,bearing:-15,duration:1400,essential:true});showToast('✈️ '+name)}
 
