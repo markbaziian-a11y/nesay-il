@@ -580,25 +580,22 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:var(--nav-h);
 
 /* ── Тёмная тема (мобильная версия) ── */
 html.mob {
-  --c:#3B82F6;--c-h:#2563EB;--cl:#1E3A5F;
-  --rent:#3B82F6;--rentbg:#1E3A5F;
-  --sale:#EA580C;--salebg:#4A2818;
-  --ink:#F5F5F0;--ink2:#B8B8C2;--ink3:#8A8A92;
-  --line:#2C2C30;
-  --white:#1C1C1E;
+  --c:#185FA5;--c-h:#0C447C;--cl:#E6F1FB;
+  --rent:#185FA5;--rentbg:#E6F1FB;
+  --sale:#B8511F;--salebg:#FAECE7;
 }
-html.mob body { background:#121214 !important }
-html.mob #M-list-wrap { background:#121214 !important }
-html.mob .M-list-head { background:#1C1C1E !important; border-bottom-color:rgba(255,255,255,.08) !important }
-html.mob .M-sort-btn { background:#242426 !important }
-html.mob #M-tabs { background:rgba(20,20,22,0.92) !important; border-top-color:rgba(255,255,255,.1) !important }
-html.mob .M-tab { color:#6E6E76 !important }
-html.mob .Mc { background:#1C1C1E !important; border-color:rgba(255,255,255,.06) !important; box-shadow:0 2px 16px rgba(0,0,0,.4) !important }
-html.mob .Mc-fav { background:#2A2A2C !important; border-color:rgba(255,255,255,.1) !important }
-html.mob .Mc-fav.on { border-color:#8B4A4A !important; background:#3A2424 !important }
-html.mob .M-pill { background:#F0EFEC !important; border-color:transparent !important }
+html.mob body { background:#F4F1EA !important }
+html.mob #M-list-wrap { background:#F4F1EA !important }
+html.mob .M-list-head { background:#fff !important; border-bottom-color:rgba(0,0,0,.06) !important }
+html.mob .M-sort-btn { background:#F4F1EA !important }
+html.mob #M-tabs { background:rgba(255,255,255,0.95) !important; border-top-color:rgba(0,0,0,.12) !important }
+html.mob .M-tab { color:#8E8E93 !important }
+html.mob .Mc { background:#fff !important; border-color:rgba(0,0,0,.04) !important; box-shadow:var(--shadow-card) !important }
+html.mob .Mc-fav { background:#F9F9F9 !important; border-color:rgba(0,0,0,.08) !important }
+html.mob .Mc-fav.on { border-color:#FCA5A5 !important; background:#FFF1F1 !important }
+html.mob .M-pill { background:#fff !important; border-color:rgba(0,0,0,.08) !important }
 html.mob .M-pill.k-all { color:#3A3A3E }
-html.mob .M-pill.k-all.on { background:#F5F5F0 !important; color:#121214 !important; border-color:#F5F5F0 !important }
+html.mob .M-pill.k-all.on { background:#1D1B16 !important; color:#F4F1EA !important; border-color:#1D1B16 !important }
 /* ── Скрываем десктопный UI ── */
 html.mob nav        { display:none !important }
 html.mob .sb        { display:none !important }
@@ -3630,8 +3627,8 @@ function renderCards() {
       '<div class="Mc-photo">'
         + (ph
           ? '<div class="Mc-bg" style="background:url(\'' + ph + '\') center/cover"></div>'
-          : '<div class="Mc-bg" style="background:#2A2A2C"></div>'
-            + '<svg viewBox="0 0 300 150" style="position:absolute;inset:0;width:100%;height:100%"><circle cx="60" cy="55" r="20" fill="none" stroke="#3E3E42" stroke-width="2"/><circle cx="60" cy="55" r="12" fill="none" stroke="#3E3E42" stroke-width="1.5"/><rect x="20" y="105" width="260" height="45" fill="#333336"/></svg>')
+          : '<div class="Mc-bg" style="background:#DCD5C4"></div>'
+            + '<svg viewBox="0 0 300 150" style="position:absolute;inset:0;width:100%;height:100%"><circle cx="60" cy="55" r="20" fill="none" stroke="#B8AF98" stroke-width="2"/><circle cx="60" cy="55" r="12" fill="none" stroke="#B8AF98" stroke-width="1.5"/><rect x="20" y="105" width="260" height="45" fill="#CFC6AF"/></svg>')
         + (d.promoted ? '<div class="Mc-top-badge">⚡ ТОП</div>' : '')
       + '</div>'
       + '<div class="Mc-pricebadge ' + (isR ? 'r' : 's') + '">' + abbrevPrice(d.priceNum) + '</div>'
