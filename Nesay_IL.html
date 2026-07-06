@@ -1001,6 +1001,22 @@ html.mob .mcs  { background:rgba(0,0,0,.08); margin:2px 0 }
   transform:scale(.92);
   box-shadow:0 4px 14px rgba(28,110,242,.35);
 }
+#M-publish-fab {
+  position:fixed;
+  right:16px;
+  bottom:calc(var(--mob-tab-h) + var(--mob-safe-bot) + 82px);
+  z-index:400;
+  width:54px; height:54px; border-radius:50%;
+  background:#1D1B16;
+  color:#fff; border:none;
+  cursor:pointer;
+  flex-shrink:0;
+  box-shadow:var(--shadow-fab);
+  display:flex; align-items:center; justify-content:center;
+  transition:transform .15s, box-shadow .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+#M-publish-fab:active { transform:scale(.92) }
 
 /* ══════════════════════════════════════
    DETAIL (bottom sheet)
@@ -3534,6 +3550,7 @@ tryAutoLogin();
 </div>
 
 <!-- FAB -->
+<button id="M-publish-fab" onclick="reqAuth()" title="Разместить объявление"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
 <button id="M-fab" onclick="M.fab()" title="Нарисовать зону поиска"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button>
 
 <script>
