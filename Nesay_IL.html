@@ -1990,12 +1990,14 @@ function highlightListingBuildings(data){
     if(!src)return;
     const feats=[];
     const seen=new Set();
+    let _logged=false;
     (data||[]).forEach(d=>{
       const pt=map.project([d.lng,d.lat]);
       const bbox=[[pt.x-25,pt.y-25],[pt.x+25,pt.y+25]];
       const found=map.queryRenderedFeatures(bbox,{layers:['3d-buildings']});
       if(found&&found[0]&&found[0].geometry){
         const f=found[0];
+        if(!_logged){console.log('[HL] sample feature properties:',JSON.stringify(f.properties));_logged=true;}
         const coords=f.geometry.coordinates&&f.geometry.coordinates[0]?f.geometry.coordinates[0][0]:null;
         const key=coords?coords.join(','):JSON.stringify(f.geometry);
         if(seen.has(key))return;
