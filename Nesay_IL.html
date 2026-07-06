@@ -1951,6 +1951,9 @@ function initMap(){
     rebuildMarkers(filteredListings);
     map.on('move',()=>{if(activeIdx>=0)updatePopupPos(activeIdx)});
     map.on('click',()=>document.getElementById('mapPop').style.display='none');
+    let _hlTimer=null;
+    map.on('zoomend',()=>{clearTimeout(_hlTimer);_hlTimer=setTimeout(()=>highlightListingBuildings(filteredListings),150)});
+    map.on('moveend',()=>{clearTimeout(_hlTimer);_hlTimer=setTimeout(()=>highlightListingBuildings(filteredListings),150)});
   });
 }
 
@@ -1984,7 +1987,6 @@ function highlightListingBuildings(data){
   if(!map||!mapLoaded)return;
   try{
     const src=map.getSource('highlighted-buildings-src');
-    console.log('[HL] src exists:',!!src,'layer exists:',!!map.getLayer('highlighted-buildings-layer'),'data count:',(data||[]).length);
     if(!src)return;
     const feats=[];
     const seen=new Set();
@@ -1992,7 +1994,6 @@ function highlightListingBuildings(data){
       const pt=map.project([d.lng,d.lat]);
       const bbox=[[pt.x-25,pt.y-25],[pt.x+25,pt.y+25]];
       const found=map.queryRenderedFeatures(bbox,{layers:['3d-buildings']});
-      console.log('[HL] listing',d.id,'found buildings:',found?found.length:0);
       if(found&&found[0]&&found[0].geometry){
         const f=found[0];
         const coords=f.geometry.coordinates&&f.geometry.coordinates[0]?f.geometry.coordinates[0][0]:null;
@@ -2002,7 +2003,6 @@ function highlightListingBuildings(data){
         feats.push({type:'Feature',geometry:f.geometry,properties:{height:(f.properties&&f.properties.height)||0,min_height:(f.properties&&f.properties.min_height)||0}});
       }
     });
-    console.log('[HL] total highlighted features:',feats.length);
     src.setData({type:'FeatureCollection',features:feats});
   }catch(e){console.warn('highlightListingBuildings:',e)}
 }
