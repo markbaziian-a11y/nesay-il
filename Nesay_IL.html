@@ -160,8 +160,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:var(--nav-h);
 .mcnt{position:absolute;top:62px;right:14px;z-index:10;background:rgba(10,10,20,.75);backdrop-filter:blur(12px);border-radius:12px;padding:9px 14px;text-align:center}
 .mcnt strong{display:block;font-size:20px;font-weight:900;color:var(--rent);line-height:1}
 .mcnt span{font-size:10px;color:rgba(255,255,255,.55);font-weight:500}
-.mcp{position:absolute;top:50%;right:12px;transform:translateY(-50%);display:flex;flex-direction:column;gap:2px;z-index:10;background:rgba(10,10,20,.75);backdrop-filter:blur(12px);border-radius:12px;padding:5px}
-.mcb{width:40px;height:40px;border-radius:9px;border:none;background:none;color:#fff;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .12s;font-family:var(--font);font-weight:900}
+.mcp{position:absolute;top:50%;right:12px;transform:translateY(-50%);display:flex;flex-direction:column;gap:4px;z-index:10;background:rgba(30,30,40,.55);backdrop-filter:blur(16px) saturate(180%);-webkit-backdrop-filter:blur(16px) saturate(180%);border-radius:16px;padding:6px;border:1px solid rgba(255,255,255,.12)}
+.mcb{width:40px;height:40px;border-radius:12px;border:none;background:none;color:#fff;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .12s;font-family:var(--font);font-weight:900}
 .mcb:hover{background:rgba(255,255,255,.15)}.mcb.on{background:var(--c)}
 .mcs{height:1px;background:rgba(255,255,255,.1);margin:2px 0}
 .mleg{position:absolute;bottom:14px;left:14px;z-index:10;background:rgba(10,10,20,.8);backdrop-filter:blur(12px);border-radius:10px;padding:10px 14px;display:flex;flex-direction:column;gap:6px}
@@ -170,7 +170,12 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:var(--nav-h);
 .mld.r{background:var(--rent)}.mld.s{background:var(--sale)}
 
 /* Mapbox DOM price markers */
-.mbp{display:flex;flex-direction:column;align-items:center;cursor:pointer;filter:drop-shadow(0 4px 10px rgba(0,0,0,.25))}
+.mbp{display:flex;flex-direction:column;align-items:center;cursor:pointer;filter:drop-shadow(0 4px 10px rgba(0,0,0,.25));position:relative}
+.mbp-glow{position:absolute;top:8px;left:50%;width:56px;height:56px;margin-left:-28px;border-radius:50%;filter:blur(10px);z-index:-1;animation:pulseGlow 2.6s ease-in-out infinite;pointer-events:none}
+.mbp-glow.rm{background:var(--rent)}
+.mbp-glow.sm{background:var(--sale)}
+.mbp-glow.pm{background:#F59E0B}
+@keyframes pulseGlow{0%,100%{opacity:.3;transform:scale(.85)}50%{opacity:.6;transform:scale(1.2)}}
 .mbb{padding:6px 12px;border-radius:100px;font-family:'Heebo',sans-serif;font-size:11px;font-weight:800;color:#fff;white-space:nowrap;border:2.5px solid #fff;transition:transform .15s,filter .15s;line-height:1}
 .mbb.rm{background:var(--rent)}.mbb.sm{background:var(--sale)}.mbb.pm{background:linear-gradient(90deg,#F59E0B,#EF4444)}
 .mba{width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;margin-top:-1px}
@@ -1948,7 +1953,7 @@ function makePinEl(d,idx){
   const lbl=(v>=1000000?('₪'+(v/1000000).toFixed(1)+'M'+(isR?'/מ':'')):(v>=1000?'₪'+Math.round(v/1000)+'K'+(isR?'/מ':''):'₪'+v));
   const el=document.createElement('div');
   el.className='mbp';
-  el.innerHTML=`<div class="mbb ${cls}">${lbl}</div><div class="mba ${cls}"></div>`;
+  el.innerHTML=`<div class="mbp-glow ${cls}"></div><div class="mbb ${cls}">${lbl}</div><div class="mba ${cls}"></div>`;
   el._touchStart=null;
   el.addEventListener('touchstart',function(e){el._touchStart={x:e.touches[0].clientX,y:e.touches[0].clientY,t:Date.now()};},{passive:true});
   el.addEventListener('click',function(e){
