@@ -1989,7 +1989,8 @@ function highlightListingBuildings(data){
     const seen=new Set();
     (data||[]).forEach(d=>{
       const pt=map.project([d.lng,d.lat]);
-      const found=map.queryRenderedFeatures(pt,{layers:['3d-buildings']});
+      const bbox=[[pt.x-25,pt.y-25],[pt.x+25,pt.y+25]];
+      const found=map.queryRenderedFeatures(bbox,{layers:['3d-buildings']});
       if(found&&found[0]&&found[0].geometry){
         const f=found[0];
         const coords=f.geometry.coordinates&&f.geometry.coordinates[0]?f.geometry.coordinates[0][0]:null;
@@ -2364,6 +2365,7 @@ function resetFilters(){
 
 // ═══ DETAIL ═══
 function openDetail(idx){
+  const mp=document.getElementById('mapPop');if(mp)mp.style.display='none';
   // Считаем просмотр
   const _dv=listings[idx];
   if(_dv&&_dv.id&&String(_dv.id).length>10){
