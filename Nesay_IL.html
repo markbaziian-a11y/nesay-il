@@ -356,6 +356,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:var(--nav-h);
 .rc{border:2px solid var(--line);border-radius:14px;padding:16px;cursor:pointer;transition:all .2s;text-align:center}
 .rc:hover{border-color:var(--ink3)}.rc.on{border-color:var(--c);background:var(--cl)}
 .rc .ri{font-size:28px;margin-bottom:6px}
+.reg-pill{border:1.5px solid var(--line);background:#fff;border-radius:100px;padding:9px 16px;font-size:13px;font-weight:600;color:var(--ink2);cursor:pointer;font-family:var(--font);transition:all .15s;-webkit-tap-highlight-color:transparent}
+.reg-pill:hover{border-color:var(--ink3)}
+.reg-pill.on{border-color:var(--c);background:var(--cl);color:var(--c)}
 .rc .rtt{font-size:12px;font-weight:800;color:var(--ink)}
 .rc .rs{font-size:10px;color:var(--ink3);margin-top:2px}
 
@@ -1458,27 +1461,19 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
             <option value="Назарет">Назарет</option>
           </select>
         </div>
-        <div class="fgrp" style="display:flex;gap:16px;align-items:center;margin-top:4px">
-          <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer">
-            <input type="checkbox" id="interestRent" checked style="width:16px;height:16px"> <span data-i18n="reg.interest_rent">Аренда</span>
-          </label>
-          <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer">
-            <input type="checkbox" id="interestBuy" style="width:16px;height:16px"> <span data-i18n="reg.interest_buy">Покупка</span>
-          </label>
-        </div>
-        <div class="fgrp-row" style="margin-top:10px">
-          <div class="fgrp">
-            <select class="fselect" id="prefMessenger">
-              <option value="telegram">Telegram</option>
-              <option value="whatsapp">WhatsApp</option>
-              <option value="viber">Viber</option>
-              <option value="phone" data-i18n="reg.msg_phone">Телефон</option>
-            </select>
-            <label class="flabel"><span data-i18n="reg.messenger">Мессенджер</span></label>
+        <div class="fgrp" style="margin-top:4px">
+          <div style="display:flex;gap:8px" id="interestPills">
+            <button type="button" class="reg-pill on" data-val="rent" onclick="toggleInterest(this)" data-i18n="reg.interest_rent">Аренда</button>
+            <button type="button" class="reg-pill" data-val="buy" onclick="toggleInterest(this)" data-i18n="reg.interest_buy">Покупка</button>
           </div>
-          <div class="fgrp">
-            <input class="finput" type="text" id="msgHandle" placeholder=" ">
-            <label class="flabel"><span data-i18n="reg.msg_handle">Юзернейм</span></label>
+        </div>
+        <div class="fgrp" style="margin-top:10px">
+          <label class="flabel" style="position:static;transform:none;font-size:11px;font-weight:700;color:#86868b;display:block;margin-bottom:6px" data-i18n="reg.messenger">Мессенджер</label>
+          <div style="display:flex;gap:8px" id="messengerPills">
+            <button type="button" class="reg-pill on" data-val="telegram" onclick="pickMessenger(this)">Telegram</button>
+            <button type="button" class="reg-pill" data-val="whatsapp" onclick="pickMessenger(this)">WhatsApp</button>
+            <button type="button" class="reg-pill" data-val="viber" onclick="pickMessenger(this)">Viber</button>
+            <button type="button" class="reg-pill" data-val="phone" onclick="pickMessenger(this)" data-i18n="reg.msg_phone">Телефон</button>
           </div>
         </div>
         <div class="fgrp-row">
@@ -1500,12 +1495,12 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
           <label class="flabel"><span data-i18n="reg.agency_name">Название агентства / Имя</span> <span class="rq">*</span></label>
         </div>
         <div class="fgrp">
-          <select class="fselect" id="agentType">
-            <option value="agency" data-i18n="reg.agent_type_agency">Агентство недвижимости</option>
-            <option value="private_agent" data-i18n="reg.agent_type_private">Частный риелтор</option>
-            <option value="contractor" data-i18n="reg.agent_type_contractor">Контрагент</option>
-          </select>
-          <label class="flabel"><span data-i18n="reg.agent_type">Тип деятельности</span></label>
+          <label class="flabel" style="position:static;transform:none;font-size:11px;font-weight:700;color:#86868b;display:block;margin-bottom:6px" data-i18n="reg.agent_type">Тип деятельности</label>
+          <div style="display:flex;gap:8px;flex-wrap:wrap" id="agentTypePills">
+            <button type="button" class="reg-pill on" data-val="agency" onclick="pickAgentType(this)" data-i18n="reg.agent_type_agency">Агентство недвижимости</button>
+            <button type="button" class="reg-pill" data-val="private_agent" onclick="pickAgentType(this)" data-i18n="reg.agent_type_private">Частный риелтор</button>
+            <button type="button" class="reg-pill" data-val="contractor" onclick="pickAgentType(this)" data-i18n="reg.agent_type_contractor">Контрагент</button>
+          </div>
         </div>
         <div class="fgrp-row">
           <div class="fgrp">
@@ -1523,7 +1518,16 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
         </div>
         <div class="fgrp">
           <label class="flabel" style="position:static;transform:none;font-size:11px;font-weight:700;color:#86868b;display:block;margin-bottom:6px" data-i18n="reg.license_file">Лицензия/сертификат (PDF, JPEG)</label>
-          <input type="file" id="licenseFile" accept=".pdf,.jpg,.jpeg,.png" style="font-size:12px">
+          <input type="file" id="licenseFile" accept=".pdf,.jpg,.jpeg,.png" style="display:none" onchange="onLicenseFileChange(this)">
+          <div onclick="document.getElementById('licenseFile').click()" style="display:flex;align-items:center;gap:10px;background:#F9F9F9;border:1.5px dashed rgba(0,0,0,.15);border-radius:12px;padding:12px 14px;cursor:pointer;transition:border-color .15s" id="licenseDropZone">
+            <div style="width:34px;height:34px;border-radius:10px;background:var(--cl);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--c)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            </div>
+            <div style="min-width:0">
+              <div style="font-size:13px;font-weight:600;color:var(--ink)" id="licenseFileLabel" data-i18n="reg.license_choose">Выбрать файл</div>
+              <div style="font-size:11px;color:#86868b" data-i18n="reg.license_hint">PDF, JPEG или PNG, до 10 МБ</div>
+            </div>
+          </div>
         </div>
         <div style="background:#FFF9E6;border-radius:10px;padding:10px 12px;font-size:12px;color:#86868b;margin-bottom:12px" data-i18n="reg.agent_notice">
           После регистрации ваш профиль будет отправлен на проверку модератором. Публикация объявлений станет доступна после верификации.
@@ -2778,6 +2782,32 @@ function pickRole(card,role){
   document.getElementById('agentFields').style.display=role==='agent'?'':'none';
   document.getElementById('ownerFields').style.display=role==='owner'?'':'none';
 }
+function toggleInterest(btn){
+  // как минимум один интерес должен остаться выбранным
+  const all=document.querySelectorAll('#interestPills .reg-pill');
+  const willTurnOff=btn.classList.contains('on');
+  const activeCount=[...all].filter(b=>b.classList.contains('on')).length;
+  if(willTurnOff&&activeCount<=1)return;
+  btn.classList.toggle('on');
+}
+function pickMessenger(btn){
+  document.querySelectorAll('#messengerPills .reg-pill').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+}
+function pickAgentType(btn){
+  document.querySelectorAll('#agentTypePills .reg-pill').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+}
+function onLicenseFileChange(inp){
+  const label=document.getElementById('licenseFileLabel');
+  if(inp.files&&inp.files[0]){
+    label.textContent=inp.files[0].name;
+    document.getElementById('licenseDropZone').style.borderColor='var(--c)';
+  } else {
+    label.textContent=t('reg.license_choose');
+    document.getElementById('licenseDropZone').style.borderColor='';
+  }
+}
 // ═══ I18N — полный словарь ═══
 const I18N={
   ru:{
@@ -2824,7 +2854,7 @@ const I18N={
     'reg.agency_name':'Название агентства / Имя','reg.agent_type':'Тип деятельности',
     'reg.agent_type_agency':'Агентство недвижимости','reg.agent_type_private':'Частный риелтор','reg.agent_type_contractor':'Контрагент',
     'reg.work_phone':'Рабочий телефон','reg.work_email':'Рабочий Email',
-    'reg.license_number':'Номер лицензии','reg.license_file':'Лицензия/сертификат (PDF, JPEG)',
+    'reg.license_number':'Номер лицензии','reg.license_file':'Лицензия/сертификат (PDF, JPEG)','reg.license_choose':'Выбрать файл','reg.license_hint':'PDF, JPEG или PNG, до 10 МБ',
     'reg.agent_notice':'После регистрации ваш профиль будет отправлен на проверку модератором. Публикация объявлений станет доступна после верификации.',
     'reg.owner_city':'Город проживания','reg.works_with_agents':'Работаю с риелторами',
     'reg.err_phone':'Укажите номер телефона','reg.err_city':'Выберите хотя бы один целевой город','reg.err_agent':'Заполните название агентства, рабочий телефон и email',
@@ -2945,7 +2975,7 @@ const I18N={
     'reg.agency_name':'Agency name / Name','reg.agent_type':'Activity type',
     'reg.agent_type_agency':'Real estate agency','reg.agent_type_private':'Private agent','reg.agent_type_contractor':'Contractor',
     'reg.work_phone':'Work phone','reg.work_email':'Work email',
-    'reg.license_number':'License number','reg.license_file':'License/certificate (PDF, JPEG)',
+    'reg.license_number':'License number','reg.license_file':'License/certificate (PDF, JPEG)','reg.license_choose':'Choose file','reg.license_hint':'PDF, JPEG or PNG, up to 10 MB',
     'reg.agent_notice':'After registration your profile will be sent for moderator review. Publishing listings will be available after verification.',
     'reg.owner_city':'City of residence','reg.works_with_agents':'I work with agents',
     'reg.err_phone':'Please enter a phone number','reg.err_city':'Please select at least one target city','reg.err_agent':'Please fill in agency name, work phone and email',
@@ -3064,7 +3094,7 @@ const I18N={
     'reg.agency_name':'שם הסוכנות / שם','reg.agent_type':'סוג פעילות',
     'reg.agent_type_agency':'סוכנות נדל"ן','reg.agent_type_private':'סוכן פרטי','reg.agent_type_contractor':'קבלן',
     'reg.work_phone':'טלפון עבודה','reg.work_email':'אימייל עבודה',
-    'reg.license_number':'מספר רישיון','reg.license_file':'רישיון/תעודה (PDF, JPEG)',
+    'reg.license_number':'מספר רישיון','reg.license_file':'רישיון/תעודה (PDF, JPEG)','reg.license_choose':'בחר קובץ','reg.license_hint':'PDF, JPEG או PNG, עד 10 מ"ב',
     'reg.agent_notice':'לאחר ההרשמה הפרופיל שלך יישלח לבדיקת מנהל. פרסום מודעות יהיה זמין לאחר אימות.',
     'reg.owner_city':'עיר מגורים','reg.works_with_agents':'אני עובד עם סוכנים',
     'reg.err_phone':'נא להזין מספר טלפון','reg.err_city':'נא לבחור לפחות עיר יעד אחת','reg.err_agent':'נא למלא שם סוכנות, טלפון עבודה ואימייל',
@@ -3174,11 +3204,13 @@ async function doAuth(){
       const role=selectedRole==='owner'?'owner':(selectedRole==='agent'?'agent':'buyer');
       body={email,password:pass,name:name||'Пользователь',phone,role,ref_code:new URLSearchParams(window.location.search).get('ref')||localStorage.getItem('nesay_ref')||undefined};
       if(role==='buyer'){
+        const interestEls=[...document.querySelectorAll('#interestPills .reg-pill.on')].map(b=>b.dataset.val);
+        const msgEl=document.querySelector('#messengerPills .reg-pill.on');
         body.client={
           targetCities:selectedTargetCities,
-          interests:[document.getElementById('interestRent')?.checked?'rent':null,document.getElementById('interestBuy')?.checked?'buy':null].filter(Boolean),
-          preferredMessenger:document.getElementById('prefMessenger')?.value,
-          messengerHandle:document.getElementById('msgHandle')?.value?.trim()||null,
+          interests:interestEls,
+          preferredMessenger:msgEl?msgEl.dataset.val:'phone',
+          messengerHandle:null,
           budgetMin:document.getElementById('budgetMin')?.value?document.getElementById('budgetMin').value:null,
           budgetMax:document.getElementById('budgetMax')?.value?document.getElementById('budgetMax').value:null
         };
@@ -3198,9 +3230,10 @@ async function doAuth(){
             });
           }catch(e){console.warn('Не удалось прочитать файл лицензии:',e);}
         }
+        const agentTypeEl=document.querySelector('#agentTypePills .reg-pill.on');
         body.agent={
           agencyName:document.getElementById('agencyName')?.value?.trim(),
-          agentType:document.getElementById('agentType')?.value,
+          agentType:agentTypeEl?agentTypeEl.dataset.val:'agency',
           workPhone:document.getElementById('workPhone')?.value?.trim(),
           workEmail:document.getElementById('workEmail')?.value?.trim(),
           licenseNumber:document.getElementById('licenseNumber')?.value?.trim()||null,
