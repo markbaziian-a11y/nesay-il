@@ -3184,14 +3184,19 @@ async function doAuth(){
         };
       }
       if(role==='agent'){
-        let licenseFileUrl=null;
+        let licenseFileBase64=null,licenseFileName=null;
         const fileInp=document.getElementById('licenseFile');
         if(fileInp&&fileInp.files&&fileInp.files[0]){
           try{
-            const fd=new FormData();fd.append('file',fileInp.files[0]);
-            const upRes=await fetch(`${API}/upload`,{method:'POST',body:fd});
-            if(upRes.ok){const upData=await upRes.json();licenseFileUrl=upData.url||null;}
-          }catch(e){console.warn('Не удалось загрузить файл лицензии:',e);}
+            const file=fileInp.files[0];
+            licenseFileName=file.name;
+            licenseFileBase64=await new Promise((resolve,reject)=>{
+              const reader=new FileReader();
+              reader.onload=()=>resolve(reader.result);
+              reader.onerror=reject;
+              reader.readAsDataURL(file);
+            });
+          }catch(e){console.warn('Не удалось прочитать файл лицензии:',e);}
         }
         body.agent={
           agencyName:document.getElementById('agencyName')?.value?.trim(),
@@ -3199,7 +3204,8 @@ async function doAuth(){
           workPhone:document.getElementById('workPhone')?.value?.trim(),
           workEmail:document.getElementById('workEmail')?.value?.trim(),
           licenseNumber:document.getElementById('licenseNumber')?.value?.trim()||null,
-          licenseFileUrl
+          licenseFileBase64,
+          licenseFileName
         };
       }
       if(role==='owner'){

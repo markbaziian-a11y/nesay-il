@@ -4,8 +4,14 @@ const jwt     = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
 const db      = require('../../config/db');
 const { requireAuth } = require('../middleware/auth');
+const { createClient } = require('@supabase/supabase-js');
 
 const router = express.Router();
+
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_KEY
+);
 
 function makeToken(user) {
   return jwt.sign(
@@ -15,17 +21,34 @@ function makeToken(user) {
   );
 }
 
+// Загружает файл лицензии агента (base64) в Supabase Storage, тем же
+// способом, что и фото объявлений в listings.js
+async function uploadLicenseFile(base64, fileName, emailForPath) {
+  const matches = base64.match(/^data:([A-Za-z0-9\-+/]+);base64,(.+)$/);
+  if (!matches) return null;
+  const mimeType = matches[1];
+  const data = Buffer.from(matches[2], 'base64');
+  const safeEmail = (emailForPath || 'agent').replace(/[^a-z0-9]/gi, '_');
+  const ext = (fileName && fileName.split('.').pop()) || (mimeType.includes('pdf') ? 'pdf' : 'jpg');
+  const path = `licenses/${Date.now()}_${safeEmail}.${ext}`;
+  const { error } = await supabase.storage.from('photos').upload(path, data, { contentType: mimeType, upsert: true });
+  if (error) { console.error('License upload error:', error); return null; }
+  const { data: urlData } = supabase.storage.from('photos').getPublicUrl(path);
+  return urlData.publicUrl;
+}
+
 // Регистрация
 router.post('/register', [
   body('email').isEmail().normalizeEmail(),
   body('password').isLength({ min: 8 }),
   body('name').trim().notEmpty(),
+  body('phone').trim().notEmpty().withMessage('Укажите номер телефона'),
   body('role').isIn(['owner', 'agent', 'buyer']),
 ], async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
-  const { email, password, name, surname, phone, role, agency_data } = req.body;
+  const { email, password, name, surname, phone, role, agency_data, client, agent, owner } = req.body;
 
   try {
     const existing = await db.query('SELECT id FROM users WHERE email = $1', [email]);
@@ -33,18 +56,85 @@ router.post('/register', [
       return res.status(409).json({ error: 'Этот email уже зарегистрирован' });
     }
 
+    // Доп. валидация обязательных полей под конкретную роль
+    if (role === 'agent') {
+      if (!agent || !agent.agencyName || !agent.workPhone || !agent.workEmail) {
+        return res.status(400).json({ error: 'Заполните название агентства, рабочий телефон и email' });
+      }
+    }
+    if (role === 'buyer') {
+      if (!client || !Array.isArray(client.targetCities) || client.targetCities.length === 0) {
+        return res.status(400).json({ error: 'Выберите хотя бы один целевой город' });
+      }
+    }
+
     const hash = await bcrypt.hash(password, 12);
 
+    // Собираем JSON-данные под роль (agency_data колонка уже существует,
+    // client_data/owner_data — добавляются миграцией migration_roles.sql)
+    let agencyDataJson = agency_data ? JSON.stringify(agency_data) : null;
+    let clientDataJson = null;
+    let ownerDataJson = null;
+
+    if (role === 'agent' && agent) {
+      let licenseFileUrl = null;
+      if (agent.licenseFileBase64) {
+        licenseFileUrl = await uploadLicenseFile(agent.licenseFileBase64, agent.licenseFileName, email);
+      }
+      agencyDataJson = JSON.stringify({
+        agencyName: agent.agencyName,
+        agentType: agent.agentType || 'agency',
+        workPhone: agent.workPhone,
+        workEmail: agent.workEmail,
+        licenseNumber: agent.licenseNumber || null,
+        licenseFileUrl
+      });
+    }
+
+    if (role === 'buyer' && client) {
+      clientDataJson = JSON.stringify({
+        interests: client.interests || [],
+        preferredMessenger: client.preferredMessenger || null,
+        messengerHandle: client.messengerHandle || null,
+        budgetMin: client.budgetMin ? parseInt(client.budgetMin) : null,
+        budgetMax: client.budgetMax ? parseInt(client.budgetMax) : null
+      });
+    }
+
+    if (role === 'owner' && owner) {
+      ownerDataJson = JSON.stringify({
+        city: owner.city || null,
+        worksWithAgents: owner.worksWithAgents !== false
+      });
+    }
+
     const result = await db.query(
-      `INSERT INTO users (email, password_hash, name, surname, phone, role, agency_data, credits)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      `INSERT INTO users (email, password_hash, name, surname, phone, role, agency_data, client_data, owner_data, credits, verified)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
        RETURNING id, email, name, role, credits`,
-      [email, hash, name, surname || null, phone || null, role,
-       agency_data ? JSON.stringify(agency_data) : null,
-       role === 'agent' ? 3 : 0]
+      [email, hash, name, surname || null, phone, role,
+       agencyDataJson, clientDataJson, ownerDataJson,
+       role === 'agent' ? 3 : 0,
+       role === 'agent' ? false : true] // агент — не верифицирован до проверки модератором
     );
 
     const user = result.rows[0];
+
+    // Целевые города клиента — пытаемся сопоставить названия с cities.name.
+    // Несовпавшие названия просто пропускаем, не блокируя регистрацию.
+    if (role === 'buyer' && client && Array.isArray(client.targetCities) && client.targetCities.length) {
+      try {
+        await db.query(
+          `INSERT INTO client_target_cities (user_id, city_id)
+           SELECT $1, id FROM cities WHERE name = ANY($2::text[])
+           ON CONFLICT DO NOTHING`,
+          [user.id, client.targetCities]
+        );
+      } catch (e) {
+        console.warn('client_target_cities insert warning:', e.message);
+      }
+    }
+
     const refCode = 'NSY' + Math.random().toString(36).substr(2,6).toUpperCase();
     await db.query('UPDATE users SET ref_code=$1 WHERE id=$2', [refCode, user.id]);
     user.ref_code = refCode;
@@ -82,7 +172,7 @@ router.post('/login', [
 
   try {
     const result = await db.query(
-      'SELECT id, email, name, role, credits, password_hash FROM users WHERE email = $1',
+      'SELECT id, email, name, role, credits, verified, password_hash FROM users WHERE email = $1',
       [email]
     );
 
@@ -108,7 +198,7 @@ router.get('/me', requireAuth, async (req, res) => {
   try {
     console.log('ME: looking up user id:', req.user.id);
     const result = await db.query(
-      'SELECT id, email, name, surname, phone, role, credits, verified FROM users WHERE id = $1',
+      'SELECT id, email, name, surname, phone, role, credits, verified, agency_data, client_data, owner_data FROM users WHERE id = $1',
       [req.user.id]
     );
     if (!result.rows.length) return res.status(404).json({ error: 'Пользователь не найден' });

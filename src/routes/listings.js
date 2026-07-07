@@ -70,8 +70,11 @@ router.post('/', requireAuth, async (req, res) => {
   if (req.user.role === 'buyer') return res.status(403).json({ error: 'Покупатели не могут публиковать' });
 
   try {
-    const userResult = await db.query('SELECT credits FROM users WHERE id = $1', [req.user.id]);
+    const userResult = await db.query('SELECT credits, verified FROM users WHERE id = $1', [req.user.id]);
     const credits = userResult.rows[0]?.credits || 0;
+    if (req.user.role === 'agent' && !userResult.rows[0]?.verified) {
+      return res.status(403).json({ error: 'Ваш профиль ещё проверяется модератором. Публикация станет доступна после верификации.' });
+    }
     if (credits < 100) return res.status(402).json({ error: 'Недостаточно средств. Минимум ₪100 для публикации' });
 
     const client = await db.pool.connect();
