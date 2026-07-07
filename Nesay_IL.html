@@ -1419,9 +1419,15 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
         <input class="finput" type="email" id="authEmail" placeholder=" ">
         <label class="flabel"><span data-i18n="auth.email">Email</span> <span class="rq">*</span></label>
       </div>
-      <div class="fgrp">
-        <input class="finput" type="password" id="authPass" placeholder=" ">
+      <div class="fgrp" style="position:relative">
+        <input class="finput" type="password" id="authPass" placeholder=" " style="padding-left:40px">
         <label class="flabel"><span data-i18n="auth.password">Пароль</span> <span class="rq">*</span></label>
+        <button type="button" onclick="togglePassVis()" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;display:flex;color:#86868b" id="passVisBtn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+      </div>
+      <div id="forgotPassWrap" style="text-align:left;margin:-8px 0 12px">
+        <button type="button" onclick="openForgotPass()" style="background:none;border:none;font-family:var(--font);font-size:12px;color:var(--c);cursor:pointer;padding:0" data-i18n="auth.forgot_pass">Забыли пароль?</button>
       </div>
       <div class="fgrp" id="nameWrap" style="display:none">
         <input class="finput" type="text" id="authName" placeholder=" ">
@@ -1586,6 +1592,19 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
         </div>
         <button class="bsub" onclick="verify2FA()" data-i18n="auth.2fa_btn">Подтвердить</button>
       </div>
+    </div>
+    <div id="authS3" style="display:none">
+      <div style="text-align:center;padding:6px 0 16px">
+        <div style="font-size:16px;font-weight:900;color:var(--ink);margin-bottom:6px" data-i18n="auth.reset_title">Восстановление пароля</div>
+        <div style="font-size:13px;color:var(--ink2)" data-i18n="auth.reset_sub">Введите email — пришлём ссылку для сброса пароля</div>
+      </div>
+      <div class="fgrp">
+        <input class="finput" type="email" id="resetEmail" placeholder=" ">
+        <label class="flabel"><span data-i18n="auth.email">Email</span> <span class="rq">*</span></label>
+      </div>
+      <div id="resetMsg" style="display:none;color:#1a7d4e;background:#e9f9f0;border:1px solid #b8ecd0;border-radius:8px;padding:10px 12px;font-size:13px;font-weight:600;margin-bottom:12px;text-align:center"></div>
+      <button class="bsub" id="resetBtn" onclick="doForgotPass()" data-i18n="auth.reset_send">Отправить ссылку</button>
+      <div style="text-align:center;margin-top:12px"><button onclick="closeForgotPass()" style="font-family:var(--font);font-size:12px;color:var(--ink3);background:none;border:none;cursor:pointer" data-i18n="auth.reset_back">← Назад ко входу</button></div>
     </div>
   </div>
 </div>
@@ -2755,8 +2774,41 @@ function renderDz(){const l=document.getElementById('dzList');if(!l)return;l.inn
 
 // AUTH
 function openAuth(mode){authMode=mode;document.getElementById('authOvl').classList.add('open');document.getElementById('authS1').style.display='';document.getElementById('authS2').style.display='none';switchTab(mode)}
-function closeAuth(){document.getElementById('authOvl').classList.remove('open')}
-function switchTab(tab){authMode=tab;const isR=tab==='register';document.getElementById('tabLg').classList.toggle('on',!isR);document.getElementById('tabRg').classList.toggle('on',isR);document.getElementById('roleWrap').style.display=isR?'':'none';document.getElementById('nameWrap').style.display=isR?'':'none';document.getElementById('phoneWrap').style.display=isR?'':'none';document.getElementById('authBtn').textContent=isR?t('auth.btn_register'):t('auth.btn_login');document.getElementById('authTtl').textContent=isR?t('auth.title_reg'):t('auth.title_login');const ae=document.getElementById('authError');if(ae)ae.style.display='none';if(isR)pickRole(document.querySelector('.rc.on')||document.querySelector('.rc'),selectedRole||'buyer')}
+function closeAuth(){document.getElementById('authOvl').classList.remove('open');document.getElementById('authS3').style.display='none';document.getElementById('authS1').style.display=''}
+function switchTab(tab){authMode=tab;const isR=tab==='register';document.getElementById('tabLg').classList.toggle('on',!isR);document.getElementById('tabRg').classList.toggle('on',isR);document.getElementById('roleWrap').style.display=isR?'':'none';document.getElementById('nameWrap').style.display=isR?'':'none';document.getElementById('phoneWrap').style.display=isR?'':'none';document.getElementById('forgotPassWrap').style.display=isR?'none':'';document.getElementById('authBtn').textContent=isR?t('auth.btn_register'):t('auth.btn_login');document.getElementById('authTtl').textContent=isR?t('auth.title_reg'):t('auth.title_login');const ae=document.getElementById('authError');if(ae)ae.style.display='none';if(isR){pickRole(document.querySelector('.rc.on')||document.querySelector('.rc'),selectedRole||'buyer')}else{document.getElementById('clientFields').style.display='none';document.getElementById('agentFields').style.display='none';document.getElementById('ownerFields').style.display='none'}}
+function togglePassVis(){
+  const inp=document.getElementById('authPass');
+  const btn=document.getElementById('passVisBtn');
+  const isHidden=inp.type==='password';
+  inp.type=isHidden?'text':'password';
+  btn.innerHTML=isHidden
+    ?'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0112 20c-7 0-11-8-11-8a18.5 18.5 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>'
+    :'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+}
+function openForgotPass(){
+  document.getElementById('authS1').style.display='none';
+  document.getElementById('authS3').style.display='block';
+  const rm=document.getElementById('resetMsg');rm.style.display='none';
+  document.getElementById('resetEmail').value=document.getElementById('authEmail').value||'';
+}
+function closeForgotPass(){
+  document.getElementById('authS3').style.display='none';
+  document.getElementById('authS1').style.display='block';
+}
+async function doForgotPass(){
+  const email=document.getElementById('resetEmail')?.value?.trim();
+  if(!email){showToast(t('err.email'));return}
+  const btn=document.getElementById('resetBtn');
+  btn.textContent='...';btn.disabled=true;
+  try{
+    await fetch(`${API}/auth/forgot-password`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email})});
+  }catch(e){}
+  // Одинаковое сообщение независимо от результата — не раскрываем, есть ли такой email в базе
+  const rm=document.getElementById('resetMsg');
+  rm.textContent=t('auth.reset_success');
+  rm.style.display='block';
+  btn.textContent=t('auth.reset_send');btn.disabled=false;
+}
 let selectedTargetCities=[];
 function addTargetCity(name){
   if(!name||selectedTargetCities.includes(name))return;
@@ -2846,6 +2898,10 @@ const I18N={
     'auth.or':'или','auth.google':'Войти через Google',
     'auth.2fa':'2FA — Подтверждение','auth.2fa_sub':'Введите 6-значный код из Google Authenticator',
     'auth.2fa_btn':'Подтвердить',
+    'auth.forgot_pass':'Забыли пароль?','auth.reset_title':'Восстановление пароля',
+    'auth.reset_sub':'Введите email — пришлём ссылку для сброса пароля',
+    'auth.reset_send':'Отправить ссылку','auth.reset_back':'← Назад ко входу',
+    'auth.reset_success':'Если такой email зарегистрирован — письмо со ссылкой уже отправлено. Проверьте почту.',
     'auth.phone':'Телефон',
     'reg.target_cities':'Целевые города','reg.add_city':'— Добавить город —',
     'reg.interest_rent':'Аренда','reg.interest_buy':'Покупка',
@@ -2967,6 +3023,10 @@ const I18N={
     'auth.or':'or','auth.google':'Continue with Google',
     'auth.2fa':'2FA Verification','auth.2fa_sub':'Enter the 6-digit code from Google Authenticator',
     'auth.2fa_btn':'Confirm',
+    'auth.forgot_pass':'Forgot password?','auth.reset_title':'Password recovery',
+    'auth.reset_sub':'Enter your email — we\'ll send a reset link',
+    'auth.reset_send':'Send link','auth.reset_back':'← Back to sign in',
+    'auth.reset_success':'If that email is registered, a reset link has been sent. Check your inbox.',
     'auth.phone':'Phone',
     'reg.target_cities':'Target cities','reg.add_city':'— Add city —',
     'reg.interest_rent':'Rent','reg.interest_buy':'Buy',
@@ -3086,6 +3146,10 @@ const I18N={
     'auth.or':'או','auth.google':'כניסה עם גוגל',
     'auth.2fa':'אימות דו-שלבי','auth.2fa_sub':'הכנס קוד 6 ספרות מ-Google Authenticator',
     'auth.2fa_btn':'אשר',
+    'auth.forgot_pass':'שכחת סיסמה?','auth.reset_title':'שחזור סיסמה',
+    'auth.reset_sub':'הזן אימייל — נשלח קישור לאיפוס סיסמה',
+    'auth.reset_send':'שלח קישור','auth.reset_back':'← חזרה לכניסה',
+    'auth.reset_success':'אם האימייל רשום במערכת, נשלח אליו קישור לאיפוס. בדוק את תיבת הדואר.',
     'auth.phone':'טלפון',
     'reg.target_cities':'ערים מועדפות','reg.add_city':'— הוסף עיר —',
     'reg.interest_rent':'שכירות','reg.interest_buy':'קנייה',

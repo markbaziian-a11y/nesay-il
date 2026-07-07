@@ -209,4 +209,62 @@ router.get('/me', requireAuth, async (req, res) => {
   }
 });
 
+// Запрос на сброс пароля — генерируем токен, "отправляем" ссылку.
+// ВАЖНО: реальная отправка письма требует почтового провайдера
+// (например Resend/SendGrid) — сейчас ссылка только логируется
+// в консоль сервера (видно в Railway → Deploy Logs), пока не
+// подключён провайдер. Ответ одинаковый независимо от того,
+// существует ли email в базе — так безопаснее.
+router.post('/forgot-password', [
+  body('email').isEmail().normalizeEmail(),
+], async (req, res) => {
+  const { email } = req.body;
+  try {
+    const result = await db.query('SELECT id FROM users WHERE email = $1', [email]);
+    if (result.rows.length) {
+      const resetToken = require('crypto').randomBytes(32).toString('hex');
+      const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 час
+      await db.query(
+        'UPDATE users SET reset_token = $1, reset_token_expires = $2 WHERE id = $3',
+        [resetToken, expiresAt, result.rows[0].id]
+      );
+      const resetLink = `${process.env.FRONTEND_URL || ''}/?reset_token=${resetToken}`;
+      console.log('🔑 Ссылка для сброса пароля (пока без email-провайдера):', resetLink);
+      // TODO: подключить реальную отправку письма через email-провайдера
+    }
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Forgot password error:', err);
+    res.json({ success: true }); // не раскрываем ошибку клиенту
+  }
+});
+
+// Подтверждение сброса — пароль меняется по токену из письма
+router.post('/reset-password', [
+  body('token').notEmpty(),
+  body('password').isLength({ min: 8 }),
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+  const { token, password } = req.body;
+  try {
+    const result = await db.query(
+      'SELECT id FROM users WHERE reset_token = $1 AND reset_token_expires > NOW()',
+      [token]
+    );
+    if (!result.rows.length) {
+      return res.status(400).json({ error: 'Ссылка недействительна или устарела' });
+    }
+    const hash = await bcrypt.hash(password, 12);
+    await db.query(
+      'UPDATE users SET password_hash = $1, reset_token = NULL, reset_token_expires = NULL WHERE id = $2',
+      [hash, result.rows[0].id]
+    );
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Reset password error:', err);
+    res.status(500).json({ error: 'Ошибка сервера' });
+  }
+});
+
 module.exports = router;
