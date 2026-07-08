@@ -2549,7 +2549,7 @@ function resetFilters(){
 // ═══ DETAIL ═══
 function openDetail(idx){
   const mp=document.getElementById('mapPop');if(mp)mp.style.display='none';
-  const m3=document.getElementById('map3d');if(m3)m3.style.visibility='hidden';
+  const m3=document.getElementById('map3d');if(m3&&document.documentElement.classList.contains('mob'))m3.style.visibility='hidden';
   // Считаем просмотр
   const _dv=listings[idx];
   if(_dv&&_dv.id&&String(_dv.id).length>10){
