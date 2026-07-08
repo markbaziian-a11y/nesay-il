@@ -359,6 +359,10 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:var(--nav-h);
 .reg-pill{border:1.5px solid var(--line);background:#fff;border-radius:100px;padding:9px 16px;font-size:13px;font-weight:600;color:var(--ink2);cursor:pointer;font-family:var(--font);transition:all .15s;-webkit-tap-highlight-color:transparent}
 .reg-pill:hover{border-color:var(--ink3)}
 .reg-pill.on{border-color:var(--c);background:var(--cl);color:var(--c)}
+.city-sugg{position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.12);max-height:220px;overflow-y:auto;z-index:50;margin-top:4px}
+.city-sugg-item{padding:10px 14px;font-size:13px;color:var(--ink);cursor:pointer;transition:background .1s}
+.city-sugg-item:hover,.city-sugg-item.hi{background:var(--cl)}
+.city-sugg-empty{padding:10px 14px;font-size:12px;color:#86868b}
 .rc .rtt{font-size:12px;font-weight:800;color:var(--ink)}
 .rc .rs{font-size:10px;color:var(--ink3);margin-top:2px}
 
@@ -1440,32 +1444,15 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
 
       <!-- КЛИЕНТ: целевые города, интерес, мессенджер, бюджет -->
       <div id="clientFields" style="display:none">
-        <div class="fgrp">
+        <div class="fgrp" style="position:relative">
           <label class="flabel" style="position:static;transform:none;font-size:11px;font-weight:700;color:#86868b;display:block;margin-bottom:6px" data-i18n="reg.target_cities">Целевые города <span class="rq">*</span></label>
           <div id="cityChips" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px"></div>
-          <select class="fselect" id="targetCitySelect" onchange="addTargetCity(this.value);this.value=''" style="position:static">
-            <option value="" data-i18n="reg.add_city">— Добавить город —</option>
-            <option value="Тель-Авив">Тель-Авив</option>
-            <option value="Иерусалим">Иерусалим</option>
-            <option value="Хайфа">Хайфа</option>
-            <option value="Ришон-ле-Цион">Ришон-ле-Цион</option>
-            <option value="Нетания">Нетания</option>
-            <option value="Ашдод">Ашдод</option>
-            <option value="Герцлия">Герцлия</option>
-            <option value="Раанана">Раанана</option>
-            <option value="Петах-Тиква">Петах-Тиква</option>
-            <option value="Рамат-Ган">Рамат-Ган</option>
-            <option value="Холон">Холон</option>
-            <option value="Бат-Ям">Бат-Ям</option>
-            <option value="Кирьят-Ям">Кирьят-Ям</option>
-            <option value="Реховот">Реховот</option>
-            <option value="Эйлат">Эйлат</option>
-            <option value="Беэр-Шева">Беэр-Шева</option>
-            <option value="Ашкелон">Ашкелон</option>
-            <option value="Бней-Брак">Бней-Брак</option>
-            <option value="Кфар-Саба">Кфар-Саба</option>
-            <option value="Назарет">Назарет</option>
-          </select>
+          <input class="finput" type="text" id="targetCitySearch" placeholder=" " autocomplete="off"
+            oninput="filterCitySuggestions(this.value,'targetCitySugg',addTargetCity,true)"
+            onfocus="filterCitySuggestions(this.value,'targetCitySugg',addTargetCity,true)"
+            onblur="setTimeout(()=>document.getElementById('targetCitySugg').style.display='none',150)">
+          <label class="flabel"><span data-i18n="reg.add_city">— Добавить город —</span></label>
+          <div id="targetCitySugg" class="city-sugg" style="display:none"></div>
         </div>
         <div class="fgrp" style="margin-top:4px">
           <div style="display:flex;gap:8px" id="interestPills">
@@ -1542,31 +1529,14 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
 
       <!-- СОБСТВЕННИК -->
       <div id="ownerFields" style="display:none">
-        <div class="fgrp">
-          <select class="fselect" id="ownerCity">
-            <option value="" data-i18n="pub.select_city">— Выберите город —</option>
-            <option value="Тель-Авив">Тель-Авив</option>
-            <option value="Иерусалим">Иерусалим</option>
-            <option value="Хайфа">Хайфа</option>
-            <option value="Ришон-ле-Цион">Ришон-ле-Цион</option>
-            <option value="Нетания">Нетания</option>
-            <option value="Ашдод">Ашдод</option>
-            <option value="Герцлия">Герцлия</option>
-            <option value="Раанана">Раанана</option>
-            <option value="Петах-Тиква">Петах-Тиква</option>
-            <option value="Рамат-Ган">Рамат-Ган</option>
-            <option value="Холон">Холон</option>
-            <option value="Бат-Ям">Бат-Ям</option>
-            <option value="Кирьят-Ям">Кирьят-Ям</option>
-            <option value="Реховот">Реховот</option>
-            <option value="Эйлат">Эйлат</option>
-            <option value="Беэр-Шева">Беэр-Шева</option>
-            <option value="Ашкелон">Ашкелон</option>
-            <option value="Бней-Брак">Бней-Брак</option>
-            <option value="Кфар-Саба">Кфар-Саба</option>
-            <option value="Назарет">Назарет</option>
-          </select>
+        <div class="fgrp" style="position:relative">
+          <input class="finput" type="text" id="ownerCitySearch" placeholder=" " autocomplete="off"
+            oninput="filterCitySuggestions(this.value,'ownerCitySugg',selectOwnerCity,false)"
+            onfocus="filterCitySuggestions(this.value,'ownerCitySugg',selectOwnerCity,false)"
+            onblur="setTimeout(()=>document.getElementById('ownerCitySugg').style.display='none',150)">
+          <input type="hidden" id="ownerCity">
           <label class="flabel"><span data-i18n="reg.owner_city">Город проживания</span></label>
+          <div id="ownerCitySugg" class="city-sugg" style="display:none"></div>
         </div>
         <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;margin-bottom:12px">
           <input type="checkbox" id="worksWithAgents" checked style="width:16px;height:16px"> <span data-i18n="reg.works_with_agents">Работаю с риелторами</span>
@@ -2119,10 +2089,10 @@ function initMap(){
       }
       if(!map.getLayer('highlighted-buildings-layer')){
         map.addLayer({id:'highlighted-buildings-layer',source:'highlighted-buildings-src',type:'fill-extrusion',paint:{
-          'fill-extrusion-color':'#EF9F27',
-          'fill-extrusion-height':80,
-          'fill-extrusion-base':0,
-          'fill-extrusion-opacity':0.5
+          'fill-extrusion-color':'#E8A33D',
+          'fill-extrusion-height':['get','height'],
+          'fill-extrusion-base':['get','min_height'],
+          'fill-extrusion-opacity':0.95
         }});
       }
     }catch(e){}
@@ -2178,19 +2148,22 @@ function highlightListingBuildings(data){
     const src=map.getSource('highlighted-buildings-src');
     if(!src)return;
     const feats=[];
+    const seen=new Set();
+    const offsets=[[0,0],[4,0],[-4,0],[0,4],[0,-4],[4,4],[-4,-4],[4,-4],[-4,4]];
     (data||[]).forEach(d=>{
-      const lat=d.lat,lng=d.lng;
-      const halfW=0.00004; // ~4 метра по долготе (с поправкой на широту ниже)
-      const halfH=0.00003; // ~3 метра по широте
-      const lngHalf=halfW/Math.cos(lat*Math.PI/180);
-      const ring=[
-        [lng-lngHalf,lat-halfH],
-        [lng+lngHalf,lat-halfH],
-        [lng+lngHalf,lat+halfH],
-        [lng-lngHalf,lat+halfH],
-        [lng-lngHalf,lat-halfH]
-      ];
-      feats.push({type:'Feature',geometry:{type:'Polygon',coordinates:[ring]},properties:{}});
+      const pt=map.project([d.lng,d.lat]);
+      let found=[];
+      offsets.forEach(o=>{
+        const f=map.queryRenderedFeatures([pt.x+o[0],pt.y+o[1]],{layers:['3d-buildings']});
+        found=found.concat(f);
+      });
+      found.forEach(f=>{
+        const coords=f.geometry.coordinates&&f.geometry.coordinates[0]?f.geometry.coordinates[0][0]:null;
+        const key=coords?coords.join(','):JSON.stringify(f.geometry);
+        if(seen.has(key))return;
+        seen.add(key);
+        feats.push({type:'Feature',geometry:f.geometry,properties:{height:(f.properties&&f.properties.height)||0,min_height:(f.properties&&f.properties.min_height)||0}});
+      });
     });
     src.setData({type:'FeatureCollection',features:feats});
   }catch(e){console.warn('highlightListingBuildings:',e)}
@@ -2231,7 +2204,7 @@ function toggleSat(){
   satelliteOn=!satelliteOn;document.getElementById('satBtn').classList.toggle('on',satelliteOn);
   if(!map)return;
   map.setStyle(satelliteOn?'mapbox://styles/mapbox/satellite-streets-v12':'mapbox://styles/mapbox/dark-v11');
-  map.once('style.load',()=>{mapLoaded=true;try{map.addLayer({id:'3d-buildings',source:'composite','source-layer':'building',filter:['==','extrude','true'],type:'fill-extrusion',minzoom:14,paint:{'fill-extrusion-color':'#1a2050','fill-extrusion-height':['get','height'],'fill-extrusion-base':['get','min_height'],'fill-extrusion-opacity':0.88}})}catch(e){}try{if(!map.getSource('highlighted-buildings-src')){map.addSource('highlighted-buildings-src',{type:'geojson',data:{type:'FeatureCollection',features:[]}});}if(!map.getLayer('highlighted-buildings-layer')){map.addLayer({id:'highlighted-buildings-layer',source:'highlighted-buildings-src',type:'fill-extrusion',paint:{'fill-extrusion-color':'#EF9F27','fill-extrusion-height':80,'fill-extrusion-base':0,'fill-extrusion-opacity':0.5}});}}catch(e){}rebuildMarkers(filteredListings)});
+  map.once('style.load',()=>{mapLoaded=true;try{map.addLayer({id:'3d-buildings',source:'composite','source-layer':'building',filter:['==','extrude','true'],type:'fill-extrusion',minzoom:14,paint:{'fill-extrusion-color':'#1a2050','fill-extrusion-height':['get','height'],'fill-extrusion-base':['get','min_height'],'fill-extrusion-opacity':0.88}})}catch(e){}try{if(!map.getSource('highlighted-buildings-src')){map.addSource('highlighted-buildings-src',{type:'geojson',data:{type:'FeatureCollection',features:[]}});}if(!map.getLayer('highlighted-buildings-layer')){map.addLayer({id:'highlighted-buildings-layer',source:'highlighted-buildings-src',type:'fill-extrusion',paint:{'fill-extrusion-color':'#E8A33D','fill-extrusion-height':['get','height'],'fill-extrusion-base':['get','min_height'],'fill-extrusion-opacity':0.95}});}}catch(e){}rebuildMarkers(filteredListings)});
 }
 function flyTo(lat,lng,zoom,name){if(map)map.flyTo({center:[lng,lat],zoom,pitch:55,bearing:-15,duration:1400,essential:true});showToast('✈️ '+name)}
 
@@ -2809,11 +2782,37 @@ async function doForgotPass(){
   rm.style.display='block';
   btn.textContent=t('auth.reset_send');btn.disabled=false;
 }
+const NESAY_CITIES=['Тель-Авив','Иерусалим','Хайфа','Ришон-ле-Цион','Нетания','Ашдод','Герцлия','Раанана','Петах-Тиква','Рамат-Ган','Холон','Бат-Ям','Кирьят-Ям','Реховот','Эйлат','Беэр-Шева','Ашкелон','Бней-Брак','Кфар-Саба','Назарет'];
+function filterCitySuggestions(query,listId,onSelectFn,isMulti){
+  const list=document.getElementById(listId);
+  if(!list)return;
+  const q=(query||'').trim().toLowerCase();
+  let matches=NESAY_CITIES.filter(c=>c.toLowerCase().includes(q));
+  if(isMulti)matches=matches.filter(c=>!selectedTargetCities.includes(c));
+  if(!matches.length){
+    list.innerHTML=`<div class="city-sugg-empty">${t('reg.no_cities')||'Город не найден'}</div>`;
+  } else {
+    list.innerHTML=matches.slice(0,8).map(c=>
+      `<div class="city-sugg-item" onmousedown="event.preventDefault();(${onSelectFn.name})('${c}')">${c}</div>`
+    ).join('');
+  }
+  list.style.display='block';
+}
+function selectOwnerCity(name){
+  document.getElementById('ownerCity').value=name;
+  document.getElementById('ownerCitySearch').value=name;
+  document.getElementById('ownerCitySearch').classList.add('has-val');
+  document.getElementById('ownerCitySugg').style.display='none';
+}
 let selectedTargetCities=[];
 function addTargetCity(name){
   if(!name||selectedTargetCities.includes(name))return;
   selectedTargetCities.push(name);
   renderCityChips();
+  const inp=document.getElementById('targetCitySearch');
+  if(inp){inp.value='';inp.focus();}
+  const sugg=document.getElementById('targetCitySugg');
+  if(sugg)sugg.style.display='none';
 }
 function removeTargetCity(name){
   selectedTargetCities=selectedTargetCities.filter(c=>c!==name);
@@ -2903,7 +2902,7 @@ const I18N={
     'auth.reset_send':'Отправить ссылку','auth.reset_back':'← Назад ко входу',
     'auth.reset_success':'Если такой email зарегистрирован — письмо со ссылкой уже отправлено. Проверьте почту.',
     'auth.phone':'Телефон',
-    'reg.target_cities':'Целевые города','reg.add_city':'— Добавить город —',
+    'reg.target_cities':'Целевые города','reg.add_city':'— Добавить город —','reg.no_cities':'Город не найден',
     'reg.interest_rent':'Аренда','reg.interest_buy':'Покупка',
     'reg.messenger':'Мессенджер','reg.msg_handle':'Юзернейм','reg.msg_phone':'Телефон',
     'reg.budget_min':'Бюджет от (₪)','reg.budget_max':'Бюджет до (₪)',
@@ -3028,7 +3027,7 @@ const I18N={
     'auth.reset_send':'Send link','auth.reset_back':'← Back to sign in',
     'auth.reset_success':'If that email is registered, a reset link has been sent. Check your inbox.',
     'auth.phone':'Phone',
-    'reg.target_cities':'Target cities','reg.add_city':'— Add city —',
+    'reg.target_cities':'Target cities','reg.add_city':'— Add city —','reg.no_cities':'City not found',
     'reg.interest_rent':'Rent','reg.interest_buy':'Buy',
     'reg.messenger':'Messenger','reg.msg_handle':'Username','reg.msg_phone':'Phone',
     'reg.budget_min':'Budget from (₪)','reg.budget_max':'Budget to (₪)',
@@ -3151,7 +3150,7 @@ const I18N={
     'auth.reset_send':'שלח קישור','auth.reset_back':'← חזרה לכניסה',
     'auth.reset_success':'אם האימייל רשום במערכת, נשלח אליו קישור לאיפוס. בדוק את תיבת הדואר.',
     'auth.phone':'טלפון',
-    'reg.target_cities':'ערים מועדפות','reg.add_city':'— הוסף עיר —',
+    'reg.target_cities':'ערים מועדפות','reg.add_city':'— הוסף עיר —','reg.no_cities':'העיר לא נמצאה',
     'reg.interest_rent':'שכירות','reg.interest_buy':'קנייה',
     'reg.messenger':'אמצעי תקשורת','reg.msg_handle':'שם משתמש','reg.msg_phone':'טלפון',
     'reg.budget_min':'תקציב מ- (₪)','reg.budget_max':'תקציב עד (₪)',
