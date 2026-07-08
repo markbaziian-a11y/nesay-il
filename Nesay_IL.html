@@ -1441,6 +1441,20 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
         <input class="finput" type="tel" id="authPhone" placeholder=" ">
         <label class="flabel"><span data-i18n="auth.phone">Телефон</span> <span class="rq">*</span></label>
       </div>
+      <div id="avatarWrap" style="display:none;margin-bottom:14px">
+        <label class="flabel" style="position:static;transform:none;font-size:11px;font-weight:700;color:#86868b;display:block;margin-bottom:8px" id="avatarLabel" data-i18n="reg.avatar_face">Фото профиля <span class="rq">*</span></label>
+        <input type="file" id="avatarFile" accept=".jpg,.jpeg,.png,.webp" style="display:none" onchange="onAvatarFileChange(this)">
+        <div onclick="document.getElementById('avatarFile').click()" style="display:flex;align-items:center;gap:12px;cursor:pointer">
+          <div id="avatarPreviewBox" style="width:56px;height:56px;border-radius:50%;background:var(--cl);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;border:1.5px dashed rgba(0,0,0,.15)">
+            <svg id="avatarPreviewIcon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--c)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            <img id="avatarPreviewImg" style="display:none;width:100%;height:100%;object-fit:cover">
+          </div>
+          <div style="min-width:0">
+            <div style="font-size:13px;font-weight:600;color:var(--ink)" id="avatarFileLabel" data-i18n="reg.avatar_choose">Загрузить фото</div>
+            <div style="font-size:11px;color:#86868b" id="avatarHint" data-i18n="reg.avatar_hint_face">Другие пользователи будут видеть, с кем имеют дело</div>
+          </div>
+        </div>
+      </div>
 
       <!-- КЛИЕНТ: целевые города, интерес, мессенджер, бюджет -->
       <div id="clientFields" style="display:none">
@@ -2752,7 +2766,7 @@ function renderDz(){const l=document.getElementById('dzList');if(!l)return;l.inn
 // AUTH
 function openAuth(mode){authMode=mode;document.getElementById('authOvl').classList.add('open');document.getElementById('authS1').style.display='';document.getElementById('authS2').style.display='none';switchTab(mode)}
 function closeAuth(){document.getElementById('authOvl').classList.remove('open');document.getElementById('authS3').style.display='none';document.getElementById('authS1').style.display=''}
-function switchTab(tab){authMode=tab;const isR=tab==='register';document.getElementById('tabLg').classList.toggle('on',!isR);document.getElementById('tabRg').classList.toggle('on',isR);document.getElementById('roleWrap').style.display=isR?'':'none';document.getElementById('nameWrap').style.display=isR?'':'none';document.getElementById('phoneWrap').style.display=isR?'':'none';document.getElementById('forgotPassWrap').style.display=isR?'none':'';document.getElementById('authBtn').textContent=isR?t('auth.btn_register'):t('auth.btn_login');document.getElementById('authTtl').textContent=isR?t('auth.title_reg'):t('auth.title_login');const ae=document.getElementById('authError');if(ae)ae.style.display='none';if(isR){pickRole(document.querySelector('.rc.on')||document.querySelector('.rc'),selectedRole||'buyer')}else{document.getElementById('clientFields').style.display='none';document.getElementById('agentFields').style.display='none';document.getElementById('ownerFields').style.display='none'}}
+function switchTab(tab){authMode=tab;const isR=tab==='register';document.getElementById('tabLg').classList.toggle('on',!isR);document.getElementById('tabRg').classList.toggle('on',isR);document.getElementById('roleWrap').style.display=isR?'':'none';document.getElementById('nameWrap').style.display=isR?'':'none';document.getElementById('phoneWrap').style.display=isR?'':'none';document.getElementById('avatarWrap').style.display=isR?'':'none';document.getElementById('forgotPassWrap').style.display=isR?'none':'';document.getElementById('authBtn').textContent=isR?t('auth.btn_register'):t('auth.btn_login');document.getElementById('authTtl').textContent=isR?t('auth.title_reg'):t('auth.title_login');const ae=document.getElementById('authError');if(ae)ae.style.display='none';if(isR){pickRole(document.querySelector('.rc.on')||document.querySelector('.rc'),selectedRole||'buyer')}else{document.getElementById('clientFields').style.display='none';document.getElementById('agentFields').style.display='none';document.getElementById('ownerFields').style.display='none'}}
 function togglePassVis(){
   const inp=document.getElementById('authPass');
   const btn=document.getElementById('passVisBtn');
@@ -2836,6 +2850,16 @@ function pickRole(card,role){
   document.getElementById('clientFields').style.display=role==='buyer'?'':'none';
   document.getElementById('agentFields').style.display=role==='agent'?'':'none';
   document.getElementById('ownerFields').style.display=role==='owner'?'':'none';
+  updateAvatarLabel();
+}
+function updateAvatarLabel(){
+  const agentTypeEl=document.querySelector('#agentTypePills .reg-pill.on');
+  const isLogo=selectedRole==='agent'&&agentTypeEl&&agentTypeEl.dataset.val==='agency';
+  document.getElementById('avatarLabel').innerHTML=isLogo
+    ?(t('reg.avatar_logo')+' <span class="rq">*</span>')
+    :(t('reg.avatar_face')+' <span class="rq">*</span>');
+  document.getElementById('avatarHint').textContent=isLogo?t('reg.avatar_hint_logo'):t('reg.avatar_hint_face');
+  document.getElementById('avatarPreviewBox').style.borderRadius=isLogo?'14px':'50%';
 }
 function toggleInterest(btn){
   // как минимум один интерес должен остаться выбранным
@@ -2852,6 +2876,21 @@ function pickMessenger(btn){
 function pickAgentType(btn){
   document.querySelectorAll('#agentTypePills .reg-pill').forEach(b=>b.classList.remove('on'));
   btn.classList.add('on');
+  updateAvatarLabel();
+}
+function onAvatarFileChange(inp){
+  const label=document.getElementById('avatarFileLabel');
+  const img=document.getElementById('avatarPreviewImg');
+  const icon=document.getElementById('avatarPreviewIcon');
+  if(inp.files&&inp.files[0]){
+    label.textContent=inp.files[0].name;
+    const reader=new FileReader();
+    reader.onload=()=>{img.src=reader.result;img.style.display='block';icon.style.display='none';};
+    reader.readAsDataURL(inp.files[0]);
+  } else {
+    label.textContent=t('reg.avatar_choose');
+    img.style.display='none';icon.style.display='';
+  }
 }
 function onLicenseFileChange(inp){
   const label=document.getElementById('licenseFileLabel');
@@ -2916,7 +2955,11 @@ const I18N={
     'reg.license_number':'Номер лицензии','reg.license_file':'Лицензия/сертификат (PDF, JPEG)','reg.license_choose':'Выбрать файл','reg.license_hint':'PDF, JPEG или PNG, до 10 МБ',
     'reg.agent_notice':'После регистрации ваш профиль будет отправлен на проверку модератором. Публикация объявлений станет доступна после верификации.',
     'reg.owner_city':'Город проживания','reg.works_with_agents':'Работаю с риелторами',
-    'reg.err_phone':'Укажите номер телефона','reg.err_city':'Выберите хотя бы один целевой город','reg.err_agent':'Заполните название агентства, рабочий телефон и email',
+    'reg.err_phone':'Укажите номер телефона','reg.err_city':'Выберите хотя бы один целевой город','reg.err_agent':'Заполните название агентства, рабочий телефон и email','reg.err_avatar':'Загрузите фото профиля',
+    'reg.avatar_face':'Фото профиля','reg.avatar_logo':'Логотип агентства',
+    'reg.avatar_choose':'Загрузить фото',
+    'reg.avatar_hint_face':'Другие пользователи будут видеть, с кем имеют дело',
+    'reg.avatar_hint_logo':'Отображается в объявлениях и профиле агентства',
     'role.buyer_title':'Клиент','role.buyer_sub':'Аренда или покупка для себя',
     'role.agent_title':'Риелтор / Агентство','role.agent_sub':'Сдать или продать за комиссию',
     'role.owner_title':'Собственник','role.owner_sub':'Сдаю или продаю без %',
@@ -3041,7 +3084,11 @@ const I18N={
     'reg.license_number':'License number','reg.license_file':'License/certificate (PDF, JPEG)','reg.license_choose':'Choose file','reg.license_hint':'PDF, JPEG or PNG, up to 10 MB',
     'reg.agent_notice':'After registration your profile will be sent for moderator review. Publishing listings will be available after verification.',
     'reg.owner_city':'City of residence','reg.works_with_agents':'I work with agents',
-    'reg.err_phone':'Please enter a phone number','reg.err_city':'Please select at least one target city','reg.err_agent':'Please fill in agency name, work phone and email',
+    'reg.err_phone':'Please enter a phone number','reg.err_city':'Please select at least one target city','reg.err_agent':'Please fill in agency name, work phone and email','reg.err_avatar':'Please upload a profile photo',
+    'reg.avatar_face':'Profile photo','reg.avatar_logo':'Agency logo',
+    'reg.avatar_choose':'Upload photo',
+    'reg.avatar_hint_face':'Other users will see who they\'re dealing with',
+    'reg.avatar_hint_logo':'Shown on listings and agency profile',
     'role.buyer_title':'Buyer','role.buyer_sub':'Looking to rent or buy',
     'role.agent_title':'Agent / Agency','role.agent_sub':'List properties for commission',
     'role.owner_title':'Owner','role.owner_sub':'Renting or selling directly',
@@ -3164,7 +3211,11 @@ const I18N={
     'reg.license_number':'מספר רישיון','reg.license_file':'רישיון/תעודה (PDF, JPEG)','reg.license_choose':'בחר קובץ','reg.license_hint':'PDF, JPEG או PNG, עד 10 מ"ב',
     'reg.agent_notice':'לאחר ההרשמה הפרופיל שלך יישלח לבדיקת מנהל. פרסום מודעות יהיה זמין לאחר אימות.',
     'reg.owner_city':'עיר מגורים','reg.works_with_agents':'אני עובד עם סוכנים',
-    'reg.err_phone':'נא להזין מספר טלפון','reg.err_city':'נא לבחור לפחות עיר יעד אחת','reg.err_agent':'נא למלא שם סוכנות, טלפון עבודה ואימייל',
+    'reg.err_phone':'נא להזין מספר טלפון','reg.err_city':'נא לבחור לפחות עיר יעד אחת','reg.err_agent':'נא למלא שם סוכנות, טלפון עבודה ואימייל','reg.err_avatar':'נא להעלות תמונת פרופיל',
+    'reg.avatar_face':'תמונת פרופיל','reg.avatar_logo':'לוגו הסוכנות',
+    'reg.avatar_choose':'העלה תמונה',
+    'reg.avatar_hint_face':'משתמשים אחרים יראו עם מי הם מתקשרים',
+    'reg.avatar_hint_logo':'מוצג במודעות ובפרופיל הסוכנות',
     'role.buyer_title':'לקוח','role.buyer_sub':'מחפש שכירות או קנייה',
     'role.agent_title':'מתווך / משרד','role.agent_sub':'להשכיר או למכור בעמלה',
     'role.owner_title':'בעל נכס','role.owner_sub':'משכיר או מוכר ישירות',
@@ -3255,6 +3306,7 @@ async function doAuth(){
   if(!email){showToast(t('err.email'));return}
   if(!pass||pass.length<8){showToast(t('err.pass'));return}
   if(authMode==='register'&&!phone){showToast(t('reg.err_phone'));return}
+  if(authMode==='register'&&!document.getElementById('avatarFile')?.files?.[0]){showToast(t('reg.err_avatar'));return}
   if(authMode==='register'&&selectedRole==='buyer'&&selectedTargetCities.length===0){showToast(t('reg.err_city'));return}
   if(authMode==='register'&&selectedRole==='agent'){
     const agencyName=document.getElementById('agencyName')?.value?.trim();
@@ -3269,7 +3321,20 @@ async function doAuth(){
     let body;
     if(authMode==='register'){
       const role=selectedRole==='owner'?'owner':(selectedRole==='agent'?'agent':'buyer');
-      body={email,password:pass,name:name||'Пользователь',phone,role,ref_code:new URLSearchParams(window.location.search).get('ref')||localStorage.getItem('nesay_ref')||undefined};
+      let avatarBase64=null,avatarFileName=null;
+      const avFile=document.getElementById('avatarFile');
+      if(avFile&&avFile.files&&avFile.files[0]){
+        try{
+          avatarFileName=avFile.files[0].name;
+          avatarBase64=await new Promise((resolve,reject)=>{
+            const reader=new FileReader();
+            reader.onload=()=>resolve(reader.result);
+            reader.onerror=reject;
+            reader.readAsDataURL(avFile.files[0]);
+          });
+        }catch(e){console.warn('Не удалось прочитать фото профиля:',e);}
+      }
+      body={email,password:pass,name:name||'Пользователь',phone,role,avatarBase64,avatarFileName,ref_code:new URLSearchParams(window.location.search).get('ref')||localStorage.getItem('nesay_ref')||undefined};
       if(role==='buyer'){
         const interestEls=[...document.querySelectorAll('#interestPills .reg-pill.on')].map(b=>b.dataset.val);
         const msgEl=document.querySelector('#messengerPills .reg-pill.on');

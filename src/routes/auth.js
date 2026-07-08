@@ -21,20 +21,26 @@ function makeToken(user) {
   );
 }
 
-// Загружает файл лицензии агента (base64) в Supabase Storage, тем же
-// способом, что и фото объявлений в listings.js
-async function uploadLicenseFile(base64, fileName, emailForPath) {
+// Загружает base64-файл в Supabase Storage (лицензия агента, фото
+// профиля/лого), тем же способом, что и фото объявлений в listings.js
+async function uploadBase64File(base64, fileName, emailForPath, subfolder) {
   const matches = base64.match(/^data:([A-Za-z0-9\-+/]+);base64,(.+)$/);
   if (!matches) return null;
   const mimeType = matches[1];
   const data = Buffer.from(matches[2], 'base64');
-  const safeEmail = (emailForPath || 'agent').replace(/[^a-z0-9]/gi, '_');
+  const safeEmail = (emailForPath || 'user').replace(/[^a-z0-9]/gi, '_');
   const ext = (fileName && fileName.split('.').pop()) || (mimeType.includes('pdf') ? 'pdf' : 'jpg');
-  const path = `licenses/${Date.now()}_${safeEmail}.${ext}`;
+  const path = `${subfolder}/${Date.now()}_${safeEmail}.${ext}`;
   const { error } = await supabase.storage.from('photos').upload(path, data, { contentType: mimeType, upsert: true });
-  if (error) { console.error('License upload error:', error); return null; }
+  if (error) { console.error(`${subfolder} upload error:`, error); return null; }
   const { data: urlData } = supabase.storage.from('photos').getPublicUrl(path);
   return urlData.publicUrl;
+}
+async function uploadLicenseFile(base64, fileName, emailForPath) {
+  return uploadBase64File(base64, fileName, emailForPath, 'licenses');
+}
+async function uploadAvatarFile(base64, fileName, emailForPath) {
+  return uploadBase64File(base64, fileName, emailForPath, 'avatars');
 }
 
 // Регистрация
@@ -48,7 +54,7 @@ router.post('/register', [
   const errors = validationResult(req);
   if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
-  const { email, password, name, surname, phone, role, agency_data, client, agent, owner } = req.body;
+  const { email, password, name, surname, phone, role, agency_data, client, agent, owner, avatarBase64, avatarFileName } = req.body;
 
   try {
     const existing = await db.query('SELECT id FROM users WHERE email = $1', [email]);
@@ -108,12 +114,19 @@ router.post('/register', [
       });
     }
 
+    // Фото профиля (лицо для клиента/собственника/частного риелтора,
+    // логотип для агентства)
+    let avatarUrl = null;
+    if (avatarBase64) {
+      avatarUrl = await uploadAvatarFile(avatarBase64, avatarFileName, email);
+    }
+
     const result = await db.query(
-      `INSERT INTO users (email, password_hash, name, surname, phone, role, agency_data, client_data, owner_data, credits, verified)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+      `INSERT INTO users (email, password_hash, name, surname, phone, role, agency_data, client_data, owner_data, avatar_url, credits, verified)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
        RETURNING id, email, name, role, credits`,
       [email, hash, name, surname || null, phone, role,
-       agencyDataJson, clientDataJson, ownerDataJson,
+       agencyDataJson, clientDataJson, ownerDataJson, avatarUrl,
        role === 'agent' ? 3 : 0,
        role === 'agent' ? false : true] // агент — не верифицирован до проверки модератором
     );
@@ -198,7 +211,7 @@ router.get('/me', requireAuth, async (req, res) => {
   try {
     console.log('ME: looking up user id:', req.user.id);
     const result = await db.query(
-      'SELECT id, email, name, surname, phone, role, credits, verified, agency_data, client_data, owner_data FROM users WHERE id = $1',
+      'SELECT id, email, name, surname, phone, role, credits, verified, agency_data, client_data, owner_data, avatar_url FROM users WHERE id = $1',
       [req.user.id]
     );
     if (!result.rows.length) return res.status(404).json({ error: 'Пользователь не найден' });
