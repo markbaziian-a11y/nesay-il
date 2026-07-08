@@ -2050,7 +2050,7 @@ const listings=[
     const st=streets[Math.floor(Math.random()*streets.length)];const num=Math.floor(2+Math.random()*180);
     const pnum=dt==='rent'?Math.floor(3000+Math.random()*9000):Math.floor(900000+Math.random()*2500000);
     const tg=tags[Math.floor(Math.random()*tags.length)];const ag=ags[Math.floor(Math.random()*ags.length)];
-    listings.push({id:b+k+1,dealType:dt,thumb:grads[Math.floor(Math.random()*grads.length)],icon:icons[Math.floor(Math.random()*icons.length)],priceNum:pnum,addr:{ru:st.ru+' '+num+', '+c.ru,he:st.he+' '+num+', '+c.he,en:st.en+' '+num+', '+c.en},rooms,sqm,floor:fl+'/'+(fl+Math.floor(1+Math.random()*12)),tags:tg,hi:[0],desc:{ru:'Уютная квартира в '+c.ru+'.',he:'דירה נחמדה ב'+c.he+'.',en:'Cozy apt in '+c.en+'.'},agent:ag,badge:Math.random()<.08?'new':null,lat:c.lat+(Math.random()-.5)*.03,lng:c.lng+(Math.random()-.5)*.03});
+    listings.push({id:b+k+1,dealType:dt,thumb:grads[Math.floor(Math.random()*grads.length)],icon:icons[Math.floor(Math.random()*icons.length)],priceNum:pnum,addr:{ru:st.ru+' '+num+', '+c.ru,he:st.he+' '+num+', '+c.he,en:st.en+' '+num+', '+c.en},rooms,sqm,floor:fl+'/'+(fl+Math.floor(1+Math.random()*12)),tags:tg,hi:[0],desc:{ru:'Уютная квартира в '+c.ru+'.',he:'דירה נחמדה ב'+c.he+'.',en:'Cozy apt in '+c.en+'.'},agent:ag,badge:Math.random()<.08?'new':null,lat:c.lat+(Math.random()-.5)*.01,lng:c.lng+(Math.random()-.5)*.01});
   }
 })();
 
