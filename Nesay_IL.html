@@ -3444,20 +3444,28 @@ function finishAuth(user){
   document.getElementById('navGuest').style.display='none';
   document.getElementById('navUser').style.display='flex';
   const displayName=u.name||(u.email||'').split('@')[0]||'Пользователь';
+  const initials=displayName.slice(0,2).toUpperCase();
+  const avatarHtml=u.avatar_url?`<img src="${u.avatar_url}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit">`:initials;
   // Навбар
   document.getElementById('navNm').textContent=displayName;
   const roleEl=document.getElementById('navRl');roleEl.textContent=isAgent?(u.role==='owner'?t('role.owner'):t('role.agent')):t('role.buyer');roleEl.dataset.role=u.role||'buyer';
-  document.getElementById('navAv').textContent=displayName.slice(0,2).toUpperCase();
+  document.getElementById('navAv').innerHTML=avatarHtml;
   document.getElementById('navCr').style.display=isAgent?'':'none';
   userCredits=u.credits||0;
   document.getElementById('navCr').textContent='₪'+userCredits+' '+t('nav.balance');
   // Кабинет
-  const cabAv=document.getElementById('cabAv');if(cabAv)cabAv.textContent=displayName.slice(0,2).toUpperCase();
+  const cabAv=document.getElementById('cabAv');if(cabAv)cabAv.innerHTML=avatarHtml;
   const cabNm=document.getElementById('cabNm');if(cabNm)cabNm.textContent=displayName+(u.verified?' ✓':'');
   const cabEmail=document.getElementById('cabEmail');if(cabEmail)cabEmail.textContent=u.email||'';
   const profName=document.getElementById('profName');if(profName)profName.value=displayName;
   const cabCr=document.getElementById('cabCr');if(cabCr)cabCr.textContent='₪'+userCredits;
   const crBal=document.getElementById('crBal');if(crBal)crBal.textContent='₪'+userCredits;
+  // Мобильная версия — кнопка профиля в шапке
+  const mAv=document.getElementById('M-av');
+  if(mAv){
+    mAv.classList.add('authed');
+    mAv.innerHTML=u.avatar_url?`<img src="${u.avatar_url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`:initials;
+  }
   showToast(t('toast.welcome')+' '+displayName+'!');
 }
 function doOAuth(){selectedRole='agent';setTimeout(()=>finishAuth('agent@nesay.il'),900)}
@@ -4209,7 +4217,10 @@ function onAuth(user) {
   var av = document.getElementById('M-av');
   var ico = document.getElementById('Mt-me-ico');
   var lbl = document.getElementById('Mt-me-lbl');
-  if (av)  { av.textContent = nm; av.classList.add('authed'); }
+  if (av)  {
+    av.innerHTML = user.avatar_url ? ('<img src="'+user.avatar_url+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%">') : nm;
+    av.classList.add('authed');
+  }
   if (ico) ico.textContent = nm;
   if (lbl) lbl.textContent = t('cab.profile');
 }
