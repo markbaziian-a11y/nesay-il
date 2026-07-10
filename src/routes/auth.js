@@ -54,7 +54,7 @@ router.post('/register', [
   const errors = validationResult(req);
   if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
-  const { email, password, name, surname, phone, role, agency_data, client, agent, owner, avatarBase64, avatarFileName } = req.body;
+  const { email, password, name, surname, phone, role, agency_data, client, agent, owner, avatarBase64, avatarFileName, birthDate } = req.body;
 
   try {
     const existing = await db.query('SELECT id FROM users WHERE email = $1', [email]);
@@ -122,11 +122,11 @@ router.post('/register', [
     }
 
     const result = await db.query(
-      `INSERT INTO users (email, password_hash, name, surname, phone, role, agency_data, client_data, owner_data, avatar_url, credits, verified)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+      `INSERT INTO users (email, password_hash, name, surname, phone, role, agency_data, client_data, owner_data, avatar_url, birth_date, credits, verified)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
        RETURNING id, email, name, role, credits`,
       [email, hash, name, surname || null, phone, role,
-       agencyDataJson, clientDataJson, ownerDataJson, avatarUrl,
+       agencyDataJson, clientDataJson, ownerDataJson, avatarUrl, birthDate || null,
        role === 'agent' ? 3 : 0,
        role === 'agent' ? false : true] // агент — не верифицирован до проверки модератором
     );
@@ -211,7 +211,7 @@ router.get('/me', requireAuth, async (req, res) => {
   try {
     console.log('ME: looking up user id:', req.user.id);
     const result = await db.query(
-      'SELECT id, email, name, surname, phone, role, credits, verified, agency_data, client_data, owner_data, avatar_url FROM users WHERE id = $1',
+      'SELECT id, email, name, surname, phone, role, credits, verified, agency_data, client_data, owner_data, avatar_url, birth_date FROM users WHERE id = $1',
       [req.user.id]
     );
     if (!result.rows.length) return res.status(404).json({ error: 'Пользователь не найден' });
@@ -293,6 +293,42 @@ router.put('/avatar', requireAuth, async (req, res) => {
     res.json({ success: true, avatar_url: avatarUrl });
   } catch (err) {
     console.error('Avatar update error:', err);
+    res.status(500).json({ error: 'Ошибка сервера' });
+  }
+});
+
+// Обновление имени/телефона/даты рождения
+router.put('/profile', requireAuth, [
+  body('name').trim().notEmpty(),
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+  const { name, phone, birthDate } = req.body;
+  try {
+    await db.query(
+      'UPDATE users SET name = $1, phone = $2, birth_date = $3 WHERE id = $4',
+      [name, phone || null, birthDate || null, req.user.id]
+    );
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Profile update error:', err);
+    res.status(500).json({ error: 'Ошибка сервера' });
+  }
+});
+
+// Смена пароля из личного кабинета (пользователь уже авторизован)
+router.put('/change-password', requireAuth, [
+  body('newPassword').isLength({ min: 8 }),
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+  const { newPassword } = req.body;
+  try {
+    const hash = await bcrypt.hash(newPassword, 12);
+    await db.query('UPDATE users SET password_hash = $1 WHERE id = $2', [hash, req.user.id]);
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Change password error:', err);
     res.status(500).json({ error: 'Ошибка сервера' });
   }
 });

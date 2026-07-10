@@ -1441,6 +1441,10 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
         <input class="finput" type="tel" id="authPhone" placeholder=" ">
         <label class="flabel"><span data-i18n="auth.phone">Телефон</span> <span class="rq">*</span></label>
       </div>
+      <div class="fgrp" id="birthdateWrap" style="display:none">
+        <input class="finput" type="date" id="authBirthdate" placeholder=" ">
+        <label class="flabel"><span data-i18n="reg.birthdate">Дата рождения</span></label>
+      </div>
       <div id="avatarWrap" style="display:none;margin-bottom:14px">
         <label class="flabel" style="position:static;transform:none;font-size:11px;font-weight:700;color:#86868b;display:block;margin-bottom:8px" id="avatarLabel" data-i18n="reg.avatar_face">Фото профиля <span class="rq">*</span></label>
         <input type="file" id="avatarFile" accept=".jpg,.jpeg,.png,.webp" style="display:none" onchange="onAvatarFileChange(this)">
@@ -1890,12 +1894,37 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
     </div>
   </div>
   <div class="cabp" id="cab-prof">
-    <div class="fgrp-row" style="margin-bottom:16px">
-      <div class="fgrp"><input class="finput" type="text" id="profName" value="" placeholder=" "><label class="flabel has-val" data-i18n="cab.name">Имя</label></div>
-      <div class="fgrp"><input class="finput" type="tel" value="+972-54-123-4567" placeholder=" "><label class="flabel has-val"><span data-i18n="cab.phone">Телефон</span></label></div>
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid var(--line)">
+      <div style="position:relative;cursor:pointer" onclick="document.getElementById('profAvatarFile').click()">
+        <div class="ua" style="width:60px;height:60px;font-size:22px;overflow:hidden" id="profAv">МК</div>
+        <div style="position:absolute;bottom:-2px;right:-2px;width:20px;height:20px;border-radius:50%;background:var(--c);border:2px solid #fff;display:flex;align-items:center;justify-content:center">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        </div>
+        <input type="file" id="profAvatarFile" accept=".jpg,.jpeg,.png,.webp" style="display:none" onchange="changeCabAvatar(this)">
+      </div>
+      <div>
+        <div style="font-size:13px;font-weight:700;color:var(--ink)" data-i18n="reg.avatar_face">Фото профиля</div>
+        <div style="font-size:11px;color:#86868b" data-i18n="cab.avatar_hint">Нажмите на фото, чтобы изменить</div>
+      </div>
     </div>
-    <div style="margin-top:4px"><button class="bsub" onclick="showToast('Сохранено ✅')" data-i18n="cab.save">Сохранить</button></div>
-    <div style="text-align:center;margin-top:12px"><button onclick="logout()" style="font-family:var(--font);font-size:12px;color:var(--red);background:none;border:none;cursor:pointer;text-decoration:underline"><span data-i18n="cab.logout">Выйти</span></button></div>
+    <div class="fgrp-row" style="margin-bottom:4px">
+      <div class="fgrp"><input class="finput" type="text" id="profName" value="" placeholder=" "><label class="flabel has-val" data-i18n="cab.name">Имя</label></div>
+      <div class="fgrp"><input class="finput" type="tel" id="profPhone" value="" placeholder=" "><label class="flabel has-val"><span data-i18n="cab.phone">Телефон</span></label></div>
+    </div>
+    <div class="fgrp">
+      <input class="finput" type="date" id="profBirthdate" value="" placeholder=" ">
+      <label class="flabel has-val" data-i18n="reg.birthdate">Дата рождения</label>
+    </div>
+    <div style="margin-top:4px"><button class="bsub" onclick="saveProfile()" data-i18n="cab.save">Сохранить</button></div>
+
+    <div style="margin-top:24px;padding-top:18px;border-top:1px solid var(--line)">
+      <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:12px" data-i18n="cab.change_pass">Сменить пароль</div>
+      <div class="fgrp"><input class="finput" type="password" id="profNewPass" placeholder=" "><label class="flabel" data-i18n="cab.new_pass">Новый пароль</label></div>
+      <div class="fgrp"><input class="finput" type="password" id="profNewPass2" placeholder=" "><label class="flabel" data-i18n="cab.new_pass_confirm">Повторите пароль</label></div>
+      <button class="bsub" onclick="changePassword()" data-i18n="cab.change_pass_btn">Изменить пароль</button>
+    </div>
+
+    <div style="text-align:center;margin-top:20px"><button onclick="logout()" style="font-family:var(--font);font-size:12px;color:var(--red);background:none;border:none;cursor:pointer;text-decoration:underline"><span data-i18n="cab.logout">Выйти</span></button></div>
   </div>
 
 <div class="cabp" id="cab-ref">
@@ -2772,7 +2801,7 @@ function renderDz(){const l=document.getElementById('dzList');if(!l)return;l.inn
 // AUTH
 function openAuth(mode){authMode=mode;document.getElementById('authOvl').classList.add('open');document.getElementById('authS1').style.display='';document.getElementById('authS2').style.display='none';switchTab(mode)}
 function closeAuth(){document.getElementById('authOvl').classList.remove('open');document.getElementById('authS3').style.display='none';document.getElementById('authS1').style.display=''}
-function switchTab(tab){authMode=tab;const isR=tab==='register';document.getElementById('tabLg').classList.toggle('on',!isR);document.getElementById('tabRg').classList.toggle('on',isR);document.getElementById('roleWrap').style.display=isR?'':'none';document.getElementById('nameWrap').style.display=isR?'':'none';document.getElementById('phoneWrap').style.display=isR?'':'none';document.getElementById('avatarWrap').style.display=isR?'':'none';document.getElementById('forgotPassWrap').style.display=isR?'none':'';document.getElementById('authBtn').textContent=isR?t('auth.btn_register'):t('auth.btn_login');document.getElementById('authTtl').textContent=isR?t('auth.title_reg'):t('auth.title_login');const ae=document.getElementById('authError');if(ae)ae.style.display='none';if(isR){pickRole(document.querySelector('.rc.on')||document.querySelector('.rc'),selectedRole||'buyer')}else{document.getElementById('clientFields').style.display='none';document.getElementById('agentFields').style.display='none';document.getElementById('ownerFields').style.display='none'}}
+function switchTab(tab){authMode=tab;const isR=tab==='register';document.getElementById('tabLg').classList.toggle('on',!isR);document.getElementById('tabRg').classList.toggle('on',isR);document.getElementById('roleWrap').style.display=isR?'':'none';document.getElementById('nameWrap').style.display=isR?'':'none';document.getElementById('phoneWrap').style.display=isR?'':'none';document.getElementById('birthdateWrap').style.display=isR?'':'none';document.getElementById('avatarWrap').style.display=isR?'':'none';document.getElementById('forgotPassWrap').style.display=isR?'none':'';document.getElementById('authBtn').textContent=isR?t('auth.btn_register'):t('auth.btn_login');document.getElementById('authTtl').textContent=isR?t('auth.title_reg'):t('auth.title_login');const ae=document.getElementById('authError');if(ae)ae.style.display='none';if(isR){pickRole(document.querySelector('.rc.on')||document.querySelector('.rc'),selectedRole||'buyer')}else{document.getElementById('clientFields').style.display='none';document.getElementById('agentFields').style.display='none';document.getElementById('ownerFields').style.display='none'}}
 function togglePassVis(){
   const inp=document.getElementById('authPass');
   const btn=document.getElementById('passVisBtn');
@@ -3002,6 +3031,10 @@ const I18N={
     'cab.balance':'Баланс','cab.topup':'Пополнить','cab.tx_title':'История транзакций','cab.no_tx':'Пока нет транзакций',
     'cab.topup_entry':'Пополнение',
     'cab.save':'Сохранить','cab.logout':'Выйти',
+    'cab.saved':'Сохранено','cab.avatar_hint':'Нажмите на фото, чтобы изменить',
+    'cab.change_pass':'Сменить пароль','cab.new_pass':'Новый пароль','cab.new_pass_confirm':'Повторите пароль',
+    'cab.change_pass_btn':'Изменить пароль','cab.pass_mismatch':'Пароли не совпадают','cab.pass_changed':'Пароль изменён',
+    'reg.birthdate':'Дата рождения',
     'cab.phone':'Телефон','cab.name':'Имя',
     'topup.title':'Пополнение баланса','topup.current':'Текущий баланс:',
     'topup.card_num':'Номер карты','topup.card_exp':'ММ/ГГ','topup.card_cvv':'CVV',
@@ -3132,6 +3165,10 @@ const I18N={
     'cab.balance':'Balance','cab.topup':'Top Up','cab.tx_title':'Transaction history','cab.no_tx':'No transactions yet',
     'cab.topup_entry':'Top-up',
     'cab.save':'Save','cab.logout':'Sign Out',
+    'cab.saved':'Saved','cab.avatar_hint':'Click photo to change',
+    'cab.change_pass':'Change password','cab.new_pass':'New password','cab.new_pass_confirm':'Confirm password',
+    'cab.change_pass_btn':'Change password','cab.pass_mismatch':'Passwords do not match','cab.pass_changed':'Password changed',
+    'reg.birthdate':'Date of birth',
     'cab.phone':'Phone','cab.name':'Name',
     'topup.title':'Top Up Balance','topup.current':'Current balance:',
     'topup.card_num':'Card number','topup.card_exp':'MM/YY','topup.card_cvv':'CVV',
@@ -3260,6 +3297,10 @@ const I18N={
     'cab.balance':'יתרה','cab.topup':'הפקד','cab.tx_title':'היסטוריית עסקאות','cab.no_tx':'אין עסקאות עדיין',
     'cab.topup_entry':'הפקדה',
     'cab.save':'שמור','cab.logout':'יציאה',
+    'cab.saved':'נשמר','cab.avatar_hint':'לחץ על התמונה כדי לשנות',
+    'cab.change_pass':'שנה סיסמה','cab.new_pass':'סיסמה חדשה','cab.new_pass_confirm':'אימות סיסמה',
+    'cab.change_pass_btn':'שנה סיסמה','cab.pass_mismatch':'הסיסמאות אינן תואמות','cab.pass_changed':'הסיסמה שונתה',
+    'reg.birthdate':'תאריך לידה',
     'cab.phone':'טלפון','cab.name':'שם',
     'topup.title':'טעינת יתרה','topup.current':'יתרה נוכחית:',
     'topup.card_num':'מספר כרטיס','topup.card_exp':'MM/YY','topup.card_cvv':'CVV',
@@ -3343,7 +3384,8 @@ async function doAuth(){
           });
         }catch(e){console.warn('Не удалось прочитать фото профиля:',e);}
       }
-      body={email,password:pass,name:name||'Пользователь',phone,role,avatarBase64,avatarFileName,ref_code:new URLSearchParams(window.location.search).get('ref')||localStorage.getItem('nesay_ref')||undefined};
+      const birthDate=document.getElementById('authBirthdate')?.value||null;
+      body={email,password:pass,name:name||'Пользователь',phone,role,birthDate,avatarBase64,avatarFileName,ref_code:new URLSearchParams(window.location.search).get('ref')||localStorage.getItem('nesay_ref')||undefined};
       if(role==='buyer'){
         const interestEls=[...document.querySelectorAll('#interestPills .reg-pill.on')].map(b=>b.dataset.val);
         const msgEl=document.querySelector('#messengerPills .reg-pill.on');
@@ -3464,9 +3506,12 @@ function finishAuth(user){
   document.getElementById('navCr').textContent='₪'+userCredits+' '+t('nav.balance');
   // Кабинет
   const cabAv=document.getElementById('cabAv');if(cabAv)cabAv.innerHTML=avatarHtml;
+  const profAv=document.getElementById('profAv');if(profAv)profAv.innerHTML=avatarHtml;
   const cabNm=document.getElementById('cabNm');if(cabNm)cabNm.textContent=displayName+(u.verified?' ✓':'');
   const cabEmail=document.getElementById('cabEmail');if(cabEmail)cabEmail.textContent=u.email||'';
   const profName=document.getElementById('profName');if(profName)profName.value=displayName;
+  const profPhone=document.getElementById('profPhone');if(profPhone)profPhone.value=u.phone||'';
+  const profBirthdate=document.getElementById('profBirthdate');if(profBirthdate)profBirthdate.value=u.birth_date?u.birth_date.slice(0,10):'';
   const cabCr=document.getElementById('cabCr');if(cabCr)cabCr.textContent='₪'+userCredits;
   const crBal=document.getElementById('crBal');if(crBal)crBal.textContent='₪'+userCredits;
   // Мобильная версия — кнопка профиля в шапке
@@ -3525,6 +3570,50 @@ async function deleteMyListing(id,btn){
   }catch(e){showToast('❌ Ошибка')}
 }
 function closeCab(){document.getElementById('cabOvl').classList.remove('open')}
+async function saveProfile(){
+  const name=document.getElementById('profName')?.value?.trim();
+  const phone=document.getElementById('profPhone')?.value?.trim();
+  const birthDate=document.getElementById('profBirthdate')?.value||null;
+  if(!name){showToast(t('err.name')||'Укажите имя');return}
+  const token=localStorage.getItem('nesay_token');
+  if(!token){showToast('❌');return}
+  try{
+    showLoader();
+    const res=await fetch(`${API}/auth/profile`,{
+      method:'PUT',
+      headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},
+      body:JSON.stringify({name,phone,birthDate})
+    });
+    hideLoader();
+    const data=await res.json();
+    if(!res.ok){showToast('❌ '+(data.error||t('server.down')));return}
+    document.getElementById('cabNm').textContent=name;
+    document.getElementById('navNm').textContent=name;
+    showToast('✅ '+t('cab.saved'));
+  }catch(e){hideLoader();showToast('❌ '+t('server.down'));}
+}
+async function changePassword(){
+  const p1=document.getElementById('profNewPass')?.value;
+  const p2=document.getElementById('profNewPass2')?.value;
+  if(!p1||p1.length<8){showToast(t('err.pass'));return}
+  if(p1!==p2){showToast(t('cab.pass_mismatch'));return}
+  const token=localStorage.getItem('nesay_token');
+  if(!token){showToast('❌');return}
+  try{
+    showLoader();
+    const res=await fetch(`${API}/auth/change-password`,{
+      method:'PUT',
+      headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},
+      body:JSON.stringify({newPassword:p1})
+    });
+    hideLoader();
+    const data=await res.json();
+    if(!res.ok){showToast('❌ '+(data.error||t('server.down')));return}
+    document.getElementById('profNewPass').value='';
+    document.getElementById('profNewPass2').value='';
+    showToast('✅ '+t('cab.pass_changed'));
+  }catch(e){hideLoader();showToast('❌ '+t('server.down'));}
+}
 async function changeCabAvatar(inp){
   if(!inp.files||!inp.files[0])return;
   const file=inp.files[0];
@@ -3548,6 +3637,7 @@ async function changeCabAvatar(inp){
     if(!res.ok){showToast('❌ '+(data.error||t('server.down')));return}
     const html=`<img src="${data.avatar_url}" style="width:100%;height:100%;object-fit:cover">`;
     const cabAv=document.getElementById('cabAv');if(cabAv)cabAv.innerHTML=html;
+    const profAv=document.getElementById('profAv');if(profAv)profAv.innerHTML=html;
     const navAv=document.getElementById('navAv');if(navAv)navAv.innerHTML=`<img src="${data.avatar_url}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit">`;
     const mAv=document.getElementById('M-av');if(mAv)mAv.innerHTML=`<img src="${data.avatar_url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
     showToast('✅ '+t('reg.avatar_updated'));
