@@ -2202,7 +2202,8 @@ function highlightListingBuildings(data){
     if(!src)return;
     const feats=[];
     const seen=new Set();
-    const offsets=[[0,0],[4,0],[-4,0],[0,4],[0,-4],[4,4],[-4,-4],[4,-4],[-4,4]];
+    const offsets=[];
+    for(let dx=-14;dx<=14;dx+=7){for(let dy=-14;dy<=14;dy+=7){offsets.push([dx,dy]);}}
     (data||[]).forEach(d=>{
       const pt=map.project([d.lng,d.lat]);
       let found=[];
