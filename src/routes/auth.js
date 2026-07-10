@@ -280,4 +280,21 @@ router.post('/reset-password', [
   }
 });
 
+// Смена фото профиля / логотипа для уже зарегистрированного пользователя
+router.put('/avatar', requireAuth, async (req, res) => {
+  const { avatarBase64, avatarFileName } = req.body;
+  if (!avatarBase64) return res.status(400).json({ error: 'Файл не передан' });
+  try {
+    const userResult = await db.query('SELECT email FROM users WHERE id = $1', [req.user.id]);
+    const email = userResult.rows[0]?.email || 'user';
+    const avatarUrl = await uploadAvatarFile(avatarBase64, avatarFileName, email);
+    if (!avatarUrl) return res.status(500).json({ error: 'Не удалось загрузить файл' });
+    await db.query('UPDATE users SET avatar_url = $1 WHERE id = $2', [avatarUrl, req.user.id]);
+    res.json({ success: true, avatar_url: avatarUrl });
+  } catch (err) {
+    console.error('Avatar update error:', err);
+    res.status(500).json({ error: 'Ошибка сервера' });
+  }
+});
+
 module.exports = router;

@@ -1841,7 +1841,13 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
   <div class="mhd" style="flex-direction:column;align-items:stretch">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
       <div style="display:flex;align-items:center;gap:12px">
-        <div class="ua" style="width:46px;height:46px;font-size:18px" id="cabAv">МК</div>
+        <div style="position:relative;cursor:pointer" onclick="document.getElementById('cabAvatarFile').click()">
+          <div class="ua" style="width:46px;height:46px;font-size:18px;overflow:hidden" id="cabAv">МК</div>
+          <div style="position:absolute;bottom:-2px;right:-2px;width:18px;height:18px;border-radius:50%;background:var(--c);border:2px solid #fff;display:flex;align-items:center;justify-content:center">
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          </div>
+          <input type="file" id="cabAvatarFile" accept=".jpg,.jpeg,.png,.webp" style="display:none" onchange="changeCabAvatar(this)">
+        </div>
         <div><div style="font-size:16px;font-weight:900;color:var(--ink)" id="cabNm">Пользователь</div><div style="font-size:12px;color:var(--ink3)" id="cabEmail">—</div></div>
       </div>
       <button class="mx" onclick="closeCab()">✕</button>
@@ -2960,6 +2966,7 @@ const I18N={
     'reg.avatar_choose':'Загрузить фото',
     'reg.avatar_hint_face':'Другие пользователи будут видеть, с кем имеют дело',
     'reg.avatar_hint_logo':'Отображается в объявлениях и профиле агентства',
+    'reg.avatar_updated':'Фото обновлено',
     'role.buyer_title':'Клиент','role.buyer_sub':'Аренда или покупка для себя',
     'role.agent_title':'Риелтор / Агентство','role.agent_sub':'Сдать или продать за комиссию',
     'role.owner_title':'Собственник','role.owner_sub':'Сдаю или продаю без %',
@@ -3089,6 +3096,7 @@ const I18N={
     'reg.avatar_choose':'Upload photo',
     'reg.avatar_hint_face':'Other users will see who they\'re dealing with',
     'reg.avatar_hint_logo':'Shown on listings and agency profile',
+    'reg.avatar_updated':'Photo updated',
     'role.buyer_title':'Buyer','role.buyer_sub':'Looking to rent or buy',
     'role.agent_title':'Agent / Agency','role.agent_sub':'List properties for commission',
     'role.owner_title':'Owner','role.owner_sub':'Renting or selling directly',
@@ -3216,6 +3224,7 @@ const I18N={
     'reg.avatar_choose':'העלה תמונה',
     'reg.avatar_hint_face':'משתמשים אחרים יראו עם מי הם מתקשרים',
     'reg.avatar_hint_logo':'מוצג במודעות ובפרופיל הסוכנות',
+    'reg.avatar_updated':'התמונה עודכנה',
     'role.buyer_title':'לקוח','role.buyer_sub':'מחפש שכירות או קנייה',
     'role.agent_title':'מתווך / משרד','role.agent_sub':'להשכיר או למכור בעמלה',
     'role.owner_title':'בעל נכס','role.owner_sub':'משכיר או מוכר ישירות',
@@ -3516,6 +3525,34 @@ async function deleteMyListing(id,btn){
   }catch(e){showToast('❌ Ошибка')}
 }
 function closeCab(){document.getElementById('cabOvl').classList.remove('open')}
+async function changeCabAvatar(inp){
+  if(!inp.files||!inp.files[0])return;
+  const file=inp.files[0];
+  const token=localStorage.getItem('nesay_token');
+  if(!token){showToast('❌');return}
+  try{
+    const base64=await new Promise((resolve,reject)=>{
+      const reader=new FileReader();
+      reader.onload=()=>resolve(reader.result);
+      reader.onerror=reject;
+      reader.readAsDataURL(file);
+    });
+    showLoader();
+    const res=await fetch(`${API}/auth/avatar`,{
+      method:'PUT',
+      headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},
+      body:JSON.stringify({avatarBase64:base64,avatarFileName:file.name})
+    });
+    hideLoader();
+    const data=await res.json();
+    if(!res.ok){showToast('❌ '+(data.error||t('server.down')));return}
+    const html=`<img src="${data.avatar_url}" style="width:100%;height:100%;object-fit:cover">`;
+    const cabAv=document.getElementById('cabAv');if(cabAv)cabAv.innerHTML=html;
+    const navAv=document.getElementById('navAv');if(navAv)navAv.innerHTML=`<img src="${data.avatar_url}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit">`;
+    const mAv=document.getElementById('M-av');if(mAv)mAv.innerHTML=`<img src="${data.avatar_url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+    showToast('✅ '+t('reg.avatar_updated'));
+  }catch(e){hideLoader();showToast('❌ '+t('server.down'));}
+}
 function swCab(tab){document.querySelectorAll('.cabt').forEach((b,i)=>b.classList.toggle('on',['dash','list','bill','prof','ref'][i]===tab));document.querySelectorAll('.cabp').forEach(p=>p.classList.remove('on'));document.getElementById('cab-'+tab).classList.add('on');if(tab==='ref')loadRefStats();}
 function renderWkChart(){const data=[12,28,19,35,42,23,30];const days=t('days');const max=Math.max(...data);const ch=document.getElementById('wkChart');if(!ch)return;ch.innerHTML=data.map((v,i)=>`<div class="brc"><div class="bv">${v}</div><div class="br ${i===4?'hi':''}" style="height:${v/max*100}%"></div><div class="bdy">${days[i]}</div></div>`).join('')}
 
