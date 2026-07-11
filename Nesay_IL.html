@@ -2400,6 +2400,30 @@ async function addrSearch(q){
       const lng=selectedCityData.lng;
       const bbox=`${lng-.15},${lat-.15},${lng+.15},${lat+.15}`;
 
+      // Попытка 0 — Google Geocoding (через наш бэкенд, ключ не светится
+      // во фронтенде). Работает на любом из трёх языков сразу.
+      try{
+        const gRes=await fetch(`${API}/geocode?q=${encodeURIComponent(q+' '+city)}`);
+        if(gRes.ok){
+          const gData=await gRes.json();
+          if(gData.results&&gData.results.length){
+            sg.innerHTML=gData.results.map(r=>{
+              const nm=JSON.stringify(r.street||q).replace(/"/g,'&quot;');
+              const hn=JSON.stringify(r.houseNumber||'').replace(/"/g,'&quot;');
+              return `<div class="asi" onclick="selAddr(${nm},${hn},${r.lat},${r.lng})" tabindex="0">
+                <span class="asi-ico">🛣️</span>
+                <div>
+                  <div class="asi-main">${r.street||q}${r.houseNumber?'<b style="color:var(--c)"> '+r.houseNumber+'</b>':''}</div>
+                  <div class="asi-sub">${r.city||city}</div>
+                </div>
+              </div>`;
+            }).join('');
+            sg.classList.remove('hid');
+            return;
+          }
+        }
+      }catch(e){/* Google недоступен — идём дальше на Photon */}
+
       // Пробуем несколько вариантов запроса — Israeli OSM данные часто
       // размечены на иврите, транслитерация не всегда совпадает с первого раза
       async function tryQuery(url){
