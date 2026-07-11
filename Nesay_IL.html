@@ -9,6 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet">
 <script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Turf.js/6.5.0/turf.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -1687,6 +1688,11 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
       <input type="hidden" id="addrLng">
       <input type="hidden" id="addrCityName">
 
+      <div id="pinMapWrap" style="display:none;margin-bottom:16px">
+        <label class="flabel" style="position:static;transform:none;font-size:11px;font-weight:700;color:#86868b;display:block;margin-bottom:6px" data-i18n="pub.pin_hint">Уточните точку на карте — перетащите маркер, если адрес найден неточно</label>
+        <div id="pinMap" style="width:100%;height:220px;border-radius:14px;overflow:hidden;border:1px solid var(--line)"></div>
+      </div>
+
       <div class="fgrp-row" style="margin-bottom:16px">
         <div class="fgrp">
           <input class="finput" type="number" id="pubPrice" placeholder=" " oninput="chkPrice(this.value)">
@@ -2196,30 +2202,88 @@ function _polyBBoxArea(geom){
   }catch(e){return 0}
 }
 function highlightListingBuildings(data){
-  if(!map||!mapLoaded)return;
+  if(!map||!mapLoaded||typeof turf==='undefined')return;
   try{
     const src=map.getSource('highlighted-buildings-src');
     if(!src)return;
-    const feats=[];
-    const seen=new Set();
-    const offsets=[];
-    for(let dx=-14;dx<=14;dx+=7){for(let dy=-14;dy<=14;dy+=7){offsets.push([dx,dy]);}}
+    const allFeats=[];
+    const globalSeen=new Set();
+
     (data||[]).forEach(d=>{
       const pt=map.project([d.lng,d.lat]);
-      let found=[];
-      offsets.forEach(o=>{
-        const f=map.queryRenderedFeatures([pt.x+o[0],pt.y+o[1]],{layers:['3d-buildings']});
-        found=found.concat(f);
-      });
-      found.forEach(f=>{
+      const bbox=[[pt.x-45,pt.y-45],[pt.x+45,pt.y+45]];
+      const candidates=map.queryRenderedFeatures(bbox,{layers:['3d-buildings']});
+      if(!candidates||!candidates.length)return;
+
+      // Убираем дубли среди кандидатов
+      const uniq=[];
+      const localSeen=new Set();
+      candidates.forEach(f=>{
         const coords=f.geometry.coordinates&&f.geometry.coordinates[0]?f.geometry.coordinates[0][0]:null;
         const key=coords?coords.join(','):JSON.stringify(f.geometry);
-        if(seen.has(key))return;
-        seen.add(key);
-        feats.push({type:'Feature',geometry:f.geometry,properties:{height:(f.properties&&f.properties.height)||0,min_height:(f.properties&&f.properties.min_height)||0}});
+        if(localSeen.has(key))return;
+        localSeen.add(key);
+        uniq.push(f);
+      });
+
+      // "Зерно" — фрагмент, реально содержащий точку объявления
+      const geoPt=turf.point([d.lng,d.lat]);
+      let seedIdx=uniq.findIndex(f=>{
+        try{return turf.booleanPointInPolygon(geoPt,f);}catch(e){return false;}
+      });
+      if(seedIdx<0){
+        let bestDist=Infinity;
+        uniq.forEach((f,i)=>{
+          try{
+            const c=turf.centroid(f);
+            const dist=turf.distance(geoPt,c);
+            if(dist<bestDist){bestDist=dist;seedIdx=i;}
+          }catch(e){}
+        });
+      }
+      if(seedIdx<0||seedIdx>=uniq.length)return;
+
+      // Растекание по касающимся фрагментам — реконструируем весь физический дом
+      const accepted=[uniq[seedIdx]];
+      const acceptedBuffered=[];
+      try{acceptedBuffered.push(turf.buffer(uniq[seedIdx],0.0005,{units:'kilometers'}));}catch(e){acceptedBuffered.push(null);}
+      const used=new Set([seedIdx]);
+      let growing=true;
+      while(growing){
+        growing=false;
+        for(let i=0;i<uniq.length;i++){
+          if(used.has(i))continue;
+          let touches=false;
+          for(const buf of acceptedBuffered){
+            if(!buf)continue;
+            try{if(turf.booleanIntersects(buf,uniq[i])){touches=true;break;}}catch(e){}
+          }
+          if(touches){
+            accepted.push(uniq[i]);
+            used.add(i);
+            try{acceptedBuffered.push(turf.buffer(uniq[i],0.0005,{units:'kilometers'}));}catch(e){acceptedBuffered.push(null);}
+            growing=true;
+          }
+        }
+      }
+
+      // Берём высоту самого высокого фрагмента — как реальную высоту дома
+      let maxHeight=0,maxMinHeight=0;
+      accepted.forEach(f=>{
+        const h=(f.properties&&f.properties.height)||0;
+        if(h>maxHeight){maxHeight=h;maxMinHeight=(f.properties&&f.properties.min_height)||0;}
+      });
+
+      accepted.forEach(f=>{
+        const coords=f.geometry.coordinates&&f.geometry.coordinates[0]?f.geometry.coordinates[0][0]:null;
+        const key=coords?coords.join(','):JSON.stringify(f.geometry);
+        if(globalSeen.has(key))return;
+        globalSeen.add(key);
+        allFeats.push({type:'Feature',geometry:f.geometry,properties:{height:maxHeight,min_height:maxMinHeight}});
       });
     });
-    src.setData({type:'FeatureCollection',features:feats});
+
+    src.setData({type:'FeatureCollection',features:allFeats});
   }catch(e){console.warn('highlightListingBuildings:',e)}
 }
 function rebuildMarkers(data){
@@ -2266,6 +2330,35 @@ function flyTo(lat,lng,zoom,name){if(map)map.flyTo({center:[lng,lat],zoom,pitch:
 // ═══ CITY + ADDRESS — двухшаговый выбор ═══
 let selectedCityData=null;
 
+let pinMapInstance=null,pinMarker=null;
+function showPinMap(lat,lng){
+  const wrap=document.getElementById('pinMapWrap');
+  if(wrap)wrap.style.display='block';
+  lat=parseFloat(lat);lng=parseFloat(lng);
+  if(isNaN(lat)||isNaN(lng))return;
+  if(!pinMapInstance){
+    pinMapInstance=new mapboxgl.Map({
+      container:'pinMap',
+      style:'mapbox://styles/mapbox/dark-v11',
+      center:[lng,lat],
+      zoom:15,
+      attributionControl:false
+    });
+    pinMapInstance.addControl(new mapboxgl.NavigationControl({showCompass:false}),'top-right');
+    pinMarker=new mapboxgl.Marker({color:'#1C6EF2',draggable:true})
+      .setLngLat([lng,lat])
+      .addTo(pinMapInstance);
+    pinMarker.on('dragend',()=>{
+      const pos=pinMarker.getLngLat();
+      document.getElementById('addrLat').value=pos.lat;
+      document.getElementById('addrLng').value=pos.lng;
+      showToast('📍 '+t('pub.pin_updated'));
+    });
+  } else {
+    pinMapInstance.flyTo({center:[lng,lat],zoom:15,duration:600});
+    pinMarker.setLngLat([lng,lat]);
+  }
+}
 function onCityChange(){
   const sel=document.getElementById('pubCity');
   const val=sel.value;
@@ -2287,6 +2380,7 @@ function onCityChange(){
   house.disabled=false;house.style.opacity='1';
   sg.classList.add('hid');
   if(map&&mapLoaded)map.flyTo({center:[parseFloat(lng),parseFloat(lat)],zoom:13,pitch:45,bearing:-15,duration:1000,essential:true});
+  showPinMap(lat,lng);
   showToast('📍 '+cityName);
   inp.focus();
 }
@@ -2304,16 +2398,31 @@ async function addrSearch(q){
       const city=selectedCityData.name;
       const lat=selectedCityData.lat;
       const lng=selectedCityData.lng;
+      const bbox=`${lng-.15},${lat-.15},${lng+.15},${lat+.15}`;
 
-      // Photon — открытый геокодер на базе OpenStreetMap, лучше работает с ивритом
-      const url=`https://photon.komoot.io/api/?q=${encodeURIComponent(q+' '+city)}&lat=${lat}&lon=${lng}&limit=8&lang=en&bbox=${lng-.15},${lat-.15},${lng+.15},${lat+.15}`;
-      const res=await fetch(url);
-      const data=await res.json();
-      const features=(data.features||[]).filter(f=>{
-        const p=f.properties||{};
-        // Только Израиль
-        return p.country_code==='IL'||p.country==='Israel';
-      }).slice(0,7);
+      // Пробуем несколько вариантов запроса — Israeli OSM данные часто
+      // размечены на иврите, транслитерация не всегда совпадает с первого раза
+      async function tryQuery(url){
+        try{
+          const res=await fetch(url);
+          const data=await res.json();
+          return (data.features||[]).filter(f=>{
+            const p=f.properties||{};
+            return p.country_code==='IL'||p.country==='Israel';
+          });
+        }catch(e){return []}
+      }
+
+      let features=await tryQuery(`https://photon.komoot.io/api/?q=${encodeURIComponent(q+' '+city)}&lat=${lat}&lon=${lng}&limit=8&lang=en&bbox=${bbox}`);
+      if(!features.length){
+        // Попытка 2 — без названия города в запросе (иногда мешает совпадению)
+        features=await tryQuery(`https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&lat=${lat}&lon=${lng}&limit=8&lang=en&bbox=${bbox}`);
+      }
+      if(!features.length){
+        // Попытка 3 — без ограничения языка и без узкой области (шире сеть)
+        features=await tryQuery(`https://photon.komoot.io/api/?q=${encodeURIComponent(q+' '+city+' Israel')}&limit=8`);
+      }
+      features=features.slice(0,7);
 
       if(!features.length){
         // Fallback — показываем подсказку ввести вручную
@@ -2371,8 +2480,9 @@ function selAddrManual(){
     document.getElementById('addrLat').value=selectedCityData.lat;
     document.getElementById('addrLng').value=selectedCityData.lng;
   }
+  showPinMap(document.getElementById('addrLat').value,document.getElementById('addrLng').value);
   document.getElementById('addrHouse').focus();
-  showToast('📍 Адрес введён вручную');
+  showToast('📍 Адрес введён вручную — уточните точку на карте ниже');
 }
 
 function selAddr(street,houseNum,lat,lng){
@@ -2386,6 +2496,7 @@ function selAddr(street,houseNum,lat,lng){
   document.getElementById('addrLng').value=lng;
   document.getElementById('addrSugg').classList.add('hid');
   if(map&&mapLoaded)map.flyTo({center:[parseFloat(lng),parseFloat(lat)],zoom:17,pitch:55,bearing:-15,duration:900,essential:true});
+  showPinMap(lat,lng);
   // Фокус на номер дома если он не заполнен
   if(!house.value)house.focus();
 }
@@ -2788,7 +2899,7 @@ function openPub(){
   document.getElementById('addrSugg').classList.add('hid');
   setDealType('rent');
 }
-function closePub(){document.getElementById('pubOvl').classList.remove('open')}
+function closePub(){document.getElementById('pubOvl').classList.remove('open');if(pinMapInstance){pinMapInstance.remove();pinMapInstance=null;pinMarker=null;}const pw=document.getElementById('pinMapWrap');if(pw)pw.style.display='none'}
 function selTier(card,p,c){document.querySelectorAll('.tc').forEach(x=>x.classList.remove('on'));card.classList.add('on');tierPrice=p;tierCredits=c;document.getElementById('totPrc').textContent='₪'+p.toLocaleString();document.getElementById('payBtn').textContent='Оплатить ₪'+p.toLocaleString();document.getElementById('pubPln').textContent=c+' объявлений'}
 function chkPrice(v){document.getElementById('priceWarn').style.display=(v&&parseFloat(v)<5000)?'block':'none'}
 function genAI(){const ta=document.getElementById('pubDesc');ta.value='...';setTimeout(()=>{ta.value='Светлая квартира с качественным ремонтом. Просторная планировка, большой балкон. Рядом парк, метро, отличная транспортная доступность.';showToast('✨ AI описание готово')},900)}
@@ -3003,6 +3114,7 @@ const I18N={
     'pub.title':'Новое объявление','pub.step1':'Объект','pub.step2':'Фото','pub.step3':'Тариф','pub.step4':'Оплата',
     'pub.deal_rent':'🔵 Аренда','pub.deal_sale':'🟠 Продажа',
     'pub.city':'Город','pub.street':'Улица','pub.house':'Дом №','pub.obj_type':'Тип объекта','pub.select_city':'— Выберите город —','pub.select_reno':'— Ремонт —',
+    'pub.pin_hint':'Уточните точку на карте — перетащите маркер, если адрес найден неточно','pub.pin_updated':'Точка обновлена',
     'pub.price':'Цена (₪)','pub.sqm':'Площадь (м²)','pub.floor':'Этаж','pub.reno':'Ремонт',
     'pub.desc':'Расскажите об объекте — это увеличивает число откликов...',
     'pub.ai':'✨ AI описание','pub.next':'Далее','pub.back':'← Назад',
@@ -3137,6 +3249,7 @@ const I18N={
     'pub.title':'New Listing','pub.step1':'Property','pub.step2':'Photos','pub.step3':'Plan','pub.step4':'Payment',
     'pub.deal_rent':'🔵 Rent','pub.deal_sale':'🟠 Sale',
     'pub.city':'City','pub.street':'Street','pub.house':'House №','pub.obj_type':'Property type','pub.select_city':'— Select city —','pub.select_reno':'— Condition —',
+    'pub.pin_hint':'Fine-tune the pin — drag it if the address was found imprecisely','pub.pin_updated':'Location updated',
     'pub.price':'Price (₪)','pub.sqm':'Area (m²)','pub.floor':'Floor','pub.reno':'Condition',
     'pub.desc':'Tell about the property — this increases responses...',
     'pub.ai':'✨ AI description','pub.next':'Next','pub.back':'← Back',
@@ -3269,6 +3382,7 @@ const I18N={
     'pub.title':'מודעה חדשה','pub.step1':'נכס','pub.step2':'תמונות','pub.step3':'תעריף','pub.step4':'תשלום',
     'pub.deal_rent':'🔵 שכירות','pub.deal_sale':'🟠 מכירה',
     'pub.city':'עיר','pub.street':'רחוב','pub.house':'מס\' בית','pub.obj_type':'סוג נכס','pub.select_city':'— בחר עיר —','pub.select_reno':'— מצב —',
+    'pub.pin_hint':'כוונן את הסמן — גרור אותו אם הכתובת נמצאה בצורה לא מדויקת','pub.pin_updated':'המיקום עודכן',
     'pub.price':'מחיר (₪)','pub.sqm':'שטח (מ"ר)','pub.floor':'קומה','pub.reno':'מצב',
     'pub.desc':'ספר על הנכס — זה מגדיל את מספר הפניות...',
     'pub.ai':'✨ תיאור AI','pub.next':'הבא','pub.back':'← חזור',
