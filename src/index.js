@@ -42,7 +42,10 @@ app.get('/api/geocode', async (req, res) => {
     const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(q)}&components=country:IL&language=ru&key=${key}`;
     const r = await fetch(url);
     const data = await r.json();
-    if (data.status !== 'OK') return res.json({ results: [] });
+    if (data.status !== 'OK') {
+      console.log('🔍 Google geocode вернул:', data.status, data.error_message || '(без сообщения)');
+      return res.json({ results: [] });
+    }
     const results = (data.results || []).map(item => {
       const comp = item.address_components || [];
       const get = type => (comp.find(c => c.types.includes(type)) || {}).long_name || '';
@@ -73,7 +76,10 @@ app.get('/api/reverse-geocode', async (req, res) => {
     const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&language=ru&key=${key}`;
     const r = await fetch(url);
     const data = await r.json();
-    if (data.status !== 'OK' || !data.results.length) return res.json({ result: null });
+    if (data.status !== 'OK' || !data.results.length) {
+      console.log('🔍 Google reverse-geocode вернул:', data.status, data.error_message || '(без сообщения)');
+      return res.json({ result: null });
+    }
     const item = data.results[0];
     const comp = item.address_components || [];
     const get = type => (comp.find(c => c.types.includes(type)) || {}).long_name || '';
