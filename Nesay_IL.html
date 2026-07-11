@@ -2348,11 +2348,28 @@ function showPinMap(lat,lng){
     pinMarker=new mapboxgl.Marker({color:'#1C6EF2',draggable:true})
       .setLngLat([lng,lat])
       .addTo(pinMapInstance);
-    pinMarker.on('dragend',()=>{
+    pinMarker.on('dragend',async()=>{
       const pos=pinMarker.getLngLat();
       document.getElementById('addrLat').value=pos.lat;
       document.getElementById('addrLng').value=pos.lng;
       showToast('📍 '+t('pub.pin_updated'));
+      try{
+        const res=await fetch(`${API}/reverse-geocode?lat=${pos.lat}&lng=${pos.lng}`);
+        if(res.ok){
+          const data=await res.json();
+          if(data.result&&data.result.street){
+            const inp=document.getElementById('addrInp');
+            const house=document.getElementById('addrHouse');
+            inp.value=data.result.street;
+            inp.classList.add('has-val');
+            if(data.result.houseNumber){
+              house.value=data.result.houseNumber;
+              house.classList.add('has-val');
+            }
+            showToast('📍 '+data.result.street+(data.result.houseNumber?' '+data.result.houseNumber:''));
+          }
+        }
+      }catch(e){/* не страшно — координаты уже сохранены, название улицы необязательно */}
     });
   } else {
     pinMapInstance.flyTo({center:[lng,lat],zoom:15,duration:600});

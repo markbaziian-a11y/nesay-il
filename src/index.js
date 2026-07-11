@@ -62,6 +62,35 @@ app.get('/api/geocode', async (req, res) => {
   }
 });
 
+// Обратное геокодирование — по координатам определяем название улицы
+// (нужно для перетаскиваемого маркера в форме публикации)
+app.get('/api/reverse-geocode', async (req, res) => {
+  const { lat, lng } = req.query;
+  if (!lat || !lng) return res.status(400).json({ error: 'Укажите координаты' });
+  const key = process.env.GOOGLE_MAPS_API_KEY;
+  if (!key) return res.status(503).json({ error: 'Геокодирование не настроено' });
+  try {
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&language=ru&key=${key}`;
+    const r = await fetch(url);
+    const data = await r.json();
+    if (data.status !== 'OK' || !data.results.length) return res.json({ result: null });
+    const item = data.results[0];
+    const comp = item.address_components || [];
+    const get = type => (comp.find(c => c.types.includes(type)) || {}).long_name || '';
+    res.json({
+      result: {
+        street: get('route'),
+        houseNumber: get('street_number'),
+        city: get('locality') || get('administrative_area_level_2'),
+        formatted: item.formatted_address
+      }
+    });
+  } catch (err) {
+    console.error('Reverse geocode error:', err);
+    res.status(500).json({ error: 'Ошибка геокодирования' });
+  }
+});
+
 app.get('/', (req,res)=>res.sendFile(path.join(__dirname,'..','Nesay_IL.html')));
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 
