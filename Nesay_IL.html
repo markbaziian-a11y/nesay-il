@@ -630,6 +630,7 @@ html.mob .ma {
   flex-shrink:0 !important;
   order:1;
   min-height:0;
+  transition:height .32s cubic-bezier(.32,.72,0,1);
 }
 
 /* ── MAP controls ── */
@@ -4422,18 +4423,17 @@ function tab(name) {
   if (name === 'map') {
     favOnly = false;
     if (lw) lw.style.display = 'none';
-    if (ma) { ma.style.height = '100%'; ma.style.position = 'fixed'; ma.style.inset = '0'; ma.style.zIndex='50'; }
-    if (window.map) setTimeout(function(){ map.resize(); }, 200);
+    if (ma) { ma.style.setProperty('height','100%','important'); ma.style.position = 'fixed'; ma.style.inset = '0'; ma.style.zIndex='50'; }
+    if (window.map) setTimeout(function(){ map.resize(); }, 350);
   } else if (name === 'list') {
     favOnly = false;
     if (lw) lw.style.display = 'flex';
-    if (ma) { ma.style.height = ''; ma.style.position = ''; ma.style.inset = ''; ma.style.zIndex=''; }
-    if (window.map) setTimeout(function(){ map.resize(); }, 200);
+    if (ma) { ma.style.setProperty('height','0','important'); ma.style.position = ''; ma.style.inset = ''; ma.style.zIndex=''; }
     renderCards();
   } else if (name === 'fav') {
     favOnly = true;
     if (lw) lw.style.display = 'flex';
-    if (ma) { ma.style.height = ''; ma.style.position = ''; ma.style.inset = ''; ma.style.zIndex=''; }
+    if (ma) { ma.style.setProperty('height','0','important'); ma.style.position = ''; ma.style.inset = ''; ma.style.zIndex=''; }
     renderCards();
   } else if (name === 'me') {
     setTimeout(function(){
