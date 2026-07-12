@@ -3645,7 +3645,7 @@ function hideLoader(){
 }
 function finishAuth(user){
   const u=typeof user==='object'?user:{email:user,name:'Пользователь',role:selectedRole||'buyer',credits:0};
-  loggedIn=true;
+  loggedIn=true;window.loggedIn=true;
   const isAgent=u.role==='agent'||u.role==='owner';
   closeAuth();
   document.getElementById('navGuest').style.display='none';
@@ -3680,7 +3680,7 @@ function finishAuth(user){
 }
 function doOAuth(){selectedRole='agent';setTimeout(()=>finishAuth('agent@nesay.il'),900)}
 function reqAuth(){if(!loggedIn)openAuth('login');else openPub()}
-function logout(){loggedIn=false;localStorage.removeItem('nesay_token');closeCab();document.getElementById('navGuest').style.display='flex';document.getElementById('navUser').style.display='none';showToast('👋')}
+function logout(){loggedIn=false;window.loggedIn=false;localStorage.removeItem('nesay_token');closeCab();document.getElementById('navGuest').style.display='flex';document.getElementById('navUser').style.display='none';showToast('👋')}
 
 // CHAT
 function openChat(){document.getElementById('chatOvl').classList.add('open');document.querySelector('.cn').style.display='none';setTimeout(()=>document.getElementById('chatMsgs').scrollTop=9999,50)}
