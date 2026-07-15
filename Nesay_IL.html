@@ -634,6 +634,20 @@ html.mob .ma {
   transition:height .32s cubic-bezier(.32,.72,0,1);
 }
 
+html.mob.tab-list .ma,
+html.mob.tab-fav .ma {
+  height:0 !important;
+}
+html.mob.tab-map .ma {
+  height:100% !important;
+  position:fixed !important;
+  inset:0 !important;
+  z-index:50 !important;
+}
+html.mob.tab-map #M-list-wrap {
+  display:none !important;
+}
+
 /* ── MAP controls ── */
 html.mob .cj   { display:none }
 html.mob .mcnt { display:none }
@@ -4418,25 +4432,18 @@ function tab(name) {
   var el = document.getElementById('Mt-' + name);
   if (el) el.classList.add('on');
 
-  var lw = document.getElementById('M-list-wrap');
-  var ma = document.querySelector('.ma');
+  var html = document.documentElement;
+  html.classList.remove('tab-map','tab-list','tab-fav','tab-me');
+  html.classList.add('tab-' + name);
 
   if (name === 'map') {
     favOnly = false;
-    if (lw) lw.style.display = 'none';
-    if (ma) { ma.style.setProperty('height','100%','important'); ma.style.position = 'fixed'; ma.style.inset = '0'; ma.style.zIndex='50'; }
-    if (window.map) setTimeout(function(){ map.resize(); }, 350);
+    if (window.map) setTimeout(function(){ try{ map.resize(); }catch(e){} }, 360);
   } else if (name === 'list') {
     favOnly = false;
-    if (lw) lw.style.display = 'flex';
-    if (ma) { ma.style.setProperty('height','0','important'); ma.style.position = ''; ma.style.inset = ''; ma.style.zIndex=''; }
-    if (window.map) setTimeout(function(){ map.resize(); }, 350);
     renderCards();
   } else if (name === 'fav') {
     favOnly = true;
-    if (lw) lw.style.display = 'flex';
-    if (ma) { ma.style.setProperty('height','0','important'); ma.style.position = ''; ma.style.inset = ''; ma.style.zIndex=''; }
-    if (window.map) setTimeout(function(){ map.resize(); }, 350);
     renderCards();
   } else if (name === 'me') {
     setTimeout(function(){
