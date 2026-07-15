@@ -4257,20 +4257,20 @@ tryAutoLogin();
 
 <!-- TAB BAR -->
 <div id="M-tabs">
-  <button class="M-tab" id="Mt-map"  onclick="M.tab('map')">
+  <button class="M-tab" id="Mt-map"  onclick="if(window.mobTab)mobTab('map');else alert('JS error: mobTab missing')">
     <span class="M-tab-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4l-6 2v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14"/><path d="M15 6v14"/></svg></span>
     <span class="M-tab-lbl" data-i18n="tab.map">Карта</span>
   </button>
-  <button class="M-tab on" id="Mt-list" onclick="M.tab('list')">
+  <button class="M-tab on" id="Mt-list" onclick="if(window.mobTab)mobTab('list');else alert('JS error: mobTab missing')">
     <span class="M-tab-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></span>
     <span class="M-tab-lbl" data-i18n="tab.listings">Объявления</span>
   </button>
-  <button class="M-tab" id="Mt-fav"  onclick="M.tab('fav')">
+  <button class="M-tab" id="Mt-fav"  onclick="if(window.mobTab)mobTab('fav');else alert('JS error: mobTab missing')">
     <span class="M-tab-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.5 12.572l-7.5 7.428-7.5-7.428a5 5 0 1 1 7.5-6.566 5 5 0 1 1 7.5 6.572z"/></svg></span>
     <span class="M-tab-lbl" data-i18n="tab.favorites">Избранные</span>
     <span class="M-tab-dot" id="M-fav-dot"></span>
   </button>
-  <button class="M-tab" id="Mt-me"   onclick="M.tab('me')">
+  <button class="M-tab" id="Mt-me"   onclick="if(window.mobTab)mobTab('me');else alert('JS error: mobTab missing')">
     <span class="M-tab-ico" id="Mt-me-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg></span>
     <span class="M-tab-lbl" id="Mt-me-lbl" data-i18n="nav.signin">Войти</span>
   </button>
@@ -4534,6 +4534,7 @@ function init() {
 }
 
 // ── EXPOSE ─────────────────────────────────────────
+window.mobTab = tab;
 window.M = {
   tab:        tab,
   type:       setType,
