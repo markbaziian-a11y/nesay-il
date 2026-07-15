@@ -2,7 +2,7 @@
 <html lang="ru" dir="ltr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 
 
 <title>Nesay.il — נדל״ן ישראל</title>
@@ -612,7 +612,7 @@ html.mob .wab,
 html.mob .cf        { display:none !important }
 
 /* ── Body & Layout ── */
-html.mob body       { overflow:hidden; height:100dvh; background:#F4F1EA }
+html.mob body       { overflow:hidden; height:100dvh; background:#F4F1EA; touch-action:manipulation }
 
 html.mob .layout {
   display:flex !important;
@@ -990,6 +990,7 @@ html.mob .mcs  { background:rgba(0,0,0,.08); margin:2px 0 }
   transition:color .12s;
   position:relative;
   -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
 }
 .M-tab.on { color:var(--c) }
 .M-tab-ico { font-size:22px; line-height:1 }
