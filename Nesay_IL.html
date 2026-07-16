@@ -759,6 +759,10 @@ html.mob #M-list-wrap {
   right:0;
   bottom:0;
   z-index:60;
+  display:none;
+}
+html.mob #M-list-wrap.mlw-open {
+  display:flex;
 }
 
 /* Шапка списка */
@@ -3452,19 +3456,16 @@ function tab(name) {
 
   if (name === 'map') {
     favOnly = false;
-    if (lw) lw.style.display = 'none';
-    if (ma) { ma.style.height = '100%'; ma.style.position = 'fixed'; ma.style.inset = '0'; ma.style.zIndex='50'; }
+    if (lw) lw.classList.remove('mlw-open');
     if (window.map) setTimeout(function(){ map.resize(); }, 200);
   } else if (name === 'list') {
     favOnly = false;
-    if (lw) lw.style.display = 'flex';
-    if (ma) { ma.style.height = ''; ma.style.position = ''; ma.style.inset = ''; ma.style.zIndex=''; }
+    if (lw) lw.classList.add('mlw-open');
     if (window.map) setTimeout(function(){ map.resize(); }, 200);
     renderCards();
   } else if (name === 'fav') {
     favOnly = true;
-    if (lw) lw.style.display = 'flex';
-    if (ma) { ma.style.height = ''; ma.style.position = ''; ma.style.inset = ''; ma.style.zIndex=''; }
+    if (lw) lw.classList.add('mlw-open');
     renderCards();
   } else if (name === 'me') {
     setTimeout(function(){
