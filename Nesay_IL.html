@@ -1853,9 +1853,24 @@ let activeType='all'; // 'all','rent','sale'
 
 // ═══ MAPBOX с статичными DOM маркерами ═══
 function initMap(){
+  try{
   map=new mapboxgl.Map({
     container:'map3d',style:'mapbox://styles/mapbox/dark-v11',
     center:[34.7818,32.0853],zoom:12,pitch:55,bearing:-15,antialias:true,attributionControl:false
+  });
+  }catch(e){
+    var el=document.getElementById('map3d');
+    if(el)el.innerHTML='<div style="position:absolute;inset:0;background:#fff;color:#c00;font-size:14px;padding:20px;overflow:auto;z-index:999">MAP INIT ERROR:<br>'+(e&&e.message?e.message:String(e))+'</div>';
+    return;
+  }
+  map.on('error',function(e){
+    var el=document.getElementById('map3d');
+    if(el){
+      var d=document.createElement('div');
+      d.style.cssText='position:absolute;inset:0;background:#fff;color:#c00;font-size:13px;padding:16px;overflow:auto;z-index:999';
+      d.textContent='MAP ERROR: '+(e&&e.error&&e.error.message?e.error.message:JSON.stringify(e&&e.error||e));
+      el.appendChild(d);
+    }
   });
   map.addControl(new mapboxgl.AttributionControl({compact:true}),'bottom-right');
   map.scrollZoom.setWheelZoomRate(1/450);
