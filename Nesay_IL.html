@@ -2921,7 +2921,7 @@ function renderWkChart(){const data=[12,28,19,35,42,23,30];const days=t('days');
 function openPromoModal(idx){promoTargetIdx=idx;document.getElementById('promoOvl').classList.add('open')}
 function closePromo(){document.getElementById('promoOvl').classList.remove('open')}
 function payPromo(){const btn=document.getElementById('promoPayBtn');btn.textContent='...';btn.disabled=true;setTimeout(()=>{if(promoTargetIdx>=0){listings[promoTargetIdx].promoted=true;listings[promoTargetIdx]._promoMins=1440}closePromo();applyFilter();showToast('⚡ TOP 24h активирован!')},900)}
-setInterval(()=>{let ch=false;listings.forEach(d=>{if(d.promoted&&d._promoMins>0){d._promoMins=Math.max(0,d._promoMins-1/60);if(d._promoMins<=0)d.promoted=false;ch=true}});if(ch)renderCards(filteredListings)},1000);
+setInterval(()=>{let expired=false;listings.forEach(d=>{if(d.promoted&&d._promoMins>0){d._promoMins=Math.max(0,d._promoMins-1/60);if(d._promoMins<=0){d.promoted=false;expired=true;}}});if(expired){renderCards(filteredListings);if(typeof M!=='undefined'&&M.renderCards)M.renderCards();}},1000);
 
 // COMPARE
 function toggleCmp(idx){const btn=document.getElementById('cmpB'+idx);const a=cmpList.indexOf(idx);if(a>=0){cmpList.splice(a,1);if(btn){btn.style.color='var(--ink3)';btn.style.background='none';btn.style.borderColor='var(--line)'}}else{if(cmpList.length>=3){showToast(t('toast.max_cmp'));return}cmpList.push(idx);if(btn){btn.style.color='var(--c)';btn.style.background='var(--cl)';btn.style.borderColor='var(--c)'}}updCmpBar()}
