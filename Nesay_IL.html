@@ -3290,11 +3290,11 @@ tryAutoLogin();
 
 <!-- TAB BAR -->
 <div id="M-tabs">
-  <button class="M-tab" id="Mt-map"  onclick="M.tab('map')">
+  <button class="M-tab on" id="Mt-map"  onclick="M.tab('map')">
     <span class="M-tab-ico">🗺</span>
     <span class="M-tab-lbl">Карта</span>
   </button>
-  <button class="M-tab on" id="Mt-list" onclick="M.tab('list')">
+  <button class="M-tab" id="Mt-list" onclick="M.tab('list')">
     <span class="M-tab-ico">📋</span>
     <span class="M-tab-lbl">Объявления</span>
   </button>
@@ -3327,7 +3327,7 @@ if (!IS_MOB) return;
 
 // ── STATE ──────────────────────────────────────────
 let favIds   = new Set();
-let curTab   = 'list';
+let curTab   = 'map';
 let sortIdx  = 0;
 let favOnly  = false;
 
@@ -3538,7 +3538,7 @@ function onAuth(user) {
 
 // ── INIT ───────────────────────────────────────────
 function init() {
-  tab('list');
+  tab('map');
   // sync lang buttons
   document.querySelectorAll('.M-lang-sw .lb').forEach(function(b) {
     var txt = b.textContent.trim();
