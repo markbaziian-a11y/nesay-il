@@ -3327,6 +3327,7 @@ const IS_MOB = Math.min(window.screen.width, window.screen.height) <= 768
             || window.innerWidth <= 768;
 
 if (IS_MOB) document.documentElement.classList.add('mob');
+if (IS_MOB && window.map) { setTimeout(function(){ map.resize(); }, 0); setTimeout(function(){ map.resize(); }, 300); setTimeout(function(){ map.resize(); }, 800); }
 if (!IS_MOB) return;
 
 // ── STATE ──────────────────────────────────────────
