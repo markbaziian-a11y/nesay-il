@@ -1437,6 +1437,9 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
       <input type="hidden" id="addrLat">
       <input type="hidden" id="addrLng">
       <input type="hidden" id="addrCityName">
+      <input type="hidden" id="addrCityHe">
+      <input type="hidden" id="addrCityRu">
+      <input type="hidden" id="addrCityEn">
 
       <div class="fgrp-row" style="margin-bottom:16px">
         <div class="fgrp">
@@ -1980,6 +1983,10 @@ function selCity(name,lat,lng){
   document.getElementById('addrCityName').value=name;
   document.getElementById('addrLat').value=lat;
   document.getElementById('addrLng').value=lng;
+  // Фолбэк — пока не подтянулись переводы, используем введённое имя везде
+  document.getElementById('addrCityHe').value=name;
+  document.getElementById('addrCityRu').value=name;
+  document.getElementById('addrCityEn').value=name;
   const inp=document.getElementById('addrInp');
   const house=document.getElementById('addrHouse');
   inp.disabled=false;inp.style.opacity='1';inp.value='';inp.classList.remove('has-val');inp.placeholder=' ';
@@ -1987,6 +1994,17 @@ function selCity(name,lat,lng){
   if(map&&mapLoaded)map.flyTo({center:[parseFloat(lng),parseFloat(lat)],zoom:13,pitch:45,bearing:-15,duration:1000,essential:true});
   showToast('📍 '+name);
   inp.focus();
+  // Подтягиваем название города на всех 3 языках (для корректного поиска)
+  ['he','ru','en'].forEach(function(l){
+    fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=jsonv2&accept-language=${l}&zoom=10`)
+      .then(function(r){return r.json()})
+      .then(function(d){
+        var nm=(d&&d.address)?(d.address.city||d.address.town||d.address.village||d.address.municipality||d.name):null;
+        var fld=document.getElementById(l==='he'?'addrCityHe':l==='ru'?'addrCityRu':'addrCityEn');
+        if(nm&&fld)fld.value=nm;
+      })
+      .catch(function(){});
+  });
 }
 function onCityChange(){
   const sel=document.getElementById('pubCity');
@@ -2358,9 +2376,16 @@ function useCredit(){_publish()}
 function submitPay(){_publish()}
 async function _publish(){
   const cityName=document.getElementById('addrCityName')?.value||'';
+  const cityHe=document.getElementById('addrCityHe')?.value||cityName;
+  const cityRu=document.getElementById('addrCityRu')?.value||cityName;
+  const cityEn=document.getElementById('addrCityEn')?.value||cityName;
   const street=document.getElementById('addrInp')?.value||'';
   const house=document.getElementById('addrHouse')?.value||'';
-  const addr=[street+(house?' '+house:''),cityName].filter(Boolean).join(', ')||'Адрес не указан';
+  const streetPart=street+(house?' '+house:'');
+  const addr=[streetPart,cityName].filter(Boolean).join(', ')||'Адрес не указан';
+  const addrHe=[streetPart,cityHe].filter(Boolean).join(', ')||addr;
+  const addrRu=[streetPart,cityRu].filter(Boolean).join(', ')||addr;
+  const addrEn=[streetPart,cityEn].filter(Boolean).join(', ')||addr;
   const lat=parseFloat(document.getElementById('addrLat')?.value)||selectedCityData?.lat||32.0853;
   const lng=parseFloat(document.getElementById('addrLng')?.value)||selectedCityData?.lng||34.7818;
   const price=parseFloat(document.getElementById('pubPrice')?.value)||0;
@@ -2431,7 +2456,7 @@ async function _publish(){
   const newL={id:newId,dealType,promoted:false,_userAdded:true,
     thumb:'linear-gradient(135deg,#1C6EF2,#0d5480)',icon:'🏠',
     userPhoto:firstPhoto,photos:dzFiles.length||1,priceNum:price,
-    addr:{ru:addr,he:addr,en:addr},rooms,sqm:sqm||85,floor:floor||'—',
+    addr:{ru:addrRu,he:addrHe,en:addrEn},rooms,sqm:sqm||85,floor:floor||'—',
     tags:{ru:['Новое ✓'],he:['חדש ✓'],en:['New ✓']},hi:[0],
     desc:{ru:desc||'Новое объявление.',he:'מודעה חדשה.',en:'New listing.'},
     agent:{name:agName,initials:agName.slice(0,2).toUpperCase(),type:'agent',verified:loggedIn,deals:0,rating:0,reviews:0,honesty:50},
@@ -2479,6 +2504,9 @@ function openPub(){
   document.getElementById('addrLat').value='';
   document.getElementById('addrLng').value='';
   document.getElementById('addrCityName').value='';
+  var ch=document.getElementById('addrCityHe');if(ch)ch.value='';
+  var cr=document.getElementById('addrCityRu');if(cr)cr.value='';
+  var ce=document.getElementById('addrCityEn');if(ce)ce.value='';
   document.getElementById('addrSugg').classList.add('hid');
   setDealType('rent');
 }
