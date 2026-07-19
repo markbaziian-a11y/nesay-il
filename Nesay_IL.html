@@ -1949,25 +1949,21 @@ async function citySearch(q){
   sg.classList.remove('hid');
   window._cityTimer=setTimeout(async()=>{
     try{
-      const url=`https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=8&lang=en&bbox=34.2,29.4,35.9,33.4`;
-      const res=await fetch(url);
+      const cur=lang==='he'?'he':lang==='en'?'en':'ru';
+      const url=`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=jsonv2&accept-language=${cur}&countrycodes=il&limit=8&addressdetails=0`;
+      const res=await fetch(url,{headers:{'Accept-Language':cur}});
       const data=await res.json();
-      const features=(data.features||[]).filter(f=>{
-        const p=f.properties||{};
-        if(!(p.country_code==='IL'||p.country==='Israel'))return false;
-        const k=p.osm_key,v=p.osm_value;
-        return k==='place'&&['city','town','village','hamlet','suburb'].includes(v);
+      const features=(data||[]).filter(f=>{
+        return f.addresstype==='city'||f.addresstype==='town'||f.addresstype==='village'||f.addresstype==='hamlet'||f.addresstype==='suburb'||f.class==='place';
       }).slice(0,7);
       if(!features.length){
         sg.innerHTML='<div class="ald" style="color:var(--ink3);padding:10px 14px">Город не найден</div>';
         return;
       }
       sg.innerHTML=features.map(f=>{
-        const p=f.properties||{};
-        const coords=f.geometry?.coordinates||[34.7818,32.0853];
-        const name=p.name||q;
+        const name=(f.name||f.display_name||q).split(',')[0];
         const nm=JSON.stringify(name).replace(/"/g,'&quot;');
-        return `<div class="asi" onclick="selCity(${nm},${coords[1]},${coords[0]})" tabindex="0">
+        return `<div class="asi" onclick="selCity(${nm},${f.lat},${f.lon})" tabindex="0">
           <span class="asi-ico">📍</span>
           <div><div class="asi-main">${name}</div></div>
         </div>`;
@@ -1975,7 +1971,7 @@ async function citySearch(q){
     }catch(e){
       sg.innerHTML='<div class="ald" style="color:var(--ink3);padding:10px 14px">Ошибка поиска, введите вручную</div>';
     }
-  },350);
+  },400);
 }
 function selCity(name,lat,lng){
   selectedCityData={name,lat:parseFloat(lat),lng:parseFloat(lng)};
