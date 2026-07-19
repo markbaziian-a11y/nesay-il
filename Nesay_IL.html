@@ -1411,32 +1411,12 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
       </div>
 
       <!-- Город -->
-      <div class="fgrp" style="margin-bottom:16px">
-        <select class="fselect" id="pubCity" onchange="onCityChange()">
-          <option value="">— Выберите город —</option>
-          <option value="Tel Aviv|32.0853|34.7818">Тель-Авив</option>
-          <option value="Jerusalem|31.7683|35.2137">Иерусалим</option>
-          <option value="Haifa|32.7940|34.9896">Хайфа</option>
-          <option value="Rishon LeZion|31.9730|34.7925">Ришон-ле-Цион</option>
-          <option value="Netanya|32.3215|34.8532">Нетания</option>
-          <option value="Ashdod|31.8044|34.6553">Ашдод</option>
-          <option value="Herzliya|32.1663|34.8434">Герцлия</option>
-          <option value="Raanana|32.1847|34.8708">Раанана</option>
-          <option value="Petah Tikva|32.0878|34.8878">Петах-Тиква</option>
-          <option value="Ramat Gan|32.0823|34.8141">Рамат-Ган</option>
-          <option value="Holon|32.0117|34.7722">Холон</option>
-          <option value="Bat Yam|32.0167|34.7500">Бат-Ям</option>
-          <option value="Kiryat Yam|32.8467|35.0683">Кирьят-Ям</option>
-          <option value="Rehovot|31.8947|34.8089">Реховот</option>
-          <option value="Eilat|29.5577|34.9519">Эйлат</option>
-          <option value="Beersheba|31.2518|34.7913">Беэр-Шева</option>
-          <option value="Ashkelon|31.6688|34.5743">Ашкелон</option>
-          <option value="Bnei Brak|32.0833|34.8333">Бней-Брак</option>
-          <option value="Kfar Saba|32.1750|34.9070">Кфар-Саба</option>
-          <option value="Nazareth|32.7021|35.2978">Назарет</option>
-        </select>
+      <div class="fgrp aw" style="margin-bottom:16px">
+        <input class="finput" id="pubCityInp" type="text" placeholder=" " autocomplete="off"
+          oninput="citySearch(this.value)"
+          onfocus="if(this.value.length>1)document.getElementById('pubCitySugg').classList.remove('hid')">
         <label class="flabel">Город <span class="rq">*</span></label>
-        <span class="fselect-arrow">▾</span>
+        <div class="asg hid" id="pubCitySugg"></div>
       </div>
 
       <!-- Улица + номер дома -->
@@ -1961,6 +1941,57 @@ function flyTo(lat,lng,zoom,name){if(map)map.flyTo({center:[lng,lat],zoom,pitch:
 // ═══ CITY + ADDRESS — двухшаговый выбор ═══
 let selectedCityData=null;
 
+async function citySearch(q){
+  clearTimeout(window._cityTimer);
+  const sg=document.getElementById('pubCitySugg');
+  if(!q||q.length<2){sg.classList.add('hid');return}
+  sg.innerHTML='<div class="ald">🔍 Поиск...</div>';
+  sg.classList.remove('hid');
+  window._cityTimer=setTimeout(async()=>{
+    try{
+      const url=`https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=8&lang=en&bbox=34.2,29.4,35.9,33.4`;
+      const res=await fetch(url);
+      const data=await res.json();
+      const features=(data.features||[]).filter(f=>{
+        const p=f.properties||{};
+        if(!(p.country_code==='IL'||p.country==='Israel'))return false;
+        const k=p.osm_key,v=p.osm_value;
+        return k==='place'&&['city','town','village','hamlet','suburb'].includes(v);
+      }).slice(0,7);
+      if(!features.length){
+        sg.innerHTML='<div class="ald" style="color:var(--ink3);padding:10px 14px">Город не найден</div>';
+        return;
+      }
+      sg.innerHTML=features.map(f=>{
+        const p=f.properties||{};
+        const coords=f.geometry?.coordinates||[34.7818,32.0853];
+        const name=p.name||q;
+        const nm=JSON.stringify(name).replace(/"/g,'&quot;');
+        return `<div class="asi" onclick="selCity(${nm},${coords[1]},${coords[0]})" tabindex="0">
+          <span class="asi-ico">📍</span>
+          <div><div class="asi-main">${name}</div></div>
+        </div>`;
+      }).join('');
+    }catch(e){
+      sg.innerHTML='<div class="ald" style="color:var(--ink3);padding:10px 14px">Ошибка поиска, введите вручную</div>';
+    }
+  },350);
+}
+function selCity(name,lat,lng){
+  selectedCityData={name,lat:parseFloat(lat),lng:parseFloat(lng)};
+  document.getElementById('pubCityInp').value=name;
+  document.getElementById('pubCitySugg').classList.add('hid');
+  document.getElementById('addrCityName').value=name;
+  document.getElementById('addrLat').value=lat;
+  document.getElementById('addrLng').value=lng;
+  const inp=document.getElementById('addrInp');
+  const house=document.getElementById('addrHouse');
+  inp.disabled=false;inp.style.opacity='1';inp.value='';inp.classList.remove('has-val');inp.placeholder=' ';
+  house.disabled=false;house.style.opacity='1';
+  if(map&&mapLoaded)map.flyTo({center:[parseFloat(lng),parseFloat(lat)],zoom:13,pitch:45,bearing:-15,duration:1000,essential:true});
+  showToast('📍 '+name);
+  inp.focus();
+}
 function onCityChange(){
   const sel=document.getElementById('pubCity');
   const val=sel.value;
@@ -2444,7 +2475,7 @@ function openPub(){
   goStep(1);dzFiles=[];renderDz();
   // Сброс адреса
   selectedCityData=null;
-  document.getElementById('pubCity').value='';
+  const pci=document.getElementById('pubCityInp');if(pci)pci.value='';
   const inp=document.getElementById('addrInp');
   inp.value='';inp.disabled=true;inp.style.opacity='.5';inp.classList.remove('has-val');
   const house=document.getElementById('addrHouse');
