@@ -1949,7 +1949,7 @@ async function citySearch(q){
   sg.classList.remove('hid');
   window._cityTimer=setTimeout(async()=>{
     try{
-      const cur=lang==='he'?'he':lang==='en'?'en':'ru';
+      const cur=/[\u0590-\u05FF]/.test(q)?'he':/[\u0400-\u04FF]/.test(q)?'ru':'en';
       const url=`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=jsonv2&accept-language=${cur}&countrycodes=il&limit=8&addressdetails=0`;
       const res=await fetch(url,{headers:{'Accept-Language':cur}});
       const data=await res.json();
