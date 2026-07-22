@@ -1853,9 +1853,7 @@ function initMap(){
     if(el)el.innerHTML='<div style="position:absolute;inset:0;background:#fff;color:#c00;font-size:14px;padding:20px;overflow:auto;z-index:999">MAP INIT ERROR:<br>'+(e&&e.message?e.message:String(e))+'</div>';
     return;
   }
-  function dbgLog(t,m){try{var p=document.getElementById('dbgPanel');if(p){var line='['+t+'] '+m;p.textContent=(p.textContent+'\n'+line).split('\n').slice(-60).join('\n');}}catch(err){}}
   map.on('error',function(e){
-    dbgLog('MAPBOX-ERROR', e&&e.error&&e.error.message?e.error.message:JSON.stringify(e&&e.error||e));
     var el=document.getElementById('map3d');
     if(el){
       var d=document.createElement('div');
@@ -1864,45 +1862,14 @@ function initMap(){
       el.appendChild(d);
     }
   });
-  map.on('style.load',function(){dbgLog('MAPBOX','style.load fired')});
-  map.on('styledata',function(){dbgLog('MAPBOX','styledata fired')});
-  map.on('sourcedata',function(e){if(e.isSourceLoaded)dbgLog('MAPBOX','source loaded: '+e.sourceId)});
-  map.on('idle',function(){dbgLog('MAPBOX','idle - style loaded='+map.isStyleLoaded()+' layers='+(map.getStyle()?map.getStyle().layers.length:'?'))});
-  setTimeout(function(){
-    try{
-      var cv=map.getCanvas();
-      dbgLog('CANVAS','buffer='+cv.width+'x'+cv.height+' css='+cv.style.width+'x'+cv.style.height+' offsetSize='+cv.offsetWidth+'x'+cv.offsetHeight);
-      var gl=cv.getContext('webgl2')||cv.getContext('webgl')||cv.getContext('experimental-webgl');
-      if(gl){
-        var attrs=gl.getContextAttributes();
-        dbgLog('CANVAS-CTX','alpha='+attrs.alpha+' premultipliedAlpha='+attrs.premultipliedAlpha+' antialias='+attrs.antialias+' preserveDrawingBuffer='+attrs.preserveDrawingBuffer);
-      }
-      var mc=document.getElementById('map3d');
-      var mcs=window.getComputedStyle(mc);
-      dbgLog('CONTAINER','#map3d size='+mc.offsetWidth+'x'+mc.offsetHeight+' display='+mcs.display+' visibility='+mcs.visibility+' opacity='+mcs.opacity);
-      var pxData=null;
-      try{
-        var tmpCanvas=document.createElement('canvas');
-        tmpCanvas.width=cv.width;tmpCanvas.height=cv.height;
-        var ctx2d=tmpCanvas.getContext('2d');
-        ctx2d.drawImage(cv,0,0);
-        var pix=ctx2d.getImageData(Math.floor(cv.width/2),Math.floor(cv.height/2),1,1).data;
-        dbgLog('PIXEL-CHECK','center pixel RGBA='+pix[0]+','+pix[1]+','+pix[2]+','+pix[3]);
-      }catch(pe){dbgLog('PIXEL-CHECK','failed: '+pe.message);}
-    }catch(e){dbgLog('CANVAS-DEBUG-ERROR',e.message);}
-  },2000);
-  map.on('render',(function(){var done=false;return function(){if(!done){done=true;dbgLog('MAPBOX','first render fired');}}})());
-  map.on('webglcontextlost',function(){dbgLog('MAPBOX','WEBGL CONTEXT LOST')});
-  // Автоматически ресайзим карту при ЛЮБОМ изменении размера контейнера — надёжнее таймаутов
+  // Автоматически ресайзим карту при ЛЮБОМ изменении размера контейнера
   try{
     var mapEl=document.getElementById('map3d');
     if(mapEl&&window.ResizeObserver){
       var _roTimer=null;
       var ro=new ResizeObserver(function(){
         clearTimeout(_roTimer);
-        _roTimer=setTimeout(function(){
-          try{map.resize();dbgLog('RESIZE-OBSERVER','resize triggered, container='+mapEl.offsetWidth+'x'+mapEl.offsetHeight);}catch(e){}
-        },50);
+        _roTimer=setTimeout(function(){try{map.resize();}catch(e){}},50);
       });
       ro.observe(mapEl);
     }
@@ -3450,7 +3417,6 @@ const IS_MOB = Math.min(window.screen.width, window.screen.height) <= 768
 
 if (IS_MOB) document.documentElement.classList.add('mob');
 if (IS_MOB && window.map) { setTimeout(function(){ map.resize(); }, 0); setTimeout(function(){ map.resize(); }, 300); setTimeout(function(){ map.resize(); }, 800); }
-if (IS_MOB && window.map) { setTimeout(function(){ map.resize(); }, 0); setTimeout(function(){ map.resize(); }, 300); setTimeout(function(){ map.resize(); }, 800); }
 if (!IS_MOB) return;
 
 // ── STATE ──────────────────────────────────────────
@@ -3866,38 +3832,5 @@ function copyRefLink(){
   </div>
 </div>
 
-<div id="dbgPanel" style="position:fixed;bottom:0;left:0;right:0;max-height:40vh;overflow-y:auto;background:rgba(0,0,0,.92);color:#0f0;font-family:monospace;font-size:10px;padding:8px;z-index:999999;display:none;white-space:pre-wrap;word-break:break-all"></div>
-<button id="dbgToggle" style="position:fixed;bottom:8px;right:8px;z-index:1000000;background:#c00;color:#fff;border:none;padding:6px 10px;border-radius:8px;font-size:11px" onclick="document.getElementById('dbgPanel').style.display=document.getElementById('dbgPanel').style.display==='none'?'block':'none'">DEBUG</button>
-<script>
-(function(){
-  var log=[];
-  function add(type,msg){
-    log.push('['+type+'] '+msg);
-    var p=document.getElementById('dbgPanel');
-    if(p)p.textContent=log.slice(-60).join('\n');
-  }
-  window.addEventListener('error',function(e){
-    add('ERROR', (e.message||'')+' @ '+(e.filename||'')+':'+(e.lineno||'')+':'+(e.colno||''));
-  });
-  window.addEventListener('unhandledrejection',function(e){
-    add('PROMISE-REJECT', e.reason&&e.reason.message?e.reason.message:String(e.reason));
-  });
-  add('INFO','screen='+window.screen.width+'x'+window.screen.height+' inner='+window.innerWidth+'x'+window.innerHeight+' dpr='+window.devicePixelRatio);
-  add('INFO','UA='+navigator.userAgent);
-  try{
-    var testCanvas=document.createElement('canvas');
-    var gl=testCanvas.getContext('webgl')||testCanvas.getContext('experimental-webgl');
-    add('INFO','WebGL support: '+(gl?'YES':'NO'));
-    if(gl){
-      var dbg=gl.getExtension('WEBGL_debug_renderer_info');
-      if(dbg)add('INFO','GPU: '+gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL));
-    }
-  }catch(e){add('ERROR','WebGL test failed: '+e.message);}
-  var origErr=console.error;
-  console.error=function(){add('CONSOLE-ERR',Array.prototype.slice.call(arguments).join(' '));origErr.apply(console,arguments);};
-  var origWarn=console.warn;
-  console.warn=function(){add('CONSOLE-WARN',Array.prototype.slice.call(arguments).join(' '));origWarn.apply(console,arguments);};
-})();
-</script>
 </body>
 </html>
