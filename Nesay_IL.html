@@ -2953,7 +2953,6 @@ function hideLoader(){
   }
 }
 function finishAuth(user){
-  hideLoader();
   const u=typeof user==='object'?user:{email:user,name:'Пользователь',role:selectedRole||'buyer',credits:0};
   loggedIn=true;
   const isAgent=u.role==='agent'||u.role==='owner';
