@@ -1893,6 +1893,20 @@ function initMap(){
   },2000);
   map.on('render',(function(){var done=false;return function(){if(!done){done=true;dbgLog('MAPBOX','first render fired');}}})());
   map.on('webglcontextlost',function(){dbgLog('MAPBOX','WEBGL CONTEXT LOST')});
+  // Автоматически ресайзим карту при ЛЮБОМ изменении размера контейнера — надёжнее таймаутов
+  try{
+    var mapEl=document.getElementById('map3d');
+    if(mapEl&&window.ResizeObserver){
+      var _roTimer=null;
+      var ro=new ResizeObserver(function(){
+        clearTimeout(_roTimer);
+        _roTimer=setTimeout(function(){
+          try{map.resize();dbgLog('RESIZE-OBSERVER','resize triggered, container='+mapEl.offsetWidth+'x'+mapEl.offsetHeight);}catch(e){}
+        },50);
+      });
+      ro.observe(mapEl);
+    }
+  }catch(e){}
   map.addControl(new mapboxgl.AttributionControl({compact:true}),'bottom-right');
   map.scrollZoom.setWheelZoomRate(1/450);
   map.on('load',()=>{
