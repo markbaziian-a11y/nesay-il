@@ -1852,6 +1852,7 @@ function initMap(){
     antialias:!isMobDevice,
     attributionControl:false
   });
+  window.map=map;
   }catch(e){
     var el=document.getElementById('map3d');
     if(el)el.innerHTML='<div style="position:absolute;inset:0;background:#fff;color:#c00;font-size:14px;padding:20px;overflow:auto;z-index:999">MAP INIT ERROR:<br>'+(e&&e.message?e.message:String(e))+'</div>';
@@ -3102,7 +3103,7 @@ async function toggleFav(btn,idx){
     }catch(e){}
   }else{showToast(liked?'✕':'❤️ '+t('card.save'))}
 }
-function updateMapLang(l){if(!window.map)return;try{var ml=l==='he'?'he':l==='en'?'en':'ru';window.map.getStyle().layers.forEach(function(layer){if(layer.type==='symbol'){try{window.map.setLayoutProperty(layer.id,'text-field',['coalesce',['get','name_'+ml],['get','name']]);}catch(e){}}});}catch(e){}}
+function updateMapLang(l){if(!map)return;try{var ml=l==='he'?'he':l==='en'?'en':'ru';map.getStyle().layers.forEach(function(layer){if(layer.type==='symbol'){try{map.setLayoutProperty(layer.id,'text-field',['coalesce',['get','name_'+ml],['get','name']]);}catch(e){}}});}catch(e){}}
 let _tt;
 function showToast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>el.classList.remove('show'),2800)}
 document.addEventListener('click',e=>{
