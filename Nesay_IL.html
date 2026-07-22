@@ -3820,5 +3820,38 @@ function copyRefLink(){
   </div>
 </div>
 
+<div id="dbgPanel" style="position:fixed;bottom:0;left:0;right:0;max-height:40vh;overflow-y:auto;background:rgba(0,0,0,.92);color:#0f0;font-family:monospace;font-size:10px;padding:8px;z-index:999999;display:none;white-space:pre-wrap;word-break:break-all"></div>
+<button id="dbgToggle" style="position:fixed;bottom:8px;right:8px;z-index:1000000;background:#c00;color:#fff;border:none;padding:6px 10px;border-radius:8px;font-size:11px" onclick="document.getElementById('dbgPanel').style.display=document.getElementById('dbgPanel').style.display==='none'?'block':'none'">DEBUG</button>
+<script>
+(function(){
+  var log=[];
+  function add(type,msg){
+    log.push('['+type+'] '+msg);
+    var p=document.getElementById('dbgPanel');
+    if(p)p.textContent=log.slice(-60).join('\n');
+  }
+  window.addEventListener('error',function(e){
+    add('ERROR', (e.message||'')+' @ '+(e.filename||'')+':'+(e.lineno||'')+':'+(e.colno||''));
+  });
+  window.addEventListener('unhandledrejection',function(e){
+    add('PROMISE-REJECT', e.reason&&e.reason.message?e.reason.message:String(e.reason));
+  });
+  add('INFO','screen='+window.screen.width+'x'+window.screen.height+' inner='+window.innerWidth+'x'+window.innerHeight+' dpr='+window.devicePixelRatio);
+  add('INFO','UA='+navigator.userAgent);
+  try{
+    var testCanvas=document.createElement('canvas');
+    var gl=testCanvas.getContext('webgl')||testCanvas.getContext('experimental-webgl');
+    add('INFO','WebGL support: '+(gl?'YES':'NO'));
+    if(gl){
+      var dbg=gl.getExtension('WEBGL_debug_renderer_info');
+      if(dbg)add('INFO','GPU: '+gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL));
+    }
+  }catch(e){add('ERROR','WebGL test failed: '+e.message);}
+  var origErr=console.error;
+  console.error=function(){add('CONSOLE-ERR',Array.prototype.slice.call(arguments).join(' '));origErr.apply(console,arguments);};
+  var origWarn=console.warn;
+  console.warn=function(){add('CONSOLE-WARN',Array.prototype.slice.call(arguments).join(' '));origWarn.apply(console,arguments);};
+})();
+</script>
 </body>
 </html>
