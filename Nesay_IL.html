@@ -1852,7 +1852,9 @@ function initMap(){
     if(el)el.innerHTML='<div style="position:absolute;inset:0;background:#fff;color:#c00;font-size:14px;padding:20px;overflow:auto;z-index:999">MAP INIT ERROR:<br>'+(e&&e.message?e.message:String(e))+'</div>';
     return;
   }
+  function dbgLog(t,m){try{var p=document.getElementById('dbgPanel');if(p){var line='['+t+'] '+m;p.textContent=(p.textContent+'\n'+line).split('\n').slice(-60).join('\n');}}catch(err){}}
   map.on('error',function(e){
+    dbgLog('MAPBOX-ERROR', e&&e.error&&e.error.message?e.error.message:JSON.stringify(e&&e.error||e));
     var el=document.getElementById('map3d');
     if(el){
       var d=document.createElement('div');
@@ -1861,6 +1863,12 @@ function initMap(){
       el.appendChild(d);
     }
   });
+  map.on('style.load',function(){dbgLog('MAPBOX','style.load fired')});
+  map.on('styledata',function(){dbgLog('MAPBOX','styledata fired')});
+  map.on('sourcedata',function(e){if(e.isSourceLoaded)dbgLog('MAPBOX','source loaded: '+e.sourceId)});
+  map.on('idle',function(){dbgLog('MAPBOX','idle - style loaded='+map.isStyleLoaded()+' layers='+(map.getStyle()?map.getStyle().layers.length:'?'))});
+  map.on('render',(function(){var done=false;return function(){if(!done){done=true;dbgLog('MAPBOX','first render fired');}}})());
+  map.on('webglcontextlost',function(){dbgLog('MAPBOX','WEBGL CONTEXT LOST')});
   map.addControl(new mapboxgl.AttributionControl({compact:true}),'bottom-right');
   map.scrollZoom.setWheelZoomRate(1/450);
   map.on('load',()=>{
