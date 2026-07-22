@@ -1868,6 +1868,29 @@ function initMap(){
   map.on('styledata',function(){dbgLog('MAPBOX','styledata fired')});
   map.on('sourcedata',function(e){if(e.isSourceLoaded)dbgLog('MAPBOX','source loaded: '+e.sourceId)});
   map.on('idle',function(){dbgLog('MAPBOX','idle - style loaded='+map.isStyleLoaded()+' layers='+(map.getStyle()?map.getStyle().layers.length:'?'))});
+  setTimeout(function(){
+    try{
+      var cv=map.getCanvas();
+      dbgLog('CANVAS','buffer='+cv.width+'x'+cv.height+' css='+cv.style.width+'x'+cv.style.height+' offsetSize='+cv.offsetWidth+'x'+cv.offsetHeight);
+      var gl=cv.getContext('webgl2')||cv.getContext('webgl')||cv.getContext('experimental-webgl');
+      if(gl){
+        var attrs=gl.getContextAttributes();
+        dbgLog('CANVAS-CTX','alpha='+attrs.alpha+' premultipliedAlpha='+attrs.premultipliedAlpha+' antialias='+attrs.antialias+' preserveDrawingBuffer='+attrs.preserveDrawingBuffer);
+      }
+      var mc=document.getElementById('map3d');
+      var mcs=window.getComputedStyle(mc);
+      dbgLog('CONTAINER','#map3d size='+mc.offsetWidth+'x'+mc.offsetHeight+' display='+mcs.display+' visibility='+mcs.visibility+' opacity='+mcs.opacity);
+      var pxData=null;
+      try{
+        var tmpCanvas=document.createElement('canvas');
+        tmpCanvas.width=cv.width;tmpCanvas.height=cv.height;
+        var ctx2d=tmpCanvas.getContext('2d');
+        ctx2d.drawImage(cv,0,0);
+        var pix=ctx2d.getImageData(Math.floor(cv.width/2),Math.floor(cv.height/2),1,1).data;
+        dbgLog('PIXEL-CHECK','center pixel RGBA='+pix[0]+','+pix[1]+','+pix[2]+','+pix[3]);
+      }catch(pe){dbgLog('PIXEL-CHECK','failed: '+pe.message);}
+    }catch(e){dbgLog('CANVAS-DEBUG-ERROR',e.message);}
+  },2000);
   map.on('render',(function(){var done=false;return function(){if(!done){done=true;dbgLog('MAPBOX','first render fired');}}})());
   map.on('webglcontextlost',function(){dbgLog('MAPBOX','WEBGL CONTEXT LOST')});
   map.addControl(new mapboxgl.AttributionControl({compact:true}),'bottom-right');
