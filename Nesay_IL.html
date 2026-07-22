@@ -1247,6 +1247,11 @@ html.mob #drawZoneClear { top:auto;bottom:calc(72px + env(safe-area-inset-bottom
       <div class="mlr"><div class="mld s"></div data-i18n="nav.sale" data-i18n="map.sale">🟠 Продажа</div>
     </div>
     <div id="mapPop" class="mpop" style="display:none"></div>
+    <div id="drawZoneOverlay">
+      <canvas id="drawZoneCanvas"></canvas>
+      <div class="drawZone-hint" id="drawZoneHint">Обведите пальцем/мышью зону поиска</div>
+    </div>
+    <button id="drawZoneClear" onclick="clearDrawZone()">✕ Сбросить зону</button>
   </div>
 
   <div class="sb">
