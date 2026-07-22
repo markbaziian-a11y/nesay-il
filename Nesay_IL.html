@@ -153,7 +153,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:var(--nav-h);
 .slide-dot.on{background:#fff}
 
 /* ════ MAP ════ */
-#map3d{position:absolute;inset:0;width:100%;height:100%}
+#map3d{position:absolute;inset:0;width:100%;height:100%;-webkit-transform:translateZ(0);transform:translateZ(0);isolation:isolate;will-change:transform}
+#map3d canvas{-webkit-transform:translateZ(0);transform:translateZ(0)}
 .cj{position:absolute;top:14px;left:50%;transform:translateX(-50%);display:flex;gap:4px;z-index:10;flex-wrap:wrap;justify-content:center}
 .cj button{padding:6px 12px;border-radius:20px;border:none;background:rgba(10,10,20,.75);backdrop-filter:blur(12px);color:#fff;font-family:var(--font);font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.3)}
 .cj button:hover{background:var(--c);transform:translateY(-1px)}
